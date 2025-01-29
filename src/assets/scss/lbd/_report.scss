@@ -1,0 +1,116 @@
+// expenses
+.card-body {
+    .card-value {
+        line-height: 3.4rem;
+        height: 3.4rem;
+        display: flex;
+        align-items: center;
+        font-weight: 400;
+        color: #45aaf2 !important;
+        font-size: 40px;
+    }
+
+    h4 {
+        font-weight: 400;
+        line-height: 1.2;
+        color: #2c2945;
+        margin-top: 0;
+    }
+
+    .progress-xs,
+    .progress-xs .progress-bar {
+        height: .25rem;
+    }
+
+    .progress {
+        position: relative;
+        display: flex;
+        height: 1rem;
+        overflow: hidden;
+        font-size: .75rem;
+        background-color: #e9ecef;
+        border-radius: .25rem !important;
+    }
+
+    .progress-bar {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        color: #fff;
+        text-align: center;
+        white-space: nowrap;
+        background-color: #007bff;
+        transition: width .6s ease;
+        border: transparent;
+    }
+
+    .bg-azure {
+        background-color: #5a5278 !important;
+    }
+
+    .bg-cyan {
+        background-color: #e8769f !important;
+    }
+
+    .text-cyan {
+        color: #17a2b8 !important;
+    }
+
+    .text-danger {
+        color: #5a5278 !important;
+    }
+
+    .text-pink {
+        color: #e03997 !important;
+    }
+}
+
+// invoices
+.card {
+    .employeelist-header {
+        .card-title {
+            font-size: 15px;
+            font-weight: 400;
+            line-height: 1.2;
+            text-transform: uppercase;
+        }
+    }
+
+    table {
+        .admin-role {
+            color: white;
+            background: #AB47BC;
+            padding: 7px;
+            border-radius: 7px;
+            font-size: 13px;
+        }
+    }
+}
+
+// detail 
+.report-card-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+
+    
+    .card-title {
+        font-size: 17px;
+        font-weight: 400;
+        line-height: 1.2;
+        text-transform: uppercase;
+
+    }
+
+    .print-btn {
+
+        color: white;
+        background-color: rgba(106, 27, 154, 0.8784313725);
+        padding-left: 7px;
+        padding-right: 7px;
+
+    }
+}
+.bg-green {
+    background-color: #d176e8 !important;
+}

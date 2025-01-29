@@ -1,0 +1,148 @@
+.section-body {
+    .container-fluid {
+        .row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            //   job location box
+            .location {
+
+                .col-xl-4 {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+
+                    .clearfix {
+                        display: flex;
+                        justify-content: space-between;
+                        width: 100%;
+
+                        .float-left {
+                            font-weight: bold;
+                        }
+
+                        .float-right {
+                            text-align: right;
+                            margin-left: auto;
+                        }
+                    }
+
+                    .progress {
+                        width: 100%;
+                        margin: 5px 0;
+                        height: 0.25rem;
+
+                        .reach-bar {
+                            height: 0.25rem;
+                            background-color: #e8769f;
+                        }
+                    }
+
+                    .country-1 {
+                        margin-left: -135px;
+                    }
+
+                    .country-2 {
+                        margin-left: -120px;
+                    }
+
+                    .country-3 {
+                        margin-left: -81px;
+                    }
+
+                }
+            }
+
+
+            // view-job
+            .view-card {
+                margin-top: -21px;
+
+
+                .view-job {
+                    border: 0;
+                    background: none;
+                    display: flex;
+                    align-items: center;
+                }
+
+                .card-body {
+                    .view-label {
+                        font-size: 10px;
+                    }
+
+                    .view-digits {
+                        font-size: 20px;
+                    }
+
+                    .reach-bar {
+                        background-color: #e8769f;
+                    }
+                }
+            }
+
+            // job-openings
+            .job-openings {
+                margin-top: -75px;
+
+                .job-openings-icon {
+                    border: 0;
+                    background: none;
+                    display: flex;
+                    align-items: center;
+
+                }
+
+                .job-countries-table td {
+                    border: none;
+                }
+
+                .table-responsive {
+                    .no-of-openings {
+                        font-weight: 600;
+                    }
+                }
+            }
+        }
+
+        // recent applications
+        .row {
+            .recent-applications {
+                border: 0;
+                background: none;
+                display: flex;
+                align-items: center;
+            }
+
+            .table-responsive {
+
+                .applicant-names{
+                    font-size: 15px;
+                }
+
+                .application-status,
+                .cancel-application-status,
+                .inprocess-application-status {
+                    color: white;
+                    background-color: #e8769f;
+                    border-color: #e8769f;
+                    padding: 7px;
+                    border-radius: 7px;
+                    font-size: 13px;
+                }
+
+                .cancel-application-status {
+                    background-color: red;
+                    border-color: red;
+                }
+
+                .inprocess-application-status {
+                    background-color: #5a5278 !important;
+                    border: transparent;
+                }
+            }
+
+        }
+    }
+}

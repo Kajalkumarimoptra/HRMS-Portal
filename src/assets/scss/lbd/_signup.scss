@@ -1,0 +1,62 @@
+.signup-row {
+    margin-left: 121px;
+    display: flex;
+    justify-content: center;
+    width: 80%;
+    align-content: center;
+}
+
+.signup-title {
+    padding: 0px 19px 0px;
+    font-size: 20px;
+    text-align: center;
+
+    p {
+        font-weight: 600;
+        font-size: 18px;
+        color: #5A5A5A;
+    }
+}
+
+form {
+    .register-title {
+        text-decoration: underline;
+        font-size: 16px;
+        color: #5A5A5A;
+        text-align: center;
+        margin-top: -16px;
+    }
+
+    .password-criteria {
+        color: #5A5A5A;
+        font-size: 13px;
+        margin-top: 5px; // Add space between the password field and the criteria message
+        position: absolute;
+        top: 100%; // Position the criteria message below the password input
+        left: 0;
+        visibility: hidden;
+    }
+
+    .confirm {
+        position: relative;
+        margin-top: 0;
+
+        &.with-criteria {
+            margin-top: 80px; // Space between the two fields when password criteria is visible
+        }
+    }
+
+    // Visibility logic for error and criteria messages
+    .password-criteria.visible {
+        visibility: visible; // Show when the message is visible
+    }
+
+    .signup-error-message {
+        color: red;
+        font-size: 13px;
+        position: absolute;
+        top: 95%;
+        left: 71px;
+        bottom: -20px;
+    }
+}

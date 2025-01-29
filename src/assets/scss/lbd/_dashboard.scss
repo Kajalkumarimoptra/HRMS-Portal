@@ -1,0 +1,57 @@
+.container-fluid {
+
+    // header blocks
+    .row {
+        .card {
+            .ribbon {
+                position: relative;
+            }
+
+            .ribbon-box, .events-ribbon-box {
+                color: #fff;
+                right: auto;
+                right: 23px;
+                top: -9px;
+                position: absolute;
+                height: 32px;
+                min-width: 30px;
+                padding: 0 5px;
+                text-align: center;
+                line-height: 32px;
+                background: #ff0000b8;
+            }
+            .events-ribbon-box{
+                right: 29px;
+            }
+
+            .sort-cut {
+                padding-top: 15px;
+                padding-right: 10px;
+                min-height: 80px;
+                display: block;
+                text-align: center;
+
+                i {
+                    font-size: 30px;
+                    transition: font-size .2s;
+                }
+
+                span {
+                    display: block;
+                    margin-left: 22px;
+                }
+            }
+        }
+    }
+
+    // graph part
+    .graph-container {
+        .graph-card {
+            .graph-heading {
+                font-size: 15px;
+                font-weight: 400;
+                line-height: 1.2;
+            }
+        }
+    }
+}

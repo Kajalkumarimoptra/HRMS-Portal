@@ -1,0 +1,80 @@
+/*!
+
+ =========================================================
+ * Light Bootstrap Dashboard React - v2.0.0
+ =========================================================
+
+ * Product Page: http://www.creative-tim.com/product/light-bootstrap-dashboard-react
+ * Copyright 2020 Creative Tim (http://www.creative-tim.com)
+ * Licensed under MIT (https://github.com/creativetimofficial/light-bootstrap-dashboard-react/blob/master/LICENSE.md)
+
+ =========================================================
+
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+ */
+
+@import "lbd/variables";
+@import "lbd/mixins";
+@import "lbd/typography";
+
+// Core CSS
+@import "lbd/misc";
+@import "lbd/header";
+@import "lbd/sidebar-and-main-panel";
+@import "lbd/login";
+@import "lbd/forgotpassword";
+@import "lbd/signup";
+@import "lbd/employeepage";
+@import "lbd/registerpage";
+@import "lbd/enterotp";
+@import "lbd/resetpassword";
+@import "lbd/dashboard";
+@import "lbd/user";
+@import "lbd/department";
+@import "lbd/report";
+@import "lbd/personaldetailform";
+@import "lbd/passportphoto";
+@import "lbd/contactdetailform";
+@import "lbd/addresshistoryform";
+@import "lbd/educationaldetailform";
+@import "lbd/employmenthistoryform";
+@import "lbd/professionalrefform";
+@import "lbd/declarationform";
+@import "lbd/attachsign";
+@import "lbd/previewform";
+@import "lbd/jobdashboard";
+@import "lbd/positions";
+@import "lbd/leave";
+@import "lbd/applicant";
+@import "lbd/resumes";
+@import "lbd/report";
+@import "lbd/settings";
+@import "lbd/activities";
+@import "lbd/holidays";
+@import "lbd/payroll";
+@import "lbd/account";
+@import "lbd/navbar";
+@import "lbd/buttons";
+@import "lbd/inputs";
+
+@import "lbd/alerts";
+@import "lbd/tables";
+
+@import "lbd/checkbox-radio-switch";
+@import "lbd/navbars";
+@import "lbd/footers";
+
+// Fancy Stuff
+@import "lbd/plugins/animate";
+@import "lbd/dropdown";
+@import "lbd/cards";
+@import "lbd/chartist";
+@import "lbd/responsive";
+@import "lbd/bootstrap-switch";
+
+// Nucleo Icons
+@import "lbd/partial-nucleo-icons";
+
+// React Differences
+@import "lbdr/react-differences";

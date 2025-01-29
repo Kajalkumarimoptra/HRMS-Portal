@@ -1,0 +1,23 @@
+.container-fluid {
+
+    // table part
+    .holidays_table {
+        border-collapse: separate;
+        border-spacing: 0 5px !important;
+        margin-top: 0;
+        tbody {
+            & td {
+                border-top: 1px solid #e6e9ed;
+                border-bottom: 1px solid #e6e9ed;
+                border-left: 1px solid #e6e9ed;
+            }
+            & td:first-child{
+                border-radius: .55rem 0 0 .55rem;
+            }
+            & td:last-child{
+                border-right: 1px solid #e6e9ed;
+                border-radius: 0 .55rem .55rem 0;
+            }
+        }
+    }
+}

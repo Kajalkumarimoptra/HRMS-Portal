@@ -1,0 +1,40 @@
+.section-body {
+    .card-body {
+        .row {
+            .btn-block {
+                background: #5a5278;
+                color: white;
+                border: none;
+
+                &:hover {
+                    color: #fff;
+                    background-color: #0069d9;
+                    border-color: #0062cc;
+                }
+            }
+        }
+    }
+
+        // table content
+       .table-responsive {
+
+        .company-name{
+            font-size: 15px;
+        }
+
+        .position-role,
+        .position-approval-role {
+            color: white;
+            background: #cedd7a;
+            padding: 7px;
+            border-radius: 7px;
+            font-size: 13px;
+        }
+
+        .position-approval-role {
+            background: #fbbd08;
+            padding: 7px;
+        }
+    }
+
+}

@@ -1,0 +1,22 @@
+.sidebar{
+    // &[data-color="black"]:after{
+    //     @include icon-gradient(#282828, rgba(#111,.7));
+    // }
+    height: 100vh;
+    overflow: hidden; 
+    .logo-img img {
+      max-width: 83px;
+      max-height: 40px;
+    }
+}
+
+@media (max-width: 991px){
+  .sidebar .nav > li.active.active-pro {
+    position: relative;
+    bottom: unset;
+  }
+}
+
+#bodyClick {
+  position: absolute;
+}

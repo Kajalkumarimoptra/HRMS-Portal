@@ -1,0 +1,125 @@
+.addressForm {
+    margin-top: 44px;
+
+    .addressHeading {
+        margin-left: -10px;
+        background-color: rgba(224, 224, 224, 0.5098039216);
+        width: 96.5%;
+        display: flex;
+        flex-wrap: wrap;
+        align-content: stretch;
+        align-items: center;
+        margin-bottom: 20px;
+        height: 27px;
+
+        .educationalHeadline {
+            font-weight: bold;
+            display: inline;
+            margin-left: 13px;
+        }
+
+        .educationalNote {
+            font-weight: bold;
+            color: gray;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .required {
+            color: red;
+        }
+    }
+
+    .table {
+        &.addressTableWidth {
+            width: 96.5%;
+            margin-left: -8px;
+
+            thead,
+            tbody {
+                text-align: center;
+            }
+
+            thead {
+                .tableHead {
+                    background-color: #6f6b6b !important;
+                    color: white !important;
+                    padding: 6px 10px !important;
+                    text-align: center !important;
+                    font-weight: bold;
+                }
+            }
+            .tableInput {
+                outline: 0;
+                border: none;
+                text-align: center;
+                width: 50px;
+                background-color: #80aeea00;
+
+                &:focus {
+                    outline: none;
+                    border-color: #800080b0;
+                    box-shadow: -1px 1px 5px 0px #a047bc;
+                }
+            
+    
+            &.invalid input {
+                border-color: red;
+                box-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+            }
+    
+            }
+
+            tbody {
+                .tableBody {
+                    background-color: whitesmoke !important;
+                    padding: 3px 0px !important;
+                    text-align: center;
+                }
+
+                .tableBodyLight {
+                    background-color: rgb(158 158 158 / 48%) !important;
+                    padding: 3px 0px !important;
+                }
+
+                .invalid {
+                    border: 2px solid red; 
+                }
+            }
+        }
+        
+        .addressTableInput {
+            width: 100% !important;
+            padding: 5px;
+
+            &:focus {
+                outline: none;
+                border-color: #800080b0;
+                box-shadow: -1px 1px 5px 0px #a047bc;
+            }
+        
+
+        &.invalid input {
+            border-color: red;
+            box-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+        }
+
+        }
+    }
+
+    .contactAddRowButton {
+        background-color: #CE93D8;
+        float: left;
+        margin-top: -13px;
+        width: 69px;
+        margin-left: -9px;
+        border: none;
+        color: white;
+        padding-left: 0px;
+
+        &:focus {
+            background-color: #BA68C8;
+            box-shadow: -1px 8px 20px 3px #a047bc;
+        }
+    }
+}

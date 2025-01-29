@@ -1,0 +1,69 @@
+.container-fluid {
+
+    // upper counter blocks
+    .row {
+        .salary-counter {
+            margin-bottom: 0.5rem !important;
+        }
+    }
+
+    // table of employee salary view
+    .card-body {
+        table {
+            tbody {
+                .exit-block {
+                    color: white;
+                    background: indianred;
+                    padding: 7px 15px 7px 15px;
+
+                    border-radius: 7px;
+                    font-size: 13px;
+                }
+            }
+
+        }
+    }
+
+    // payslip view
+    .card-body {
+        .content {
+            margin-top: -7px;
+            margin-left: 7px;
+
+            .badge-primary {
+                background-color: #5a5278;
+                color: #fff;
+                font-weight: 700;
+            }
+        }
+
+        .email-print-icons {
+            margin-bottom: 0;
+            margin-left: 9px;
+            justify-content: left;
+        }
+
+        .email-icon,
+        .print-icon {
+            color: #5a5278 !important;
+        }
+
+        //  payslip table
+        .payslip-table {
+            .dark-mode {
+                background: #272c31;
+                color: #7d8490;
+            }
+        }
+
+        .print-btn {
+            background-color: #e8769f;
+            border-color: #e8769f;
+            font-size: 14px;
+            color: #fff;
+        }
+
+
+    }
+
+}

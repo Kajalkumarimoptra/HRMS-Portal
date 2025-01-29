@@ -1,0 +1,110 @@
+.passport-photo-wrapper {
+
+  .passport-photo-box {
+    width: 228px;
+    height: 229px;
+    border: 1px solid #000;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    float: right;
+    margin-top: -134px;
+    margin-right: 64px;
+
+    .photo-container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+
+      img,
+      .cropper-container {
+        width: 100%;
+        height: auto;
+        max-height: 100%;
+        object-fit: contain;
+        position: absolute;
+        margin-left: -10px;
+      }
+
+      .photoIcon {
+        cursor: pointer;
+        outline: none;
+      }
+    }
+
+    &.invalid {
+      border-color: red;
+    }
+
+
+    img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+      top: -10px;
+      left: 10px;
+    }
+
+    .imageSizeErrorMsg {
+      font-size: 13px;
+      color: red;
+    }
+
+    .imageSizeMsg {
+      font-size: 14px;
+      margin-top: 16px;
+    }
+  }
+
+  .toolbar {
+    position: absolute;
+    left: 84%;
+    transform: translateX(-50%);
+    z-index: 10;
+    overflow: visible;
+    z-index: 20;
+    bottom: -130px;
+    // position: absolute;
+    // top: 270px;
+    // left: 50%;
+    // transform: translateX(-50%);
+    // overflow: visible;
+
+    .crop-btn {
+      font-size: 13px;
+      width: 94px;
+      position: relative;
+      bottom: 54px;
+      left: 40%;
+      transform: translateX(-50%);
+      z-index: 10;
+      // position: absolute;
+      // bottom: 10px;
+      // left: 56%;
+      // transform: translateX(-50%);
+      // z-index: 10;
+      // padding: -28px;
+      // font-size: 13px;
+      // width: 90px;
+    }
+  }
+
+  .file-label {
+    background-color: purple;
+    color: white;
+    line-height: 1.2;
+    border-radius: 4px;
+    padding: 10px;
+    margin: 0 20px;
+    cursor: pointer;
+  }
+
+  .container {
+    margin-left: -9px;
+    text-align: center;
+  }
+}

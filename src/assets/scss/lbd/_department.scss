@@ -1,0 +1,175 @@
+// modal box form
+.modal-content {
+    background-color: #6A1B9A;
+    color: white;
+
+    .modal-header {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-content: stretch;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-top: -28px;
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+    }
+
+    .modal-body {
+        margin-top: -18px;
+
+        form {
+            input {
+                border-radius: 5px;
+                width: 100%;
+                padding: 6px;
+                box-sizing: border-box;
+                border-color: #ca10cb;
+                margin-bottom: 20px;
+                margin-top: -8px;
+
+                &::placeholder {
+                    color: #6e7687;
+                    font-size: 13px;
+                }
+            }
+
+            .dept-error-message{
+                color: red;
+                font-size: 13px;
+                margin-top: -20px;
+            }
+
+            .dept-btn {
+                padding: 7px;
+                color: #6A1B9A;
+                font-size: 15px;
+                text-align: center;
+                background: white;
+                box-shadow: rgba(0, 0, 0, 0.1) 1px 0px 6px 8px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+                border-radius: 9px;
+                font-weight: bold;
+                opacity: 1;
+                width: 100%;
+
+                // &:hover {
+                //     color: #90A4AE;
+                // }
+            }
+        }
+    }
+
+}
+
+// list-view
+.employeelist-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &>h3 {
+        flex: 1;
+    }
+}
+
+// list-view & grid-view both
+.icons {
+    border: none;
+    color: #212529;
+
+    .delete-icon {
+        width: 14px;
+        height: 14px;
+    }
+}
+
+.card-footer {
+    border-top: 1px solid rgba(0, 40, 100, .12);
+    color: #6e7687;
+}
+
+.card-body {
+    .hierarchy {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+  
+      .line.ceo-horizontal {
+        width: 36%;
+        height: 2px; 
+        top: 142px; 
+        left: 50%;
+        transform: translateX(-50%);
+        position: absolute;
+        background-color: #eae5e5; 
+        z-index: 1; 
+      }
+    }
+  
+    .level {
+      display: flex;
+      justify-content: center;
+      position: relative;
+      margin: 40px 0; 
+  
+      .node {
+        background-color: #9E9E9E;
+        color: white;
+        border-radius: 10px;
+        padding: 20px; 
+        text-align: center;
+        width: 160px; 
+        margin: 0 20px; 
+        position: relative;
+        box-sizing: border-box;
+
+        
+      }
+  
+      .line {
+        position: absolute;
+        background-color: #ccc;
+  
+        &.vertical {
+          width: 2px;
+          height: 70px;
+        }
+  
+        &.horizontal {
+          height: 2px;
+        }
+  
+        &.ceo-vertical {
+          height: 75px !important; 
+          width: 2px;
+          left: 50%;
+          top: 64px;
+        }
+  
+        &.manager-horizontal {
+          width: 60%;
+          height: 2px;
+          top: 120px;
+          position: absolute;
+          left: 0;
+        }
+  
+        &.manager-vertical {
+          height: 43px; 
+          width: 2px;
+          top: -42px;
+          left: 50%;
+          position: absolute;
+        }
+      }
+    }
+  }
+  
+  
+   
+  
+  

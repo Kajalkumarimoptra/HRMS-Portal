@@ -1,0 +1,41 @@
+.section-body{
+    .container-fluid{
+
+      // list view
+      .table-responsive{
+
+        .text-orange{
+          color: #e4bd51 !important;
+        }
+
+        .item-action{
+
+          .fa-ellipsis-h::before {
+            content: "\f141";
+            color: #5a5278;
+        }
+
+          .dropdown-menu {
+            display: none; 
+
+            .dropdown-item{
+                .fa-cloud-download::before {
+                    content: "\f0ed";
+                }
+            }
+          }
+          
+          .dropdown-menu.show {
+            display: block; /* Visible when .show is added */
+          }
+
+        }
+      }   
+    }
+}
+
+.clearfix{
+  a{
+    color: #5a5278;
+  }
+}

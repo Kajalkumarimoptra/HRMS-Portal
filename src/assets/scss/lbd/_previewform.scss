@@ -1,0 +1,215 @@
+
+.declaration-form {
+    width: 100%;
+    text-align: center !important;
+    padding: 24px 60px;
+    box-sizing: border-box;
+    overflow-x: hidden;
+
+    .UniversalHeadlines {
+        display: flex;
+        justify-content: center;
+
+        .mainHeading {
+            border: 1px solid #512f9f;
+            background-color: #6A1B9A;
+            color: white;
+            width: 80%;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    }
+
+    .noteHeading {
+        padding: 5px 5px 5px 253px;
+    }
+
+    .noteContent {
+        font-size: 13px;
+        font-weight: bold;
+        text-align: justify;
+        margin-left: 15px;
+    }
+
+    .noteDescription {
+        font-weight: 500;
+        margin-left: 6px;
+    }.previewHeading {
+    border: 1px solid #512f9f;
+    background-color: #6A1B9A;
+    color: white;
+    width: 80%;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.signAttach {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-top: 389px;
+    margin-left: 100px;
+    text-align: left;
+}
+
+.signatureLabel {
+    margin-left: 43px;
+    margin-bottom: 40px;
+    margin-top: 6px;
+}
+
+.signatureBox {
+    width: 150px;
+    height: 100px;
+    border: 1px solid black;
+}
+
+.signBox {
+    display: flex;
+    flex-direction: column;
+}
+
+.lastDate {
+    margin-bottom: 16px;
+}
+
+.finalDateSeperator {
+    margin: 13px;
+}
+
+.lastDateInput,
+.lastPlaceInput {
+    width: 162px !important;
+}
+
+.lastPlaceInput {
+    margin-left: 12px;
+}
+
+.finalSubmitButton {
+    float: right;
+    text-align: right;
+    margin-top: 39px;
+    width: 90%;
+}
+
+.previewBackBtn {
+    background-color: rgba(97, 97, 97, 0.77);
+    color: white;
+    border: none;
+    width: 121px;
+    height: 42px;
+    font-style: oblique;
+    font-size: 14px;
+    float: left;
+}
+
+.finalSubmitBtn {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    transition: 0.5s;
+    border: none;
+    border-radius: 9px;
+    outline: none;
+    color: #793282;
+    font-weight: bold;
+    height: 40px;
+    width: 118px;
+
+    span {
+        position: absolute;
+        display: block;
+    }
+
+    span:nth-child(1) {
+        top: 0;
+        left: 100%;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #793282);
+        animation: anim1 1s linear infinite;
+    }
+
+    span:nth-child(2) {
+        top: -100%;
+        right: 0;
+        width: 2px;
+        height: 100%;
+        background: linear-gradient(180deg, transparent, #793282);
+        animation: anim2 1s linear infinite;
+        animation-delay: 0.25s;
+    }
+
+    span:nth-child(3) {
+        bottom: 0;
+        right: -100%;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(270deg, transparent, #793282);
+        animation: anim3 1s linear infinite;
+        animation-delay: 0.5s;
+    }
+
+    span:nth-child(4) {
+        bottom: -100%;
+        left: 0;
+        width: 2px;
+        height: 100%;
+        background: linear-gradient(360deg, transparent, #793282);
+        animation: anim4 1s linear infinite;
+        animation-delay: 0.75s;
+    }
+
+    &:hover {
+        background-color: #793282;
+        color: white;
+        border-radius: 5px;
+        box-shadow: 0 0 5px #793282, 0 0 25px #793282, 0 0 50px #793282, 0 0 100px #793282;
+    }
+}
+}
+
+@keyframes anim1 {
+    0% {
+        left: -100%;
+    }
+    50%,
+    100% {
+        left: 100%;
+    }
+}
+
+@keyframes anim2 {
+    0% {
+        top: -100%;
+    }
+    50%,
+    100% {
+        top: 100%;
+    }
+}
+
+@keyframes anim3 {
+    0% {
+        right: -100%;
+    }
+    50%,
+    100% {
+        right: 100%;
+    }
+}
+
+@keyframes anim4 {
+    0% {
+        bottom: -100%;
+    }
+    50%,
+    100% {
+        bottom: 100%;
+    }
+}

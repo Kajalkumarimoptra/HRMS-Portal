@@ -1,0 +1,101 @@
+.header-base {
+    height: 50px;
+    background: transparent;
+    display: flex;
+    padding: 0 20px;
+    position: relative;
+    overflow: visible !important;
+
+    .header-logo {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+
+        // logo
+        .header-logo-image {
+            height: 40px;
+            width: 95px;
+            margin-left: 18px;
+
+            img {
+                height: 100%;
+                width: 100%;
+                object-fit: contain;
+            }
+        }
+
+        // search bar
+        .navbar-searchForm {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            padding: 0;
+            margin-right: auto;
+            margin-left: 161px;
+
+            .search {
+                width: 226px;
+                height: 30px;
+                border: 2px solid #512f9f;
+                padding: 5px 35px 5px 10px;
+                box-sizing: border-box;
+            }
+
+            input[type="search"] {
+                width: 80%;
+                height: 30px;
+                border: 2px solid #5A5A5A;
+                font-size: 1rem;
+                font-weight: 400;
+                outline: none;
+
+                &::placeholder {
+                    color: #d3d3d3;
+                    text-align: left;
+                }
+
+                &::-webkit-search-cancel-button {
+                    cursor: pointer;
+                }
+            }
+
+            .searchIcon {
+                position: absolute;
+                right: 60px;
+                top: 50%;
+                transform: translateY(-50%);
+                cursor: pointer;
+            }
+        }
+
+        // icons
+        .nav-link {
+            border: none;
+            color: #4d5052;
+
+            .profile-img {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 2px solid #ddd;
+            }
+        }
+
+    }
+}
+
+// Default header styling
+// .header {
+//     @extend .header-base;
+//     background: transparent;
+// }
+
+// Alternate header styling for login page
+// .header-color-change {
+//     @extend .header-base;
+//     // background: linear-gradient(to right, #6A1B9A, #bc47b1);
+//     background: transparent;
+// }

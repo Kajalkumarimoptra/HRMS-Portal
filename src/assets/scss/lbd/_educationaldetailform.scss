@@ -1,0 +1,289 @@
+.educationalNote {
+    font-weight: bold;
+    color: gray;
+    font-size: 14px;
+}
+
+.educationalHeadline,
+.educationalNote {
+    display: inline;
+    margin-left: 13px;
+}
+
+// Table CSS
+.table {
+    margin-top: 20px;
+    border: #9E9E9E;
+
+    &.tableHeading {
+        background-color: blue;
+    }
+
+    &.tableWidth {
+        width: 94.5%;
+    }
+
+    &.tableInput {
+        outline: 0;
+        border: none;
+        text-align: center;
+        width: 50px;
+        background-color: #80aeea00;
+    }
+
+    thead,
+    tbody {
+        text-align: left;
+    }
+
+    thead {
+        .tableHead {
+            background-color: #6f6b6b !important;
+            color: white !important;
+            padding: 6px 10px !important;
+            text-align: center !important;
+            font-weight: bold;
+        }
+    }
+
+    tbody {
+        .tableBody {
+            background-color: whitesmoke !important;
+            padding: 3px 0px !important;
+            text-align: center;
+        }
+
+        .tableBodyLight {
+            background-color: rgb(158 158 158 / 48%) !important;
+            padding: 3px 0px !important;
+            text-align: center;
+        }
+
+        .invalid {
+            border: 2px solid red;
+        }
+    }
+
+    .dateAddressTableInput,
+    .addressTableInput {
+        outline: 0;
+        border: none;
+        text-align: center;
+        background-color: #80aeea00;
+        width: 100% !important;
+        padding: 5px;
+
+        &:focus {
+            outline: none;
+            border-color: #800080b0;
+            box-shadow: -1px 1px 5px 0px #a047bc;
+        }
+    
+
+    &.invalid input {
+        border-color: red;
+        box-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+    }
+
+        &.dateAddressTableInput {
+            width: 96px !important;
+        }
+
+        &.addressTableInput {
+            width: 138px;
+        }
+    }
+}
+
+.btns {
+    display: flex;
+    flex-direction: column;
+}
+
+.errorMessage {
+    color: red;
+    font-size: 13px;
+}
+
+.attachIcon {
+    cursor: pointer;
+    margin-right: 4px;
+}
+
+.lastSaveButtons {
+    display: flex;
+    gap: 10px;
+    float: right;
+    margin: 5px 0px;
+}
+
+.eduFileUpload {
+    display: flex;
+    margin-top: -21px;
+    margin-right: -59px;
+    gap: 6px;
+
+    &.EduUpload {
+        background-color: #fdd83591;
+        border: none;
+        margin-left: 5px;
+        margin-right: 3px;
+    }
+}
+
+.attachmentContainer {
+    display: flex;
+    align-items: center;
+    background-color: #e0e0e082;
+    width: 94.5%;
+    margin-top: 39px;
+    padding-left: 12px;
+
+    .attachmentLabel {
+        display: flex;
+        align-items: center;
+        margin-right: 10px;
+    }
+
+    .attachmentHeadline {
+        margin: 0; // Remove default margin
+    }
+}
+
+.nestedDropDownContainer {
+    display: flex;
+    gap: 17px;
+
+    select {
+        height: min-content;
+    }
+}
+
+.option-selected {
+    margin-top: 45px;
+}
+
+.nestedOptionsList {
+    h6 {
+        width: 137px;
+        margin-top: 14px !important;
+    }
+
+    div {
+        margin-bottom: 19px;
+        margin-top: -5px;
+        width: 115%;
+    }
+
+    input[type='radio'] {
+        margin-right: 5px; // Adjust spacing between radio button and label
+    }
+}
+
+.selectedCertificatesList {
+    margin-top: 32px;
+    width: 48%;
+}
+
+.certificateContainer {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.fileUploadContainer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 5px;
+
+    .EduUploadFileInput {
+        border: 1px solid black;
+        width: 170px;
+    }
+}
+
+.checkForDegree {
+    margin-left: 0;
+    margin-right: 10px;
+    cursor: pointer;
+    vertical-align: middle;
+    box-sizing: border-box;
+    appearance: none;
+    -webkit-appearance: none;
+    background-color: white;
+    outline: 2px solid #333;
+    border: 3px solid white;
+    width: 16px;
+    height: 16px;
+    position: relative;
+    margin-top: 5px;
+
+    &::checked {
+        &::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: 3px;
+            width: 6px;
+            height: 12px;
+            border: solid blue;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+    }
+}
+
+.educationSaveButtons {
+    display: flex;
+    gap: 10px;
+    float: right;
+    margin: 52px 19px 0 0;
+    width: 100%;
+
+    .contactBackBtn {
+        background-color: #616161c4;
+        color: white;
+        border: none;
+        width: 121px;
+        height: 42px;
+        font-style: oblique;
+        font-size: 14px;
+        margin-right: auto;
+        margin-left: 66px;
+    }
+}
+
+.eduAddRowButtonContainer {
+    text-align: left;
+
+    .eduAddRowButton {
+        background-color: #CE93D8;
+        float: left;
+        margin-top: -13px;
+        width: 73px;
+        border: none;
+        color: white;
+        padding-left: 0px;
+
+        &:focus {
+            background-color: #BA68C8;
+            box-shadow: -1px 8px 20px 3px #a047bc;
+        }
+    }
+}
+
+.educationSaveButtons {
+    display: flex;
+    gap: 10px;
+    float: right;
+    margin: 52px 66px 0 0;
+    width: 100%;
+}
+
+
+
+input[type='number'] {
+    width: 36px;
+    margin-left: 15px;
+}

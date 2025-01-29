@@ -1,0 +1,132 @@
+:root {
+    --main-background: #e0e0e082;
+    --error-color: red;
+    --primary-width: 78%;
+    --secondary-width: 49%;
+    --padding-small: 10px;
+    --padding-medium: 20px;
+}
+
+.empHistoryContainer {
+    margin-top: -24px; // Consider removing negative margin
+    padding: 10px;
+
+    .empHistoryDetailHeading {
+        margin: 46px 12px 0; // Combine margin values
+        background-color: var(--main-background);
+        width: 93.7%;
+    }
+
+    .empHeadline {
+        background-color: var(--main-background);
+        text-align: left;
+    }
+
+    .empHistoryForm {
+        text-align: left;
+        margin: 15px 0 0 25px;
+
+        .PrevEmpNameContainer {
+            margin-top: 10px;
+
+            div {
+                flex: 1;
+            }
+        }
+
+        .PrevEmpNameInput,
+        .PrevEmpAddressInput {
+            width: var(--primary-width);
+            margin-right: -32px; // Consider adjusting layout with flexbox
+        }
+
+        .PrevEmpFromToContainer,
+        .noCodeContainer {
+            display: flex;
+            margin-top: 10px;
+
+            div {
+                flex: 1;
+            }
+        }
+
+        .teleInput,
+        .empCodeInput,
+        .desgInput,
+        .deptInput,
+        .managerNameInput,
+        .managerContactInput,
+        .managerEmailInput,
+        .leaveReasonInput {
+            width: var(--secondary-width);
+        }
+
+        .eduAddRowButton {
+            background-color: #CE93D8;
+            float: left;
+            margin-top: -13px;
+            width: 83px;
+            border: none;
+            color: white;
+            padding-left: 0;
+        }
+
+        .radioCheck {
+            box-sizing: border-box;
+            appearance: none;
+            -webkit-appearance: none;
+            background-color: white;
+            outline: 2px solid #333;
+            border: 3px solid white;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            position: relative;
+            margin: 4px 89px 0 23px;
+
+            &::after {
+                content: '';
+                position: absolute;
+                top: -2px;
+                left: 3px;
+                width: 6px;
+                height: 12px;
+                border: solid blue;
+                border-width: 0 2px 2px 0;
+                transform: rotate(45deg);
+            }
+        }
+
+        .prevDoc {
+            margin-top: 21px;
+            font-weight: 700;
+        }
+
+        .docGrpContainer {
+            display: flex;
+            flex-direction: row;
+            gap: 3px;
+            margin-top: 20px;
+
+            > div {
+                flex: 1;
+            }
+        }
+
+        .uploadFileOfExpCert,
+        .uploadFileOfRelievingLetter {
+            border: 1px solid black;
+            width: 205px;
+        }
+
+        .empErrorMessage,
+        .empHistoryErrorMessage,
+        .expCertErrorMessage,
+        .relievingLetterErrorMessage,
+        .lastMonthSalarySlipErrorMessage,
+        .appointmentLetterErrorMessage {
+            color: var(--error-color);
+            font-size: 12px;
+        }
+    }
+}

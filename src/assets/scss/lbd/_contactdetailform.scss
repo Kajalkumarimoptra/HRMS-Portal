@@ -1,0 +1,266 @@
+// Contact form SCSS
+
+.personaldetail-form {
+    .contactDetailContainer{
+        width: 100%;
+        padding: 18px 16px;
+        box-sizing: border-box;
+
+    }
+   
+    .UniversalHeadline {
+        display: flex;
+        justify-content: center;
+        padding: 25px 10px 10px 10px;
+      }
+      
+      .mainHeading {
+        border: 1px solid #512f9f;
+        background-color: #6A1B9A;
+        color: white;
+        width: 80%;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .noteHeading {
+        padding: 5px 5px 5px 253px;
+      }
+      
+      .noteContent {
+        font-size: 13px;
+        font-weight: bold;
+        text-align: justify;
+        margin-left: 15px;
+      }
+      
+      .noteDescription {
+        font-weight: 500;
+        margin-left: 6px;
+      }
+
+    .permanentAddressLabel {
+        display: flex;
+        margin-bottom: 8px;
+    }
+
+    .flatNoInput,
+    .streetInput {
+        width: 95.5%;
+    }
+
+    .flatNoInput {
+        margin-bottom: 8px;
+    }
+
+    .separatorForPermanentAddress {
+        margin-left: 18px;
+    }
+
+    .townPinCodeBox {
+        display: flex;
+        margin-top: 5px;
+        gap: 166px;
+
+        >div {
+            flex: 1;
+        }
+    }
+
+    .townInput {
+        width: 694px;
+        float: left;
+    }
+
+    .separatorForPinCode {
+        margin: 20px;
+    }
+
+    .pinCodeInput {
+        width: 266px;
+    }
+
+    .stateCityContainer {
+        display: flex;
+        margin-top: 10px;
+
+        div {
+            flex: 1;
+        }
+    }
+
+    .separatorForState,
+    .separatorForCity {
+        margin: 20px;
+    }
+
+    .stateInput {
+        width: 25%;
+    }
+
+    .cityInput {
+        width: 26%;
+    }
+
+    .cityContainer {
+        margin-left: -522px;
+    }
+
+    .separatorForStayFrom {
+        margin: 20px;
+    }
+
+    .fromLabel {
+        margin-right: 36px;
+    }
+
+    .toLabel {
+        margin-right: 37px;
+        margin-left: -37px;
+    }
+
+    .fromInput,
+    .toInput {
+        width: 402px !important;
+    }
+
+    .toContainer {
+        margin-right: -342px;
+    }
+
+    .emergencyContainer {
+        display: flex;
+        margin-top: 10px;
+        gap: 197px;
+
+        div {
+            flex: 1;
+        }
+    }
+
+    .separatorForEmergencyNo,
+    .separatorForNameOfEmergencyNo {
+        margin: 24px;
+    }
+
+    .emergencyNoInput {
+        width: 316px;
+    }
+
+    .relationshipLabelContainer {
+        margin-left: -243px;
+    }
+
+    .emergencyNameInput {
+        width: 302px;
+    }
+
+    .currentaddressContainer {
+        margin-top: 25px;
+        display: flex;
+        align-items: center;
+    }
+
+    .check {
+        margin-left: 0;
+        margin-right: 10px;
+        cursor: pointer;
+        vertical-align: middle;
+        box-sizing: border-box;
+        appearance: none;
+        -webkit-appearance: none;
+        background-color: white;
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3);
+        border: 1px solid black;
+        width: 16px;
+        height: 16px;
+        position: relative;
+        margin-top: -7px;
+
+        &:checked::after {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: 3px;
+            width: 6px;
+            height: 12px;
+            border: 1px solid blue;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+            z-index: 1;
+        }
+
+        &:checked {
+            background-color: white;
+            border: 1px solid black;
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3);
+        }
+    }
+
+    .separatorForCurrentAddress {
+        margin: 20px;
+    }
+
+    .currentaddressDetailContainer {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .sameForm {
+        margin-top: 8px;
+    }
+
+    .contactSaveButtons {
+        display: flex;
+        gap: 10px;
+        float: right;
+        margin: 48px 47px 0px 0px;
+        width: 100%;
+    }
+
+    .backBtn {
+        background-color: #616161c4;
+        color: white;
+        border: none;
+        width: 121px;
+        height: 42px;
+        font-size: 14px;
+        margin-right: auto;
+        margin-left: 34px;
+
+        &:active {
+            box-shadow: 2px 5px 10px 2px #263238;
+        }
+    }
+
+    // Error messages
+    .contactErrorMessage,
+    .pincodeErrorMessage,
+    .emergencyErrorMessage,
+    .emergencyNoErrorMessage {
+        color: red !important;
+        font-size: 13px;
+    }
+
+    .pincodeErrorMessage {
+        margin-left: 110px;
+    }
+
+    .emergencyErrorMessage {
+        margin-left: 227px;
+    }
+
+    .emergencyNoErrorMessage {
+        margin-left: 310px;
+    }
+
+    .addressErrorMessage{
+        font-size: 13px;
+        color: red;
+        text-align: center;
+        margin-top: -11px;
+    }
+
+}
