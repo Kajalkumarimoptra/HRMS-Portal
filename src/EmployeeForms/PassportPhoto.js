@@ -3,6 +3,7 @@ import { TbCameraUp } from 'react-icons/tb';
 import { useFormContext } from 'components/ContextProvider/Context';
 import { Cropper } from 'react-cropper';
 import "cropperjs/dist/cropper.min.css";
+import imageCompression from "browser-image-compression";
 
 const PassportPhoto = ({ handleFileForDocs }) => {
   const {
@@ -22,41 +23,15 @@ const PassportPhoto = ({ handleFileForDocs }) => {
     getImage.current.click();
   }
 
-  // const handleImage = (e) => {
-  //   const upLoadedFile = e.target.files[0];
-  //   if (upLoadedFile) {
-  //     const fileType = upLoadedFile.type;
-  //     const validType = ['image/jpg', 'image/jpeg', 'image/png']; // file type validation
-  //     if (!validType.includes(fileType)) {
-  //       window.alert("File does not support. You must use .png or .jpg");
-  //       setPhoto('') // to not set the image on wrong file type insertion
-  //       return;
-  //     }
-  //     const size = upLoadedFile.size;
-  //     if(size/1024 > 20 || size/1024 < 10){  // file size validation
-  //       setImageSizeError("image size should be between 10kb-20kb");
-  //       setPhoto('') // to not set the image on exceeding file size insertion
-  //       return;
-  //     }
-  //     setLoading(true);
-  //     const getUrl = URL.createObjectURL(upLoadedFile); // creates new object URL that represents the specified File object
-  //     console.log("Temporary URL:", getUrl); // Debugging line to ensure temp URL is created
-  //     setTimeout(() => {
-  //       setPhoto(getUrl);
-  //       setLoading(false);
-  //       setValue('photo', upLoadedFile)
-  //     }, 1000);
-  //   }
-
-  // }
   const handleImage = (e) => {
+    console.log("Image selected:", e.target.files[0]);
     setCroppedImage(null); // Reset the cropped image on new selection
     setUploadAllowed(false); // Prevent upload until cropping is done
     setIsCropping(true); // Set cropping mode
     handleFileForDocs(e, 'photo', setImageSizeError, setPhoto, setLoading, isCropping, setIsCropping, uploadAllowed, setImgDirection); // Use handleFileForDocs for passport photo
   };
 
-  const cropImage = () => {
+  const cropImage = async() => {
     const cropper = croppedRef.current.cropper;
     const croppedCanvas = cropper.getCroppedCanvas({
       width: 300, // Increase dimensions for better quality
@@ -66,36 +41,58 @@ const PassportPhoto = ({ handleFileForDocs }) => {
     });
 
     // Convert the cropped canvas to a File
-    croppedCanvas.toBlob((blob) => {
+    croppedCanvas.toBlob(async(blob) => {
+      if (!blob) {
+        console.error("Failed to create cropped image blob");
+        return;
+      }
       const croppedFile = new File([blob], `cropped-photo-${Date.now()}.jpg`, { type: 'image/jpeg' });
+      console.log("Cropped file before compression:", croppedFile);
 
-      const fileSizeInKB = croppedFile.size / 1024; // size in KB
+       // Compression options
+    const options = {
+      maxSizeMB: 0.02,  // 20 KB
+      maxWidthOrHeight: 300,
+      useWebWorker: true,
+      initialQuality: 0.8, // Compression quality
+    };
+    try {
+      const compressedFile = await imageCompression(croppedFile, options);
+      console.log("Compressed file size:", compressedFile.size / 1024, "KB");
+
+      const fileSizeInKB = compressedFile.size / 1024;
       if (fileSizeInKB >= 10 && fileSizeInKB <= 20) {
-        setImageSizeError('');  // Clear the error if valid
-        // Now pass the cropped file to form state, no upload yet
+        setImageSizeError("");  // Clear the error if valid
+        setValue("photo", compressedFile);
 
-        setValue('photo', croppedFile);
+        // Update cropped image preview
+        setCroppedImage(URL.createObjectURL(compressedFile));
 
-        // Optionally update cropped image preview
-        setCroppedImage(URL.createObjectURL(croppedFile));
-
-        // Now trigger the upload function with the cropped file
-        handleFileForDocs({ target: { files: [croppedFile] } }, 'photo', setImageSizeError, setPhoto, setLoading, isCropping, setIsCropping);
-        setIsCropping(false); // Reset cropping state after cropping is done
-        console.log('cropping is done:', isCropping);
+        // Trigger the upload function with the compressed file
+        handleFileForDocs(
+          { target: { files: [compressedFile] } },
+          "photo",
+          setImageSizeError,
+          setPhoto,
+          setLoading,
+          isCropping,
+          setIsCropping
+        );
+        setIsCropping(false);  // Reset cropping state after cropping is done
+        console.log("Cropping is done:", isCropping);
         setImgDirection(false);
-        setCroppedImage(null); // Reset the cropped image on new selection
-        setUploadAllowed(true); // Prevent upload until cropping is done
+        setUploadAllowed(true);  // Enable upload after successful cropping
         cropper.disable();  // Disable the cropper's interaction to hide the dotted border
-        cropper.clear(); // Clear the selection area
-
-        // Optionally hide cropper tools (like buttons and interactions)
-      // This might help in preventing any other re-enabling of interactions
-      setCroppedImage(URL.createObjectURL(croppedFile)); // Update preview
+        cropper.clear();  // Clear the selection area
       } else {
         setImageSizeError("Image size should be between 10kb and 20kb");
       }
-    });
+    } catch (error) {
+      console.error("Image compression error:", error);
+      setImageSizeError("Image compression failed. Please try again.");
+    }
+  }
+    );
   };
 
   useEffect(() => {

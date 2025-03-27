@@ -66,30 +66,14 @@
     transform: translateX(-50%);
     z-index: 10;
     overflow: visible;
-    z-index: 20;
-    bottom: -130px;
-    // position: absolute;
-    // top: 270px;
-    // left: 50%;
-    // transform: translateX(-50%);
-    // overflow: visible;
+    bottom: 230px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     .crop-btn {
       font-size: 13px;
       width: 94px;
-      position: relative;
-      bottom: 54px;
-      left: 40%;
-      transform: translateX(-50%);
-      z-index: 10;
-      // position: absolute;
-      // bottom: 10px;
-      // left: 56%;
-      // transform: translateX(-50%);
-      // z-index: 10;
-      // padding: -28px;
-      // font-size: 13px;
-      // width: 90px;
     }
   }
 

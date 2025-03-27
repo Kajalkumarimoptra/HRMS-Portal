@@ -87,6 +87,7 @@
     .row {
         display: flex;
         flex-wrap: wrap;
+        margin-bottom: 12px;
 
         .card {
             background-color: #fff;
@@ -100,6 +101,7 @@
             min-width: 0;
             word-wrap: break-word;
             background-clip: border-box;
+            overflow: hidden;
 
             .w_sparkline {
                 display: flex;
@@ -138,31 +140,26 @@
                 margin: 0;
             }
 
-                .custom-select {
-                    height: 36px;
-                    // padding: 0 10px; 
-                    font-size: 14px;
-                    background-color: #5a5278;
-                    color: white;
-                    border: 1px solid #ccc;
-                    border-radius: 4px;
-                    appearance: none;
-                    /* Remove the default dropdown arrow */
-                    -webkit-appearance: none;
-                    -moz-appearance: none;
-                    cursor: pointer;
+            .custom-select {
+                height: 40px;
+                font-size: 14px;
+                // background-color: #5a5278;
+                color: white;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                appearance: none;
+                cursor: pointer;
+                background-color: #1C115D  !important;
 
-                    /* Custom arrow */
-                    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='white' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5H7z'/%3E%3C/svg%3E");
-                    background-repeat: no-repeat;
-                    background-position: right 10px center;
-                    background-size: 20px;
+                /* Custom arrow */
+                background: url('/assets/img/white-dropdown-icon.png') no-repeat right 10px center white;
+                background-size: 15px;
 
-                    // &:hover,:focus {
-                    //     border-color: #777;
-                    // }
-                }
-            
+                // &:hover,:focus {
+                //     border-color: #777;
+                // }
+            }
+
         }
 
 
@@ -177,11 +174,18 @@
                     font-weight: 600;
                     font-size: 15px;
                     text-transform: capitalize;
+                    text-align: center;
 
                     &+th {
                         padding-left: 1rem;
                     }
-            }
+                    
+                }
+
+                & tr td:nth-child(2) {
+                    text-align: left;
+                    padding: 2px 4px 2px 27px !important;
+                }
 
                 .status-column {
                     padding-left: 30px;
@@ -194,6 +198,7 @@
                 td {
                     vertical-align: middle;
                     padding: 0.75rem;
+                    text-align: center;
 
                     &+td {
                         padding-left: 1rem;
@@ -233,22 +238,28 @@
                     margin-top: 11px;
                 }
 
-                .role {
+                .superadmin-role,
+                .admin-role,
+                .user-role {
                     color: white;
-                    background: purple;
+                    background: #512F9F;
                     padding: 7px;
                     border-radius: 7px;
                     font-size: 13px;
+                    display: inline-block;
+                    width: 104px;
+                    text-align: center;
                 }
 
                 .admin-role {
-                    color: white;
-                    background: #AB47BC;
-                    padding-left: 17px;
-                    padding-right: 15px;
-                    border-radius: 7px;
-                    font-size: 13px;
+                    background: #5F8AB4;
                 }
+
+                .user-role {
+                    background: #D3C05F;
+                }
+
+
 
 
                 td h6,
@@ -262,8 +273,8 @@
                     color: #212529;
 
                     .delete-icon {
-                        width: 14px;
-                        height: 14px;
+                        width: 20px;
+                        height: 20px;
                     }
 
                     .toggle-icon {

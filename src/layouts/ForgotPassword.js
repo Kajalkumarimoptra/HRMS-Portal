@@ -18,11 +18,11 @@ export default function ForgotPassword() {
         serverError,
         setServerError
     } = useFormContext();
-
+    const navigate = useNavigate();
     const handleFormSubmit = async (data) => {
         const { emailForPasswordReset } = data;
         console.log('Form email:', emailForPasswordReset);
-        
+
 
         try {
             console.log('Attempting API call to:', `http://localhost:8081/api/public/forgot-password?email=${emailForPasswordReset}`);
@@ -34,10 +34,13 @@ export default function ForgotPassword() {
             console.log('Response status:', response.status);
 
             if (response.data) {
-               toast.success("Password Reset link has been sent successfully to your email!");
-               console.log('Password reset link sent successfully');
-               reset({ emailForPasswordReset: '' });
-               setServerError('');
+                toast.success("Password Reset link has been sent successfully to your email!");
+                console.log('Password reset link sent successfully');
+                reset({ emailForPasswordReset: '' });
+                setServerError('');
+                setTimeout(() => {
+                    navigate('/')
+                }, 2000);
             } else {
                 console.log('Response not received as expected');
                 setServerError('Error occurred in sending password reset link');
@@ -45,31 +48,28 @@ export default function ForgotPassword() {
         } catch (error) {
             console.log('Error occurred during the API call:', error);
             console.log('Error details:', error.response ? error.response.data : 'No response data');
-            setServerError('Failed to send password reset link. Please try again later.');
+            setServerError('This email is not registered. Please try again with the registered email id.');
         }
     };
 
     return (
         <div className="container-fluid">
-             <div className='main-logo'>
-        <div className="logo-image">
-          <img src={require("assets/img/company_logo.png")} alt="..." />
-        </div>
-        </div>
+            {/* logo header part */}
+            <div className='main-logo'>
+                <div className="logo-image">
+                    <img src={require("assets/img/company_logo.png")} alt="..." />
+                </div>
+            </div>
             <div className="login-container">
                 <div className="login-row">
                     <div className="col-6 left">
                         <div className="login-form">
-                            <div className="top-logo">
-                            <img src={require("assets/img/company_logo.png")} alt="..." />
-                            </div>
                             <div className="title">
                                 <p className="welcome">Forgot Password</p>
                             </div>
-
-                            <div className="form" style={{ marginTop: '10px'}}>
+                            <div className="form" style={{ marginTop: '-22px' }}>
                                 <form onSubmit={handleSubmit(handleFormSubmit)}>
-                                    <p className="forgot-title" style={{ color: '#5A5A5A'}}>Enter your email and we'll send you a link to reset your password</p>
+                                    <p className="forgot-title" style={{ color: '#5A5A5A' }}>Enter your email and we'll send you a link to reset your password.</p>
                                     <div className="form-detail">
                                         <div className={`input-text ${errors.emailForPasswordReset ? 'error' : ''}`}>
                                             <div className="input-icons">
@@ -81,9 +81,8 @@ export default function ForgotPassword() {
                                                 )}
                                             </div>
                                         </div>
-
                                         <div>
-                                            <div className='reset-btn'>
+                                            <div>
                                                 <button className="login" type="submit">
                                                     Request Reset Link
                                                 </button>

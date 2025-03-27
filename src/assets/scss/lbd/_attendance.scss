@@ -1,0 +1,143 @@
+.container-fluid {
+
+    // upper attendance box
+    .attendance-container {
+        background-color: #fff;
+        transition: all 0.5s ease-in-out;
+        border-radius: 0.55rem;
+        position: relative;
+        width: 100%;
+        margin-bottom: 20px;
+        min-width: 0;
+        word-wrap: break-word;
+        background-clip: border-box;
+        overflow: hidden;
+        padding: 20px;
+        margin-top: 17px;
+
+        .attendance-box {
+            display: flex;
+            flex-direction: row;
+            border: 1px solid darkgray;
+            border-radius: 0.55rem;
+            padding: 10px;
+            margin-bottom: 25px;
+
+            .average-working-hrs {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                padding: 10px;
+
+                & div {
+                    margin-bottom: -6px;
+                }
+
+                .avg-working-hr-icon-container,
+                .avg-in-time-icon-container,
+                .avg-out-time-icon-container,
+                .avg-brk-time-icon-container {
+                    position: relative;
+                    border-radius: 50%;
+                    border-color: transparent;
+                    background-color: #E6E6F8;
+                    width: 50px;
+                    height: 50px;
+
+                    .avg-working-hr-icon {
+                        width: 20px;
+                        height: 20px;
+                        position: absolute;
+                        top: 31%;
+                        left: 30%;
+                    }
+                }
+
+                .avg-in-time-icon-container {
+                    background-color: #b3ebf2 !important;
+                }
+
+                .avg-out-time-icon-container {
+                    background-color: #50c87852;
+
+                    .avg-out-time-working-hr-icon {
+                        width: 25px;
+                        height: 25px;
+                        left: 25%;
+                        top: 26%;
+                        position: absolute;
+                    }
+                }
+
+                .avg-brk-time-icon-container {
+                    background-color: #f7d9bc;
+                }
+
+                .avg-working-hr-time {
+                    font-weight: 500;
+                }
+
+                .avg-working-hr-heading {
+                    color: gray;
+                }
+            }
+        }
+
+        // table part
+        .attendance-table-container {
+            width: 100%;
+            border: 1px solid darkgray;
+            border-radius: 0.55rem;
+
+            .attendance-table, .emp-attendance-table {
+                width: 100%;
+
+                & th,
+                & td {
+                    padding: 10px 34px 10px 34px;
+                    text-align: center;
+                    border-bottom: 1px solid darkgray;
+                }
+
+                 & tr td:first-child, th:first-child {  
+                   text-align: left;
+                }
+
+                & tr:last-child td {
+                    border-bottom: none;  // Remove the bottom border from the last row's td elements
+                }
+                
+                .attendance-status-present,
+                .attendance-status-leave {
+                    color: green;
+                    background-color: rgba(80, 200, 120, 0.3215686275);
+                    padding: 7px;
+                    border-radius: 7px;
+                    font-size: 13px;
+                    width: 104px;
+                    display: inline-block;
+                    text-align: center;
+                }
+
+                .attendance-status-leave {
+                    background-color: #cd5c5c99;
+                    color: darkred;
+                }
+
+                .edit-icon {
+                    width: 20px;
+                    height: 20px;
+                    color: #212529;
+                }
+            }
+            .emp-attendance-table{
+                & th,
+                & td {
+                    padding: 10px 86px 10px 111px;
+                }
+            }
+
+        }
+    }
+}

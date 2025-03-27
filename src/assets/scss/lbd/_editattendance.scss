@@ -1,0 +1,12 @@
+.input-field:disabled {
+    color: black !important;  
+    opacity: 1;     
+    background-color: #f0f0f0; 
+    cursor: not-allowed; 
+}
+input[type="time"]::-webkit-calendar-picker-indicator {
+    filter: invert(0.5); 
+    width: 20px; 
+    height: 20px;
+    cursor: pointer; 
+}

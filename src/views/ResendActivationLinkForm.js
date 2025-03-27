@@ -34,7 +34,7 @@ export default function ResendActivationLinkForm() {
                 reset(); 
                 setServerError(''); 
                 setTimeout( ()=> {
-                    navigate('/admin/employeepage');
+                    navigate('/admin/Employeepage');
                 }, 5000)
             }
             else{

@@ -1,24 +1,82 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, NavLink, navigate, useNavigate } from "react-router-dom";
+import { useFormContext } from "../ContextProvider/Context";
 import { Nav } from "react-bootstrap";
 import logo from "assets/img/reactlogo.png";
 import { HiAdjustmentsHorizontal } from "react-icons/hi2";
 import { RiArrowDropDownLine } from "react-icons/ri";
+import performanceIcon from "assets/img/performance-icon.png";
+import offboardIcon from "assets/img/exit-icon.png";
+import Offboard from "views/Offboard";
+import { useOffboardPopupContext } from "components/ContextProvider/OffboardPopupContext";
 
 function Sidebar({ color, image, routes }) {
+  const {
+    register,
+    handleSubmit,
+    onSubmit,
+    errors,
+    trigger,
+    setValue,
+    watch,
+    reset,
+    clearErrors,
+    setError,
+    serverError,
+    setServerError
+  } = useFormContext();
 
+  const [roleBasedSection, setRoleBasedSection] = useState(null);
+  const { isExitOpen, setExitOpen } = useOffboardPopupContext();
   const location = useLocation();
   const navigate = useNavigate();
   const [openSubmenu, setOpenSubmenu] = useState("Dashboard");
+  const [activeMenu, setActiveMenu] = useState(""); // Track active menu item
+
+  useEffect(() => {
+    // Directly read the role from localStorage
+    const storedRole = localStorage.getItem("role");
+    setRoleBasedSection(storedRole);
+  }, []);
+
+  // Update active menu on route change
+  useEffect(() => {
+    setActiveMenu(location.pathname); // Set active menu based on current URL
+  }, [location]);
+
   const activeRoute = (routeName) => {
-    return location.pathname.indexOf(routeName) > -1 ? "active" : "";
+    return location.pathname === routeName ? "active" : "";
   };
+
   const toggleSubmenu = (menuName, menuPath) => {
-    if (openSubmenu === menuName) {
-      setOpenSubmenu("");
-      navigate(menuPath); // Navigate to the parent page when closing submenu
+    if (menuName === "Offboard") {
+      setExitOpen(true); // Show the pop-up instead of navigating
+      navigate('/admin/Offboard');
+      console.log("Exit popup should open");
+
+      // Store Offboard selection in localStorage
+      localStorage.setItem("selectedOffboardMenu", "Offboard");
+      console.log("Selected offboard menu:", menuName);
+      setActiveMenu(menuPath);
+
+      return; // Prevent setting active menu for Offboard explicitly
+    }
+    if (menuName === "Offboarded") {
+      navigate(menuPath); // Navigate properly
+      console.log("Navigating to Offboarded Employees");
+
+      // Store Offboarded Employees selection in localStorage
+      localStorage.setItem("selectedOffboardMenu", "Offboarded Employees");
+      setActiveMenu(menuPath);
+      return;
+    }
+
+    if (["Employee", "Opportunities", "More"].includes(menuName)) {
+      setOpenSubmenu(openSubmenu === menuName ? "" : menuName);
+      setActiveMenu(menuPath);
     } else {
-      setOpenSubmenu(menuName);
+      navigate(menuPath); // Navigate directly if it's not a menu with a submenu
+      setActiveMenu(menuPath);
     }
   };
 
@@ -41,14 +99,21 @@ function Sidebar({ color, image, routes }) {
         <Nav>
           {routes.map((prop, key) => {
             if (!prop.redirect && prop.inSidebar) {
-              const isActive = activeRoute(prop.layout + prop.path);
+              const isActive = activeMenu === (prop.path); // Compare with activeMenu
+
+              // Check if the role is "emp" and hide specific menus
+              if (roleBasedSection === "EMPLOYEE" && "Employee".includes(prop.name)) {
+                return null; // Skip rendering these menus
+              }
 
               return (
                 <React.Fragment key={key}>
-                  <li className={`${prop.upgrade ? "active active-pro" : isActive}`}>
+                  <li className="nav-item">
+                    {/* <p className={`${activeMenu === (prop.layout + prop.path) ? "active" : ""}`}></p> */}
+                    {/* <li className={`nav-item ${activeMenu === (prop.layout + prop.path) ? "active" : ""}`}> */}
                     <div
                       className="nav-link"
-                      onClick={() => toggleSubmenu(prop.name, prop.layout + prop.path)} // Toggle on click
+                      onClick={() => toggleSubmenu(prop.name, prop.path)} // Toggle on click
                       style={{ cursor: "pointer" }} >
                       {/* Check if icon should have the dots inside */}
                       {prop.icon === "custom-circle" ? (
@@ -68,8 +133,8 @@ function Sidebar({ color, image, routes }) {
                             borderRadius: "50%",
                             border: '2px solid #14213D ',
                             backgroundColor: "transparent",
-                            marginTop: '4px',
-                            left: '4px',
+                            marginTop: '6px',
+                            left: '7px',
                             marginRight: '24px'
                           }}
                         >
@@ -78,87 +143,60 @@ function Sidebar({ color, image, routes }) {
                       ) : prop.icon === "fa fa-handshake" ? (
                         <i
                           className={prop.icon}
-                          style={{ marginTop: "6px", fontSize: "16px", color: "transparent", webkitTextStroke: '1px #14213D', textShadow: 'none' }}
-                        />)
-                        : (
+                          style={{ marginTop: "8px", fontSize: "15px", color: "transparent", webkitTextStroke: '1px #14213D', textShadow: 'none' }}
+                        />) : prop.icon === "fa fa-users" ? (
                           <i
                             className={prop.icon}
-                            style={{ color: "transparent", fontSize: "16px", marginTop: "5px", webkitTextStroke: '1px #14213D', textShadow: 'none' }}
+                            style={{ marginTop: "7px", fontSize: "15px", color: "transparent", webkitTextStroke: '1px #14213D', textShadow: 'none' }}
+                          />) : prop.icon === "fa fa-user" ? (
+                            <i
+                              className={prop.icon}
+                              style={{ marginTop: "6px", fontSize: "15px", color: "transparent", webkitTextStroke: '1px #14213D', textShadow: 'none' }}
+                            />) : prop.icon === "fa fa-file" ? (
+                              <i
+                                className={prop.icon}
+                                style={{ marginTop: "7px", fontSize: "15px", color: "transparent", webkitTextStroke: '1px #14213D', textShadow: 'none' }}
+                              />)
+                        : prop.icon === performanceIcon ? (
+                          <img
+                            src={require("assets/img/performance-icon.png")}
+                            alt="Performance Icon"
+                            style={{ width: '22px', height: '22px', margin: '-7px 17px 0px 6px' }}
+                          />) : prop.icon === offboardIcon ? (
+                            <img
+                              src={require("assets/img/exit-icon.png")}
+                              alt="Performance Icon"
+                              style={{ width: '17px', height: '17px', margin: '-3px 17px 0px 10px' }}
+                            />) : (
+                          <i
+                            className={prop.icon}
+                            style={{ color: "transparent", fontSize: "15px", marginTop: "6px", webkitTextStroke: '1px #14213D', textShadow: 'none' }}
                           />
                         )}
-                      <p
-                        style={
-                          prop.name === "Dashboard"
-                            ? { color: '#14213D' }  // Inline styles for Dashboard
-                            : {}
-                        }
-                      >{prop.name}</p>
-                      {/* The icon will appear beside the menu item */} 
-                      {["Employee", "Opportunities", "Documents", "More"].includes(prop.name) &&(
-                        <RiArrowDropDownLine  style={{ fontSize: '24px', marginLeft: '10px', marginTop: '-3px'}}/> 
+                      <p className={isActive ? "active" : ""}>
+                        {prop.name}
+                      </p>
+                      {/* The icon will appear beside the menu item */}
+                      {["Employee", "Opportunities", "More"].includes(prop.name) && (
+                        <img src={require("assets/img/dropdown_icon.png")} alt="..." style={{ width: '10px', height: '10px', marginLeft: '10px', marginTop: '-3px' }} />
                       )}
                     </div>
                   </li>
-                  {/* Sub-options for Dashboard */}
-                  {prop.name === "Dashboard" && openSubmenu === prop.name && (
-                    <ul className="subdropdown">
-                      {/* <li className="nav-item">
-                        <NavLink to="/admin/report"
-                          className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
-                          <HiAdjustmentsHorizontal /> <p>Report</p>
-                        </NavLink>
-                      </li> */}
-                    </ul>
-                  )}
-                  {/* sub-options for users */}
-                  {/* {prop.name === "Users" && openSubmenu === prop.name && (
-                    <ul className="subdropdown">
-                      <li className="nav-item">
-                        <NavLink to="/admin/users"
-                          className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
-                          <HiAdjustmentsHorizontal /> <p>User List</p>
-                        </NavLink>
-                      </li>
-                     
-                    </ul>
-                  )} */}
-                  {/* sub-options for dept. */}
-                  {/* {prop.name === "Department" && openSubmenu === prop.name && (
-                    <ul className="subdropdown">
-                      <li className='nav-item'>
-                        <NavLink to="/admin/department"
-                          className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
-                          <HiAdjustmentsHorizontal /> <p>Dept. List</p>
-                        </NavLink>
-                      </li>
-                      <li className="nav-item">
-                        <NavLink to="/admin/dept"
-                          className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")} >
-                          <HiAdjustmentsHorizontal /> <p>Add Dept.</p>
-                        </NavLink>
-                      </li>
-                    </ul>
-                  )} */}
-
                   {/* sub-options for employee */}
                   {prop.name === "Employee" && openSubmenu === prop.name && (
                     <ul className="subdropdown">
                       <li className='nav-item'>
-                        <NavLink to="/admin/registerpage"
-                          className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
-                          <HiAdjustmentsHorizontal /> <p>Add Employee</p>
+                        <NavLink to="/admin/Registerpage"
+                          className="nav-link"
+                          isActive={(match) => match}>
+                          <HiAdjustmentsHorizontal /> <p className={window.location.pathname === "/admin/Registerpage" ? "active" : ""}>Add Employee</p>
                         </NavLink>
                       </li>
                       <li className='nav-item'>
-                        <NavLink to="/admin/employeepage"
-                          className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
-                          <HiAdjustmentsHorizontal /> <p>Employee Details</p>
-                        </NavLink>
-                      </li>
-                      <li className='nav-item'>
-                        <NavLink to="/admin/leave"
-                          className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
-                          <HiAdjustmentsHorizontal /> <p>Leave Request</p>
+                        <NavLink to="/admin/Employeepage"
+                          className="nav-link"
+                          isActive={(match) => match}>
+                          <HiAdjustmentsHorizontal /> <p className={window.location.pathname === "/admin/Employeepage" ? "active" : ""}>Employee List</p>
                         </NavLink>
                       </li>
                     </ul>
@@ -168,79 +206,39 @@ function Sidebar({ color, image, routes }) {
                   {prop.name === "Opportunities" && openSubmenu === prop.name && (
                     <ul className="subdropdown">
                       <li className="nav-item">
-                        <NavLink to="/admin/jobdashboard" className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
-                          <HiAdjustmentsHorizontal /> <p>Career</p>
+                        <NavLink to="/admin/Jobdashboard" className="nav-link"
+                          isActive={(match) => match}>
+                          <HiAdjustmentsHorizontal /> <p className={window.location.pathname === "/admin/Jobdashboard" ? "active" : ""}>Career</p>
                         </NavLink>
                       </li>
                       <li className="nav-item">
-                        <NavLink to="/admin/positions" className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
-                          <HiAdjustmentsHorizontal /> <p>Positions</p>
+                        <NavLink to="/admin/Positions" className="nav-link"
+                          isActive={(match) => match}>
+                          <HiAdjustmentsHorizontal /> <p className={window.location.pathname === "/admin/Positions" ? "active" : ""}>Positions</p>
                         </NavLink>
                       </li>
                       <li className="nav-item">
-                        <NavLink to="/admin/applicant" className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
-                          <HiAdjustmentsHorizontal /> <p>Applicant</p>
+                        <NavLink to="/admin/Applicant" className="nav-link"
+                          isActive={(match) => match}>
+                          <HiAdjustmentsHorizontal /> <p className={window.location.pathname === "/admin/Applicant" ? "active" : ""}>Applicant</p>
                         </NavLink>
                       </li>
                       <li className="nav-item">
-                        <NavLink to="/admin/resumes" className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
-                          <HiAdjustmentsHorizontal /> <p>Resumes</p>
+                        <NavLink to="/admin/Resumes" className="nav-link"
+                          isActive={(match) => match}>
+                          <HiAdjustmentsHorizontal /> <p className={window.location.pathname === "/admin/Resumes" ? "active" : ""}>Resumes</p>
                         </NavLink>
                       </li>
                       <li className="nav-item">
-                        <NavLink to="/admin/settings" className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
-                          <HiAdjustmentsHorizontal /> <p>Settings</p>
+                        <NavLink to="/admin/Settings" className="nav-link"
+                          isActive={(match) => match}>
+                          <HiAdjustmentsHorizontal /> <p className={window.location.pathname === "/admin/Settings" ? "active" : ""}>Settings</p>
                         </NavLink>
                       </li>
                     </ul>
                   )}
-
-                  {/* Sub-options for Authentication */}
-                  {prop.name === "Documents" && openSubmenu === prop.name && (
-                    <ul className="subdropdown">
-                      <li className="nav-item">
-                        <NavLink to="/admin/documents" className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
-                          <HiAdjustmentsHorizontal /> <p>Offer Letter</p>
-                        </NavLink>
-                      </li>
-                    </ul>
-                  )}
-
-                  {/* Sub-options for More */}
-                  {prop.name === "More" && openSubmenu === prop.name && (
-                    <ul className="subdropdown">
-                      <li className="nav-item">
-                        <NavLink to="/admin/activities" className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
-                          <HiAdjustmentsHorizontal /> <p>Activities</p>
-                        </NavLink>
-                      </li>
-                      <li className="nav-item">
-                        <NavLink to="/admin/holidays" className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
-                          <HiAdjustmentsHorizontal /> <p>Holidays</p>
-                        </NavLink>
-                      </li>
-                      <li className="nav-item">
-                        <NavLink to="/admin/events" className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
-                          <HiAdjustmentsHorizontal /> <p>Events</p>
-                        </NavLink>
-                      </li>
-                      <li className="nav-item">
-                        <NavLink to="/admin/payroll" className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
-                          <HiAdjustmentsHorizontal /> <p>Payroll</p>
-                        </NavLink>
-                      </li>
-                      <li className="nav-item">
-                        <NavLink to="/admin/accounts" className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
-                          <HiAdjustmentsHorizontal /> <p>Accounts</p>
-                        </NavLink>
-                      </li>
-                      <li className="nav-item">
-                        <NavLink to="/admin/language" className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
-                          <HiAdjustmentsHorizontal /> <p>Language</p>
-                        </NavLink>
-                      </li>
-                    </ul>
-                  )}
+                  {/* To render modal on menu click */}
+                  {(roleBasedSection === "EMPLOYEE" || isExitOpen) && <Offboard />}
                 </React.Fragment>
               );
             }

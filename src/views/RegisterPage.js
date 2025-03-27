@@ -3,6 +3,7 @@ import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useFormContext } from "../components/ContextProvider/Context";
+import Breadcrumb from './Breadcrumb';
 import { useRegistrationContext } from 'components/ContextProvider/RegistrationDataContext';
 
 function RegisterPage() {
@@ -14,6 +15,7 @@ function RegisterPage() {
     const [regFullName, setRegFullName] = useState(''); // state for holding fullname
     const [regMobNo, setRegMobNo] = useState(''); // state for holding mob no.
     const [isSubmitted, setIsSubmitted] = useState(false); // State for submission status
+    const [selectDobColor, setDobSelectColor] = useState("#d3d3d3"); // for giving diff color to date placeholder and option
 
     const [pattern, setPattern] = useState({
         userFullName: '',
@@ -25,19 +27,13 @@ function RegisterPage() {
         userMobNo: ''
     }); // error msg for its pattern failure
 
-    useEffect(() => {
-        const storedRole = sessionStorage.getItem('role');
-        if (storedRole) {
-            setRole(storedRole);
-        }
-    }, []);
-
-
     // pattern failure validation 
     const handlePatternForRegInputs = (e, pattern, field) => {
         let value = e.target.value;
         // Clear server error when the user starts typing again
         setServerError('');
+        clearErrors(field);
+        
         setPattern(prev => ({ ...prev, [field]: value }))
         if (field === 'userFullName') setRegFullName(value);
         if (field === 'userMobNo') setRegMobNo(value);
@@ -53,10 +49,7 @@ function RegisterPage() {
             // Perform validation
             if (value && !pattern.test(value)) {
                 patternErrorMessage = 'Only numbers are allowed';
-            } else if (value.length !== 10) {
-                patternErrorMessage = 'Mobile number must be of 10 digits';
-            }
-            // Update the value after applying the limit of 10 digits
+            } 
             setRegMobNo(value);
         }
         setCustomErrorForRegInputs(prev => ({ ...prev, [field]: patternErrorMessage }));
@@ -66,6 +59,13 @@ function RegisterPage() {
             setCustomErrorForRegInputs(prev => ({ ...prev, [field]: '' }));
             clearErrors(field);  // This will clear the react-hook-form error for the field
         }
+    };
+
+     // 🔥 Fix: Change color dynamically, but ensure placeholder remains gray
+     const handleDobColorChange = (e) => {
+        const selectedDobValue = e.target.value;
+        setDobSelectColor(selectedDobValue ? "black" : "#d3d3d3");
+        clearErrors("userDob");
     };
 
     // Handle form submission
@@ -86,7 +86,7 @@ function RegisterPage() {
 
         try {
             // Retrieve the token from sessionStorage
-            const token = sessionStorage.getItem('token');
+            const token = localStorage.getItem('token');
             if (!token) {
                 setServerError('User is not authenticated. Please log in again.');
                 return; // Exit if token is not found
@@ -150,21 +150,25 @@ function RegisterPage() {
     // Render success message if submitted
     if (isSubmitted) {
         return (
+            <>
+            <Breadcrumb/>
             <div className="expiredLink">
                 <h2 className='expiredLinkHeading'>Registration Successful</h2>
                 <p className='expiredLinkPara'>Account activation url has been sent to the registered email id.</p>
             </div>
+            </>
         );
     }
     return (
         <div className="container-fluid">
+            <Breadcrumb/>
             <div className='register-container'>
                 <div className="row Signup-row">
                     <div className="col-6 left">
                         <div className="Signup-form">
-                            <div className="top-logo">
+                            {/* <div className="top-logo">
                                 <img src={require("assets/img/company_logo.png")} alt="..." />
-                            </div>
+                            </div> */}
                             <div className="title">
                                 <p className='name'>Welcome !</p>
                                 <p className='signup-info-text'>
@@ -174,51 +178,60 @@ function RegisterPage() {
                             <br/>
                             <div className="form">
                                 <form onSubmit={handleSubmit(handleFormSubmit)}>
-                                    <div className="form-detail">
+                                    <div>
                                         <div className="input-text">
-                                            <p>Employee Full Name</p>
-                                            <div className="input-icons">
-                                                <input className="input-field" type="text" placeholder="Enter Your Full Name" {...register("userFullName", { required: 'Please enter your name', maxLength: 50 })}
+                                            <p>Employee Full Name <span style={{ color: "red" }}>*</span></p>
+                                            <div className="user-input-icons">
+                                                <input className="input-field" type="text" placeholder="Enter Your Full Name" {...register("userFullName", { required: 'Please enter your name', 
+                                                    maxLength: {
+                                                        value: 50,
+                                                        message: 'Name cannot exceed 50 characters'
+                                                    } , 
+                                                    minLength: {
+                                                        value: 3,
+                                                        message: 'Name must be at least 3 characters'
+                                                    }
+                                                 })}
                                                     value={pattern.userFullName} onChange={(e) => handlePatternForRegInputs(e, /^[A-Za-z\s]+$/, 'userFullName')} />
-                                                {errors.userFullName && (<div className="errorMessage">{errors.userFullName.message}</div>)}
-                                                {customErrorForRegInputs.userFullName && (<div className='errorMessage'>{customErrorForRegInputs.userFullName}</div>)}
+                                                {errors.userFullName && (<div className="userErrorMessage">{errors.userFullName.message}</div>)}
+                                                {customErrorForRegInputs.userFullName && (<div className='userErrorMessage'>{customErrorForRegInputs.userFullName}</div>)}
                                             </div>
                                         </div>
                                         <div className="input-text">
-                                            <p>E-mail Address</p>
-                                            <div className="input-icons">
+                                            <p>E-mail Address <span style={{ color: "red" }}>*</span></p>
+                                            <div className="user-input-icons">
                                                 <input className="input-field" type="email" placeholder="Enter Your E-mail Address" name='userEmail' {...register("userEmail", { required: 'Please enter your email id' })} />
-                                                {errors.userEmail && (<div className="errorMessage">{errors.userEmail.message}</div>)}
+                                                {errors.userEmail && (<div className="userErrorMessage">{errors.userEmail.message}</div>)}
                                             </div>
                                         </div>
                                         <div className="input-text">
-                                            <p>Mobile Number</p>
-                                            <div className="input-icons">
-                                                <input className="input-field" type="tel" placeholder="Enter Your Mobile No." {...register("userMobNo", { required: 'Please enter your mobile no.' })}
+                                            <p>Mobile Number <span style={{ color: "red" }}>*</span></p>
+                                            <div className="user-input-icons">
+                                                <input className="input-field" type="tel" placeholder="Enter Your Mobile No." {...register("userMobNo", { required: 'Please enter your mobile no.',
+                                                     minLength: {
+                                                        value: 10,
+                                                        message: 'Mobile no. must be of ten digits'
+                                                    }
+                                                 })}
                                                     value={pattern.userMobNo} onChange={(e) => handlePatternForRegInputs(e, /^[0-9]+$/, 'userMobNo')} />
-                                                {errors.userMobNo && (<div className="errorMessage">{errors.userMobNo.message}</div>)}
-                                                {customErrorForRegInputs.userMobNo && (<div className='errorMessage'>{customErrorForRegInputs.userMobNo}</div>)}
+                                                {errors.userMobNo && (<div className="userErrorMessage">{errors.userMobNo.message}</div>)}
+                                                {customErrorForRegInputs.userMobNo && (<div className='userErrorMessage'>{customErrorForRegInputs.userMobNo}</div>)}
                                             </div>
                                         </div>
                                         <div className="input-text">
-                                            <p>Date Of Birth</p>
-                                            <div className="input-icons">
-                                                <input className="input-field" type="date" placeholder="Enter Your DOB in DD/MM/YYYY" {...register("userDob", { required: 'Please enter your date of birth' })} />
-                                                {errors.userDob && (<div className="errorMessage">{errors.userDob.message}</div>)}
+                                            <p>Date Of Birth <span style={{ color: "red" }}>*</span></p>
+                                            <div className="user-input-icons">
+                                                <input className="input-field" type="date" placeholder="Enter Your DOB in DD/MM/YYYY" {...register("userDob", { required: 'Please enter your date of birth' })}
+                                                onChange={handleDobColorChange} style={{ color: selectDobColor }} />
+                                                {errors.userDob && (<div className="userErrorMessage">{errors.userDob.message}</div>)}
                                             </div>
                                         </div>
-                                        <br/>
-
-                                        {/* <div className="Signup-btn">
-                                            <button className='registerSubmitBtn' type='submit' onClick={console.log(errors)}>Submit</button>
-                                        </div> */}
-                                         <div>
-                                                <button className="login" type="submit">
+                                        <br />
+                                         <div style={{textAlign: 'center'}}>
+                                                <button className="primary-btn" type="submit" style={{width: '90px', fontSize:'17px'}}>
                                                     Submit
                                                 </button>
                                             </div>
-                                        <br />
-
                                         {serverError && (<div className="serverErrorMessage">{serverError}</div>)}
                                         <br />
                                     </div>

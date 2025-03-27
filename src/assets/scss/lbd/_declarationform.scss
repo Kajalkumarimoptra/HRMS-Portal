@@ -45,12 +45,16 @@
 
 
         .personalDetailHeading {
-            background-color: #e0e0e082;
-            width: 94.5%;
+            background-color: rgba(224, 224, 224, 0.5098039216);
+            width: 94.2%;
+            margin-left: 10px;
+            height: 20px;
+            padding-top: 3px;
+            text-align: center;
         }
 
         .personalDetailHeadline {
-            margin-left: 16px;
+            margin-left: 14px;
             font-weight: bold;
 
         }
@@ -70,7 +74,7 @@
         }
 
         .otherDetailHeadline {
-            margin-left: 23px;
+            margin-left: 14px;
         }
 
         .illnessLabel {
@@ -80,14 +84,17 @@
 
         textarea {
             margin-bottom: 30px;
-            margin-left: 4px;
-            width: 95.5%;
+            margin-left: 8px;
+            width: 95.4%;
         }
 
         .selfIntrolHeading {
-            background-color: #e0e0e082;
-            width: 97%;
-            margin-left: -11px;
+            background-color: rgba(224, 224, 224, 0.5098039216);
+            width: 95.6%;
+            margin-left: 8px;
+            height: 20px;
+            padding-top: 3px;
+            text-align: center;
         }
 
         .hobbiesLabel {
@@ -102,7 +109,7 @@
 
             .textShift {
                 margin-top: 0;
-                margin-left: 38px;
+                margin-left: 34px;
                 margin-bottom: -26px;
             }
 
@@ -121,6 +128,7 @@
         .declarationCheck {
             margin-top: 20px;
             font-weight: 600;
+            margin-left: 6px;
 
             .required {
                 color: red;
@@ -137,7 +145,7 @@
                 margin-left: 0;
                 cursor: pointer;
                 vertical-align: middle;
-                margin-right: 16px;
+                margin-right: 11px;
                 box-sizing: border-box;
                 appearance: none;
                 -webkit-appearance: none;
@@ -173,7 +181,7 @@
             float: right;
             margin-top: 52px;
             width: 100%;
-            margin: 48px 47px 0px 0px;
+            margin: 48px 50px 0px 0px;
 
             .backBtn {
                 background-color: #616161c4;
@@ -183,7 +191,7 @@
                 height: 42px;
                 font-size: 14px;
                 margin-right: auto;
-                margin-left: 56px;
+                margin-left: 63px;
 
                 &:active {
                     box-shadow: 2px 5px 10px 2px #263238;

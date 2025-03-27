@@ -5,13 +5,26 @@
     box-sizing: border-box;
     overflow-x: hidden;
 
+    input {
+        padding-left: 6px;
+        font-size: 13px;
+    }
+
+    input[type="file"] {
+        padding: 0;
+    }
+
+    input[type="date"] {
+        padding-right: 10px;
+    }
+
     .UniversalHeadline {
         display: flex;
         justify-content: center;
         padding: 25px 10px 10px 10px;
-      }
-      
-      .mainHeading {
+    }
+
+    .mainHeading {
         border: 1px solid #512f9f;
         background-color: #6A1B9A;
         color: white;
@@ -20,24 +33,24 @@
         display: flex;
         align-items: center;
         justify-content: center;
-      }
-      
-      .noteHeading {
+    }
+
+    .noteHeading {
         padding: 5px 5px 5px 253px;
-      }
-      
-      .noteContent {
+    }
+
+    .noteContent {
         font-size: 13px;
         font-weight: bold;
         text-align: justify;
-        margin-left: 15px;
-      }
-      
-      .noteDescription {
+        margin-left: -58px;
+    }
+
+    .noteDescription {
         font-weight: 500;
         margin-left: 6px;
-      }
-      
+    }
+
 
     .profDetailHeading {
         margin-left: 78px;
@@ -49,8 +62,8 @@
         .personalDetailHeadline {
             margin-left: 16px;
             font-weight: bold;
-        
-          }
+
+        }
     }
 
 
@@ -103,7 +116,7 @@
                     transform: rotate(45deg);
                     z-index: 1;
                 }
-        
+
                 &:checked {
                     background-color: white;
                     border: 1px solid black;
@@ -115,7 +128,6 @@
                 outline: 0;
                 border: none;
                 text-align: center;
-                width: 50px;
                 background-color: #80aeea00;
                 font-size: 13px;
             }
@@ -144,14 +156,6 @@
     .relativeWorking {
         margin-top: 46px;
         margin-bottom: 8px;
-
-        .relativeWorkingHeadline {
-            font-size: 14px;
-            margin-left: 16px;
-            font-weight: 500;
-            color: black;
-            text-transform: capitalize;
-        }
     }
 
     .relativeButtons {
@@ -170,16 +174,16 @@
             background-color: white;
             box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3);
             border: 1px solid black;
-            width: 16px;
-            height: 16px;
+            width: 18px;
+            height: 18px;
             position: relative;
             margin-top: -7px;
-    
+
             &:checked::after {
                 content: '';
                 position: absolute;
-                top: -1px;
-                left: 3px;
+                top: 0px;
+                left: 5px;
                 width: 6px;
                 height: 12px;
                 border: 1px solid blue;
@@ -187,7 +191,7 @@
                 transform: rotate(45deg);
                 z-index: 1;
             }
-    
+
             &:checked {
                 background-color: white;
                 border: 1px solid black;
@@ -225,6 +229,7 @@
             .passportNoInput {
                 width: 80% !important;
                 margin-right: -280px;
+                height: 26px;
             }
         }
 
@@ -233,18 +238,19 @@
 
 
             .passportDateInput {
-                width: 45% !important;
+                width: 55% !important;
+                height: 26px;
                 margin-right: -347px !important;
             }
         }
 
 
         .passportPlaceContainer {
-            margin-right: -96px;
-
+            margin-right: -78px;
 
             .passportPlaceInput {
                 width: 25% !important;
+                height: 26px;
             }
         }
     }
@@ -269,6 +275,7 @@
         .passportValidInput {
             width: 55% !important;
             margin-right: -12px;
+            height: 26px;
         }
 
         .passportCountryContainer {
@@ -284,15 +291,18 @@
                 margin-right: -53px;
                 width: 60% !important;
                 margin-left: -23px;
+                height: 26px;
             }
         }
-        .passportNationalityContainer{
-            margin-right: 9px;
+
+        .passportNationalityContainer {
+            margin-right: 20px;
+
             .separatorForNationality {
                 margin-left: 20px;
                 margin-right: 20px;
             }
-}
+        }
 
     }
 
@@ -300,9 +310,9 @@
         margin-top: 24px;
 
         .relativeWorkingHeadline {
-            font-size: 15px;
+            font-size: 13px;
             margin-left: 16px;
-            font-weight: 500;
+            font-weight: bold;
             color: black;
             text-transform: capitalize;
         }
@@ -349,7 +359,7 @@
                     transform: rotate(45deg);
                     z-index: 1;
                 }
-        
+
                 &:checked {
                     background-color: white;
                     border: 1px solid black;
@@ -372,8 +382,9 @@
             }
 
             .workPermitInput {
-                width: 39% !important;
+                width: 40% !important;
                 margin-left: -24px;
+                height: 26px;
             }
         }
 
@@ -387,8 +398,9 @@
             }
 
             .workPermitDetailInput {
-                width: 72%;
+                width: 69.5%;
                 margin-right: -29px;
+                height: 26px;
             }
 
         }
@@ -398,7 +410,8 @@
         display: flex;
         margin-top: 10px;
         margin-left: 80px;
-        gap: 20px;
+        position: relative;
+        flex-wrap: wrap;
 
         &>div {
             flex: 1;
@@ -408,10 +421,14 @@
             margin: 30px;
         }
 
+        .passportInput {
+            height: 26.5px;
+        }
+
         .profUploadFileInput {
             border: 1px solid black;
             width: 261px;
-            margin-left: -277px;
+            margin: 0;
         }
 
         .passportCopyUpload {
@@ -419,65 +436,74 @@
             background-color: #fdd83591;
             border: none;
             margin-left: 10px;
-            height: 31px;
+            height: 30px;
+        }
+
+        .passportCopyErrorMessage {
+            position: absolute;
+            font-size: 13px;
+            color: red;
+            left: 750px;
+            top: 2px;
         }
     }
-    
+
     .educationSaveButtons {
         display: flex;
         gap: 10px;
         float: right;
-        margin: 52px 66px 0 0;
+        margin: 52px 77px 0 0;
         width: 100%;
-    
-    .profBackBtn {
-        background-color: #616161c4;
-        color: white;
-        border: none;
-        width: 121px;
-        height: 42px;
-        font-style: oblique;
-        font-size: 14px;
-        margin-right: auto;
-        margin-left: 140px;
+
+        .profBackBtn {
+            background-color: #616161c4;
+            color: white;
+            border: none;
+            width: 121px;
+            height: 42px;
+            font-size: 14px;
+            margin-right: auto;
+            margin-left: 159px;
+        }
+
+        .saveBtn,
+        .saveNextBtn {
+            background-color: #bc47b1;
+            color: white;
+            border: none;
+            width: 121px;
+            height: 42px;
+            font-size: 14px;
+
+            &:active {
+                box-shadow: 2px 5px 10px 2px #80007c;
+            }
+        }
+
+        .saveNextBtn {
+            background-color: #6A1B9A;
+
+            &:active {
+                box-shadow: 2px 5px 10px 2px #550080;
+            }
+        }
+
     }
-    .saveBtn,
-  .saveNextBtn {
-    background-color: #bc47b1;
-    color: white;
-    border: none;
-    width: 121px;
-    height: 42px;
-    font-size: 14px;
-  
-    &:active {
-      box-shadow: 2px 5px 10px 2px #80007c;
-    }
-  }
-  
-  .saveNextBtn {
-    background-color: #6A1B9A;
-  
-    &:active {
-      box-shadow: 2px 5px 10px 2px #550080;
-    }
-  }
-  
-}
 
     .profAddRowButton {
+        font-size: 13px;
         background-color: #CE93D8;
         float: left;
         margin-top: -13px;
-        width: 84px;
+        width: 92px;
         margin-left: 78px;
         border: none;
         color: white;
 
-        &:focus {
-            background-color: #BA68C8;
-            box-shadow: -1px 8px 20px 3px #a047bc;
-        }
+        // &:focus {
+        //     background-color: #BA68C8;
+        //     box-shadow: -1px 8px 20px 3px #a047bc;
+        // }
     }
 
 }

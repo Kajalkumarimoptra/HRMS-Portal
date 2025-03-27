@@ -24,81 +24,98 @@ import RegisterPage from "views/RegisterPage";
 import Users from "views/Users";
 import AddNewUser from "views/AddNewUser";
 import Project from "views/Project";
+import Document from "views/Document";
 import Department from "views/Department";
+import Performance from "views/Performance";
+import performanceIcon from "assets/img/performance-icon.png";
+import offboardIcon from "assets/img/exit-icon.png";
 import Activities from "views/Activities";
 import Events from "views/Events";
-import Payroll from "views/Payroll";
 import Holidays from "views/Holidays";
 import Report from "views/Report";
 import JobPortal from "views/JobPortal";
-import Accounts from "views/Accounts";
 import JobDashboard from "views/JobDashboard";
 import Positions from "views/Positions";
 import Applicant from "views/Applicant";
 import Resumes from "views/Resumes";
 import Settings from "views/Settings";
-import Documents from "views/Documents";
+import OfferLetter from "views/OfferLetter";
 import Authentication from "views/Authentication";
 import ResendActivationLinkForm from "views/ResendActivationLinkForm";
-import Language from "views/Language";
+import { Component, useState } from "react";
+import Offboard from "views/Offboard";
+import OffboardForAdmins from "views/OffboardForAdmins";
+// const [roleForOffboardMenu, setRoleForOffboardMenu] = useState(null);
 
-const dashboardRoutes = [
+// useEffect(() => {
+//     // Directly read the role from localStorage
+//     const storedRole = localStorage.getItem("role");
+//     setRoleForOffboardMenu(storedRole);
+//     console.log("Role for conditional rendering of attendance page:", storedRole);
+//   }, []); // fetch role for showing offboard menu
+
+// Utility function to get role from localStorage
+const getRole = () => {
+  const storedRole = localStorage.getItem("role");
+  console.log("Role for conditional rendering of offboard page:", storedRole);
+  return storedRole;
+};
+
+// Get role at the time of file loading
+const roleForOffboardMenu = getRole();
+
+// Function to generate dashboard routes dynamically
+const getDashboardRoutes = () => {
+  const roleForOffboardMenu = getRole();
+
+  return [
   {
-    path: "/dashboard",
+    path: "/admin/Dashboard",
     name: "Dashboard",
     icon: "fa fa-home",
     component: Dashboard,
-    layout: "/admin",
     inSidebar: true // Shows up in sidebar
   },
   {
-    path: "/signup",
+    path: "/admin/Signup",
     component: Signup,
-    layout: "/admin",
     inSidebar: false
   },
   {
     name: "Add New User",
-    path: "/addnewuser",
+    path: "/admin/Addnewuser",
     component: AddNewUser,
-    layout: "/admin",
     inSidebar: false
   },
   {
     name: "Project",
-    path: "/project",
+    path: "/admin/Project",
     component: Project,
-    layout: "/admin",
     inSidebar: false
   },
   {
     name: "",
-    path: "/resendactivationlink",
+    path: "/admin/Resendactivationlink",
     component: ResendActivationLinkForm,
-    layout: "/admin",
     inSidebar: false
   },
   {
-    path: "/registerpage",
+    path: "/admin/Registerpage",
     component: RegisterPage,
-    layout: "/admin",
     inSidebar: false
   },
   {
     name: "Users",
     icon: "fa fa-users",
-    // icon: "nc-icon nc-circle-09",
     component: Users,
-    layout: "/admin",
-    path: "/users",
+    path: "/admin/Users",
     inSidebar: true
   },
   {
     name: "Department",
     icon: "fa fa-building",
     component: Department,
-    layout: "/admin",
-    path: "/department",
+    path: "/admin/Department",
     inSidebar: true
   },
   {
@@ -108,114 +125,93 @@ const dashboardRoutes = [
     inSidebar: true
   },
   {
+    path: "/admin/Performance",
+    name: "Performance",
+    icon: performanceIcon,
+    component: Performance,
+    inSidebar: true 
+  },
+  {
     name: "Opportunities",
     icon: "fa fa-handshake",
     inSidebar: true
   },
   {
-    path: "/jobdashboard",
+    path: "/admin/Jobdashboard",
     name: "Job Dashboard",
     icon: "nc-icon nc-circle-09",
     component: JobDashboard,
-    layout: "/admin",
     inSidebar: false
   },
   {
-    path: "/positions",
+    path: "/admin/Positions",
     name: "Job Positions",
     icon: "nc-icon nc-circle-09",
     component: Positions,
-    layout: "/admin",
     inSidebar: false
   },
   {
-    path: "/applicant",
+    path: "/admin/Applicant",
     name: "Job Applicants",
     icon: "nc-icon nc-circle-09",
     component: Applicant,
-    layout: "/admin",
     inSidebar: false
   },
   {
-    path: "/resumes",
+    path: "/admin/Resumes",
     name: "Job Resumes",
     icon: "nc-icon nc-circle-09",
     component: Resumes,
-    layout: "/admin",
     inSidebar: false
   },
   {
-    path: "/setting",
+    path: "/admin/Setting",
     name: "Job Settings",
     icon: "nc-icon nc-circle-09",
     component: Settings,
-    layout: "/admin",
     inSidebar: false
   },
   {
-    name: "Reports",
-    icon: "fas fa-chart-line",
-    path: "/report",
-    component: Report,
-    layout: "/admin",
-    inSidebar: true
-  },
-  {
+    path: "/admin/Report",
     name: "Documents",
+    component: Document,
     icon: "fa fa-file",
     inSidebar: true
   },
-  {
-    path: "/typography",
-    name: "More",
-    icon: "custom-circle",
-    component: Typography,
-    layout: "/admin",
-    inSidebar: true
-  },
-  {
-    name: "Activities",
-    path: "/activities",
-    component: Activities,
-    layout: "/admin",
-    inSidebar: false
-  },
-  {
-    name: "Holidays",
-    path: "/holidays",
-    component: Holidays,
-    layout: "/admin",
-    inSidebar: false
-  },
-  {
-    name: "Events",
-    path: "/events",
-    component: Events,
-    layout: "/admin",
-    inSidebar: false
-  },
-  {
-    name: "Payroll",
-    path: "/payroll",
-    component: Payroll,
-    layout: "/admin",
-    inSidebar: false
-  },
+  // Conditional rendering based on the role
+  ...(roleForOffboardMenu === "SUPER_ADMIN" || roleForOffboardMenu === "ADMIN"
+    ? [
+        {
+          path: "/admin/Offboarded",
+          name: "Offboarded",
+          icon: offboardIcon,
+          component: OffboardForAdmins,
+          inSidebar: true,
+        },
+      ]
+    : [
+        {
+          path: "/admin/Offboard",
+          name: "Offboard",
+          icon: offboardIcon,
+          component: Offboard,
+          inSidebar: true,
+        },
+      ]),
+  // {
+  //     path: "/admin/Offboarded",
+  //     name: "Offboarded",
+  //     icon: offboardIcon,
+  //     Component: OffboardForAdmins,
+  //     inSidebar: false
+  //   } ,
+  //   {
+  //       path: "/admin/Offboard",
+  //       name: "Offboard",
+  //       icon: offboardIcon,
+  //       Component: Offboard,
+  //       inSidebar: true
+  //     } 
  
-  {
-    name: "Accounts",
-    path: "/accounts",
-    component: Accounts,
-    layout: "/admin",
-    inSidebar: false
-  },
-  {
-    name: "Language",
-    path: "/language",
-    component: Language,
-    layout: "/admin",
-    inSidebar: false
-  },
-];
-
-export default dashboardRoutes;
+]};
+export default getDashboardRoutes;

@@ -14,6 +14,7 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import Admin from "layouts/Admin";
 import LoginForm from "layouts/LoginForm";
 import EnterOtp from "layouts/EnterOtp";
+import Banner from "views/Banner";
 import PersonalDetailsForm from "EmployeeForms/PersonalDetailsForm";
 import ContactDetailsForm from "EmployeeForms/ContactDetailsForm";
 import EducationalDetailsForm from "EmployeeForms/EducationalDetailsForm";
@@ -27,6 +28,9 @@ import ProtectedRoutes from "components/ProtectedRoutes/ProtectedRoutes";
 import AttachSign from "EmployeeForms/AttachSign";
 import { RegistrationProvider } from "components/ContextProvider/RegistrationDataContext";
 import { AddressHistoryContextProvider } from "components/ContextProvider/AddressHistoryContext";
+import { HolidayListContextProvider } from "components/ContextProvider/HolidayListContext";
+import { EmploymentHistoryContextProvider } from "components/ContextProvider/EmploymentHistoryContext";
+import { OffboardPopupContextProvider } from "components/ContextProvider/OffboardPopupContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -38,71 +42,73 @@ root.render(
     audience={process.env.REACT_APP_AUDIENCE_AUTH0}>
     <BrowserRouter>
       <AuthProvider>
-            <RegistrationProvider>
-              <AddressHistoryContextProvider>
-        <Routes>
+        <RegistrationProvider>
+          <AddressHistoryContextProvider>
+            <HolidayListContextProvider>
+              <EmploymentHistoryContextProvider>
+                <OffboardPopupContextProvider>
+              <Routes>
 
-          {/* {Public Route} */}
-          <Route path="/" element={<LoginForm />} />
-          <Route path="/forgotpassword" element={<ForgotPassword />} />
-          <Route path="/enterotp" element={<EnterOtp />} />
-          {/* <Route path="/personaldetailsform" element={
-            
-              <PersonalDetailsForm />
-            
-          } /> */}
-          
-          {/* Protected Routes */}
-          <Route path="/admin/*" element={
-            <ProtectedRoutes>
-              <Admin />
-            </ProtectedRoutes>} />
-          <Route path="/resetpassword" element={
-            <ProtectedRoutes>
-              <Resetpassword />
-            </ProtectedRoutes>
-          } />
-          <Route path="/navbar" element={
-            <ProtectedRoutes>
-              <Navbar />
-            </ProtectedRoutes>
-          } />
-          <Route path="/personaldetailsform" element={
-            <ProtectedRoutes>
-              <PersonalDetailsForm />
-            </ProtectedRoutes>
-          } />
-          <Route path="/contactdetailsform" element={
-            <ProtectedRoutes>
-              <ContactDetailsForm />
-            </ProtectedRoutes>
-          } />
-          <Route path="/educationaldetailsform" element={
-            <ProtectedRoutes>
-              <EducationalDetailsForm />
-            </ProtectedRoutes>
-          } />
-          <Route path="/professionalrefform" element={
-            <ProtectedRoutes>
-              <ProfessionalRefForm />
-            </ProtectedRoutes>
-          } />
-          <Route path="/declarationform" element={
-            <ProtectedRoutes>
-              <DeclarationForm />
-            </ProtectedRoutes>
-          } />
-          <Route path="/previewform" element={
-            <ProtectedRoutes>
-              <PreviewForm />
-            </ProtectedRoutes>
-          } />
+                {/* {Public Route} */}
+                <Route path="/" element={<LoginForm />} />
+                <Route path="/forgotpassword" element={<ForgotPassword />} />
+                <Route path="/enterotp" element={<EnterOtp />} />
+                <Route path="/banner" element={<Banner />} />
+              
+                {/* Protected Routes */}
+                <Route path="/admin/*" element={
+                  <ProtectedRoutes>
+                    <Admin />
+                  </ProtectedRoutes>} />
+                <Route path="/resetpassword" element={
+                  <ProtectedRoutes>
+                    <Resetpassword />
+                  </ProtectedRoutes>
+                } />
+                <Route path="/navbar" element={
+                  <ProtectedRoutes>
+                    <Navbar />
+                  </ProtectedRoutes>
+                } />
+                <Route path="/personaldetailsform" element={
+                  <ProtectedRoutes>
+                    <PersonalDetailsForm />
+                  </ProtectedRoutes>
+                } />
+                <Route path="/contactdetailsform" element={
+                  <ProtectedRoutes>
+                    <ContactDetailsForm />
+                  </ProtectedRoutes>
+                } />
+                <Route path="/educationaldetailsform" element={
+                  <ProtectedRoutes>
+                    <EducationalDetailsForm />
+                  </ProtectedRoutes>
+                } />
+                <Route path="/professionalrefform" element={
+                  <ProtectedRoutes>
+                    <ProfessionalRefForm />
+                  </ProtectedRoutes>
+                } />
+                <Route path="/declarationform" element={
+                  <ProtectedRoutes>
+                    <DeclarationForm />
+                  </ProtectedRoutes>
+                } />
+                <Route path="/previewform" element={
+                  <ProtectedRoutes>
+                    <PreviewForm />
+                  </ProtectedRoutes>
+                } />
 
-          {/* Default route */}
-          <Route path="*" element={<Navigate to="/" />} />
+                {/* Default route */}
+                <Route path="*" element={<Navigate to="/" />} />
 
-        </Routes>
-        </AddressHistoryContextProvider>
+              </Routes>
+              </OffboardPopupContextProvider>
+              </EmploymentHistoryContextProvider>
+            </HolidayListContextProvider>
+          </AddressHistoryContextProvider>
         </RegistrationProvider>
       </AuthProvider>
     </BrowserRouter>

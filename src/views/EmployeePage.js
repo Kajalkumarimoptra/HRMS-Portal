@@ -4,7 +4,10 @@ import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { useFormContext } from "../components/ContextProvider/Context";
 import { toast, ToastContainer } from 'react-toastify';
-import { ImSearch } from "react-icons/im";
+import Breadcrumb from './Breadcrumb';
+import { ImPodcast, ImSearch } from "react-icons/im";
+import { GrEdit } from "react-icons/gr";
+import axios from 'axios';
 
 export default function EmployeePage() {
 
@@ -16,8 +19,9 @@ export default function EmployeePage() {
         reset,
         serverError,
         setServerError,
-        clearErrors, role, setRole
+        clearErrors, role, setRole, users, setUsers
     } = useFormContext();
+
 
     useEffect(() => {
         const storedRole = sessionStorage.getItem('role');
@@ -26,91 +30,78 @@ export default function EmployeePage() {
         }
     }, []);
 
-    // const [activeList, setActiveList] = useState('all'); // by default,list view is all
-    // const [showLeave, setShowLeave] = useState(false); // state variable to control the modal's visibility
-    // const [patternForEmpNameForLeave, setPatternForEmpNameForLeave] = useState(''); // pattern for emp name
-    // const [patternForEmpIDForLeave, setPatternForEmpIDForLeave] = useState(''); // pattern for emp id
-    // const [patternForEmpLeaveReason, setPatternForEmpLeaveReason] = useState(''); // pattern for emp leave reason
-
-    // const [pattern, setPattern] = useState({
-    //     empNameForLeave: '',
-    //     empIDForLeave: '',
-    //     empLeaveReason: ''
-    // }); // state for overall handling of pattern
-
-    // const [customErrorForPattern, setCustomErrorForPattern] = useState({
-    //     empNameForLeave: '',
-    //     empIDForLeave: '',
-    //     empLeaveReason: ''
-    // }); // error msg for its failure
-
-    // for handling view
-    // const handleListView = (tab) => {
-    //     setActiveList(tab);
-    // }
-
-    // for handling leave table
-    // const handleLeave = () => {
-    //     setShowLeave(true);
-    // }
-    // const handleCloseLeave = () => {
-    //     setShowLeave(false);
-    // }
-
     useEffect(() => {
         reset();
     }, []); // Reset after render
 
+    // For the edit button
+    const handleEditClick = (list) => {
+        navigate(`/admin/Users/${list.name}`, { state: { users: list } });
+    };
+
+    // For the view details button
+    const handleViewDetailsClick = () => {
+        navigate('/admin/Profile');
+    };
 
     // for resend activation link form
     const handleResendActivationLink = () => {
-        navigate('/admin/resendactivationlink')
+        navigate('/admin/Resendactivationlink')
     }
 
     const navigate = useNavigate();
 
     const handleRegisterPage = (e) => {
         e.preventDefault();
-        navigate('/admin/registerpage');
+        navigate('/admin/Registerpage');
     }
 
-    // for pattern handling
-    // const handlePatternForLeaveInputs = (e, pattern, field) => {
-    //     const value = e.target.value;
-    //     setPattern(prev => ({ ...prev, [field]: value }));
-    //     if (field === 'empNameForLeave') setPatternForEmpNameForLeave(value);
-    //     if (field === 'empIDForLeave') setPatternForEmpIDForLeave(value);
-    //     if (field === 'empLeaveReason') setPatternForEmpLeaveReason(value);
+    const handleEditEmpDetailsClick = () => {
+        navigate("/admin/Editempdetails");
+    }
 
-    //     let patternErrorMessage = '';
-    //     if ((field === 'empNameForLeave' || field === 'empLeaveReason') && value && !pattern.test(value)) {
-    //         patternErrorMessage = 'No numbers or special characters are allowed';
-    //     }
-    //     else if (field === 'empIDForLeave') {
-    //         if (value && !pattern.test(value)) {
-    //             patternErrorMessage = 'Only numbers are allowed';
-    //         } else if (value.length !== 6) {
-    //             patternErrorMessage = 'Employee ID must be of 6 digits';
-    //         }
-    //     }
+    useEffect(() => {
+        const fetchUsersList = async () => {
+            try {
+                // Retrieve the token from sessionStorage
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    setServerError('User is not authenticated. Please log in again.');
+                    return; // Exit if token is not found
+                }
 
-    //     setCustomErrorForPattern(prev => ({ ...prev, [field]: patternErrorMessage }));
-    //     // Clear error if input is valid
-    //     if (patternErrorMessage === '') {
-    //         clearErrors(field);
-    //     }
-    // }
+                const response = await axios.get('http://localhost:8081/users/allUsers', {
+                    headers: {
+                        'authorization': `Bearer ${token}`
+                    }
+                });
+                if (response && response.data) {
+                    console.log('all users list:', response.data);
+                    setUsers(response.data); // Set existing users
+                }
+            } catch (error) {
+                if (error.response) {
+                    console.error("Error response:", error.response.data);
+                    setServerError('Server error');
+                } else if (error.request) {
+                    console.error("Error request:", error.request);
+                    setServerError("No response from server. Please check your network connection.");
+                } else {
+                    console.error("General error:", error.message);
+                    setServerError(`Error: ${error.message}`);
+                }
+            }
 
-    // form submission
-    // const handleFormSubmit = (data) => {
-    //     console.log('form initiated');
-    //     console.log('data submitted:', data);
-    //     toast.success("Leave details of Employee gets added successfully");
-    //     reset();
-    // }
+        }
+        fetchUsersList();
+    }, []);
+
+    //  filter the user list for users and employee table
+    const employees = users.filter(user => user.roleName === "EMPLOYEE");
 
     return (
-        <div className='container-fluid' style={{ marginTop: '-10px' }}>
+        <div className='container-fluid' style={{ marginBottom: '30px' }}>
+            <Breadcrumb />
             <div class="d-flex justify-content-between align-items-center flex-row-reverse mb-3">
                 {/* <ul class="nav nav-tabs page-header-tab">
                     <li class="nav-item">
@@ -126,18 +117,10 @@ export default function EmployeePage() {
                             Resend Activation Link
                         </button>)}
 
-                    <button type="button" class="add-btn" data-toggle="empReg" data-target="#empRegForm" fdprocessedid="av3mdpe" onClick={handleRegisterPage} style={{ marginLeft: '5px' }}>
-                        <i class="plus-sign mr-2">&#43;</i>
-                        Add Employees
+                    <button type="button" class="primary-btn" data-toggle="empReg" data-target="#empRegForm" fdprocessedid="av3mdpe" onClick={handleRegisterPage} style={{ marginLeft: '5px' }}>
+                        + Add Employees
                     </button>
                 </div>
-                {/* <div class="header-action">
-                    <button type="button" class="add-btn" fdprocessedid="av3mde"
-                        onClick={handleLeave} style={{ marginLeft: '5px' }}>
-                        <i class="plus-sign mr-2">&#43;</i>
-                        Add Leave
-                    </button>
-                </div> */}
             </div>
 
             {/* employee list page */}
@@ -245,170 +228,74 @@ export default function EmployeePage() {
                                                 <i> <ImSearch className='searchIcon' /></i>
                                             </form>
                                         </div>
-                                </div>
-                                <div className='card-body'>
-                                    <div className='table-responsive'>
-                                        <table className='table table-hover table-striped table-vcenter text-nowrap mb-0'>
-                                            <thead>
-                                                <tr>
-                                                    <th>S.No.</th>
-                                                    <th>Employee Name</th>
-                                                    <th>Employee ID</th>
-                                                    <th>Official Email Address</th>
-                                                    <th>Mobile No.</th>
-                                                    <th>Joining Date</th>
-                                                    <th>Designation</th>
-                                                    <th>Status</th>
-                                                    <th class="action-column">Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td class="w40">1.
-                                                        {/* <label class="custom-control custom-checkbox">
-                                                                    <input type="checkbox" class="custom-control-input" name="example-checkbox1" value="option1" />
-                                                                    <span class="custom-control-label">&nbsp;</span>
-                                                                </label> */}
-                                                    </td>
-                                                    <td>Marshall Nichols</td>
-                                                    <td>526895</td>
-                                                    <td>
-                                                        <span>Marshall@gmail.com</span>
-                                                    </td>
-                                                    <td>
-                                                        <span>9126455625</span>
-                                                    </td>
-                                                    <td>12-Jun-2015</td>
-                                                    <td>Web Designer</td>
-                                                    <td style={{ backgroundColor: '#00800052', paddingLeft: '11px' }}>Completed</td>
-                                                    <td>
-                                                        <button type="button" class="btn btn-icon btn-sm icons" title="Edit" fdprocessedid="tvsb17">
-                                                            <img src={require("assets/img/edit.png")} alt="..." className='delete-icon' />
-                                                        </button>
-                                                        <button type="button" class="btn btn-icon btn-sm icons" title="Delete" data-type="confirm" fdprocessedid="f7knyq">
-                                                            <img src={require("assets/img/delete.png")} alt="..." className='delete-icon' />
-                                                        </button>
-                                                        <button type="button" class="btn btn-icon btn-sm icons" title="Delete" data-type="confirm" fdprocessedid="f7knyq">
-                                                            <img src={require("assets/img/enable.png")} alt="..." className='toggle-icon' />
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="w40">2.</td>
-                                                    <td>Debra Stewart</td>
-                                                    <td>568963</td>
-                                                    <td>
-                                                        <span>marshall-n@gmail.com</span>
-                                                    </td>
-                                                    <td>
-                                                        <span>9126462545</span>
-                                                    </td>
-                                                    <td>28-July-2015</td>
-                                                    <td>Web Developer</td>
-                                                    <td style={{ backgroundColor: '#00800052', paddingLeft: '11px' }}>Completed</td>
-                                                    <td>
-                                                        <button type="button" class="btn btn-icon btn-sm icons" title="Edit" fdprocessedid="b0za8">
-                                                            <img src={require("assets/img/edit.png")} alt="..." className='delete-icon' />
-                                                        </button>
-                                                        <button type="button" class="btn btn-icon btn-sm js-sweetalert icons" title="Delete" data-type="confirm" fdprocessedid="5qdlk5">
-                                                            <img src={require("assets/img/delete.png")} alt="..." className='delete-icon' />
-                                                        </button>
-                                                        <button type="button" class="btn btn-icon btn-sm icons" title="Delete" data-type="confirm" fdprocessedid="f7knyq">
-                                                            <img src={require("assets/img/enable.png")} alt="..." className='toggle-icon' />
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="w40">3.</td>
-                                                    <td>Jane Hunt</td>
-                                                    <td>589632</td>
-                                                    <td>
-                                                        <span>jane-hunt@gmail.com</span>
-                                                    </td>
-                                                    <td>
-                                                        <span>9126465512</span>
-                                                    </td>
-                                                    <td>13-Jun-2015</td>
-                                                    <td>Web Designer</td>
-                                                    <td style={{ backgroundColor: 'rgb(251 189 8 / 36%)', paddingLeft: '11px' }}>Pending</td>
-                                                    <td>
-                                                        <button type="button" class="btn btn-icon btn-sm icons" title="Edit" fdprocessedid="2n2st">
-                                                            <img src={require("assets/img/edit.png")} alt="..." className='delete-icon' />
-                                                        </button>
-                                                        <button type="button" class="btn btn-icon btn-sm js-sweetalert icons" title="Delete" data-type="confirm" fdprocessedid="y2m5v">
-                                                            <img src={require("assets/img/delete.png")} alt="..." className='delete-icon' />
-                                                        </button>
-                                                        <button type="button" class="btn btn-icon btn-sm icons" title="Delete" data-type="confirm" fdprocessedid="f7knyq">
-                                                            <img src={require("assets/img/enable.png")} alt="..." className='toggle-icon' />
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="w40">4.</td>
-                                                    <td>Susie Willis</td>
-                                                    <td>521346</td>
-                                                    <td>
-                                                        <span>sussie-w@gmail.com</span>
-                                                    </td>
-                                                    <td>
-                                                        <span>9126462152</span>
-                                                    </td>
-                                                    <td>9-May-2016</td>
-                                                    <td>Web Developer</td>
-                                                    <td style={{ backgroundColor: '#ff000059', paddingLeft: '11px' }}>Exit</td>
-                                                    <td>
-                                                        <button type="button" class="btn btn-icon btn-sm icons" title="Edit" fdprocessedid="9cfz1">
-                                                            <img src={require("assets/img/edit.png")} alt="..." className='delete-icon' />
-                                                        </button>
-                                                        <button type="button" class="btn btn-icon btn-sm js-sweetalert icons" title="Delete" data-type="confirm" fdprocessedid="4htghd">
-                                                            <img src={require("assets/img/delete.png")} alt="..." className='delete-icon' />
-                                                        </button>
-                                                        <button type="button" class="btn btn-icon btn-sm icons" title="Delete" data-type="confirm" fdprocessedid="f7knyq">
-                                                            <img src={require("assets/img/enable.png")} alt="..." className='toggle-icon' />
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="w40">5.</td>
-                                                    <td>Nancy Willis</td>
-                                                    <td>528846</td>
-                                                    <td>
-                                                        <span>nancy-w@gmail.com</span>
-                                                    </td>
-                                                    <td>
-                                                        <span>9126462152</span>
-                                                    </td>
-                                                    <td>5-May-2016</td>
-                                                    <td>Web Developer</td>
-                                                    <td style={{ backgroundColor: '#ff000059', paddingLeft: '11px' }}>Exit</td>
-                                                    <td>
-                                                        <button type="button" class="btn btn-icon btn-sm icons" title="Edit" fdprocessedid="9cfz1">
-                                                            <img src={require("assets/img/edit.png")} alt="..." className='delete-icon' />
-                                                        </button>
-                                                        <button type="button" class="btn btn-icon btn-sm js-sweetalert icons" title="Delete" data-type="confirm" fdprocessedid="4htghd">
-                                                            <img src={require("assets/img/delete.png")} alt="..." className='delete-icon' />
-                                                        </button>
-                                                        <button type="button" class="btn btn-icon btn-sm icons" title="Delete" data-type="confirm" fdprocessedid="f7knyq">
-                                                            <img src={require("assets/img/enable.png")} alt="..." className='toggle-icon' />
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                    </div>
+                                    <div className='card-body'>
+                                        {employees.length > 0 ? (
+                                            <div className='user-table'>
+                                                <table className='table table-hover table-vcenter text-nowrap mb-0' style={{ tableLayout: 'auto' }}>
+                                                    <thead>
+                                                        <tr>
+                                                            <th className='serialNo'>S.No.</th>
+                                                            <th>Employee Name</th>
+                                                            <th>Employee ID</th>
+                                                            <th>Official Email Address</th>
+                                                            <th>Mobile No.</th>
+                                                            <th>Joining Date</th>
+                                                            <th>Designation</th>
+                                                            <th>Status</th>
+                                                            <th class="action-column">Edit Details</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {employees.map((list, index) => (
+                                                            <tr key={index}>
+                                                                 <td className='serialColumn'>{index + 1}.</td>
+                                                                <td className='nameColumn'>{list.name}</td>
+                                                                <td>
+                                                                    {list.employeeId}</td>
+                                                                <td> {list.email} </td>
+                                                                <td>{list.mobileNumber}</td>
+                                                                <td>{new Date(list.joiningDate)
+                                                                            .toLocaleDateString("en-GB", {
+                                                                                year: "numeric",
+                                                                                month: "2-digit",
+                                                                                day: "2-digit",
+                                                                            })
+                                                                            .split("/")
+                                                                            .join("-")}</td>
+                                                                <td>{list.designation}</td>
+                                                                <td style={{ backgroundColor: '#00800052', paddingLeft: '11px' }}>Completed</td>
+                                                                <td>
+                                                                    <button type="button" class="btn btn-icon btn-sm icons" title="Edit" fdprocessedid="tvsb17">
+                                                                        <GrEdit className='delete-icon' onClick={() => handleEditClick(list)} />
+                                                                    </button>
+                                                                    <button type="button" class="btn btn-icon btn-sm icons" title="View" data-type="confirm" fdprocessedid="f7knyq">
+                                                                        <img src={require("assets/img/view-icon.png")} alt="..." className='delete-icon' onClick={() => handleViewDetailsClick()} />
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        ) : (
+                                            <div className="no-records-found text-center">
+                                                <p>No record found for employees</p>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>
+                            {/* pagination */}
+                            {/* <ul class="pagination mt-2">
+                                <li class="page-item"><a class="page-link" href="fake_url;">Previous</a></li>
+                                <li class="page-item"><a class="page-link" href="fake_url;">Next</a></li>
+                            </ul> */}
                         </div>
-                        {/* pagination */}
-                        <ul class="pagination mt-2">
-                            <li class="page-item"><a class="page-link" href="fake_url;">Previous</a></li>
-                            <li class="page-item"><a class="page-link" href="fake_url;">Next</a></li>
-                        </ul>
                     </div>
                 </div>
             </div>
-        </div>
-                
+
         </div >
     )
 }

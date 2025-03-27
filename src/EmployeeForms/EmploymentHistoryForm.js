@@ -1,308 +1,452 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext } from 'react';
 import { useFormContext } from 'components/ContextProvider/Context';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { EmploymentHistoryContext } from 'components/ContextProvider/EmploymentHistoryContext';
 
-export default function EmploymentHistoryForm() {
+export default function EmploymentHistoryForm({ index }) {
+
+    const { setEmploymentHistoryDetails } = useContext(EmploymentHistoryContext);
+    const fileInputRefs = useRef({});  // Store refs dynamically for each field
+    const [selectEmpPeriodFromDateColor, setEmpPeriodFromDateColor] = useState("#d3d3d3");
+    const [selectEmpPeriodToDateColor, setEmpPeriodToDateColor] = useState("#d3d3d3"); // for giving diff color to date placeholder and option
+    const [empPeriodFromStayDates, setEmpPeriodFromStayDates] = useState({});
+
+    // 🔥 Fix: Change color dynamically, but ensure placeholder remains gray
+    const handleEmpPeriodFromDateColorChange = (e, index) => {
+        const selectedValue = e.target.value;
+        setEmpPeriodFromDateColor(selectedValue ? "black" : "#d3d3d3");
+        clearErrors(`empPeriodFrom[${index}]`);
+    };
+    // 🔥 Fix: Change color dynamically, but ensure placeholder remains gray
+    const handleEmpPeriodToDateColorChange = (e, index) => {
+        const selectedValue = e.target.value;
+        setEmpPeriodToDateColor(selectedValue ? "black" : "#d3d3d3");
+        clearErrors(`empPeriodTo[${index}]`);
+    };
+    const handleDynamicEmpPeriodFromStayDatesChange = (index, e) => {
+        let value = e.target.value;
+        setEmpPeriodFromStayDates((prev) => ({
+            ...prev,
+            [index]: value,
+        }))
+    };
+
+    const numberToWords = (num) => {
+        if (isNaN(num) || num === undefined) return ''; // Handle NaN cases
+        const words = ['first', 'second', 'third'];
+        return words[num - 1] || num;
+    }
+    const wordIndex = numberToWords(index + 1); // for converting no. to words
+
     const navigate = useNavigate();
     const {
-        register, handleSubmit, errors, onSubmit, index, clearErrors, setValue
+        register, handleSubmit, errors, onSubmit, clearErrors, setValue
     } = useFormContext();
 
-    const [patternForPrevEmpName, setPatternForPrevEmpName] = useState(''); // pattern for previous employee name
-    const [patternForPrevEmpTeleNo, setPatternForPrevEmpTeleNo] = useState(''); // pattern for previous employee telephone no.
-    const [patternForPrevEmpDesg, setPatternForPrevEmpDesg] = useState(''); // pattern for previous employee Desg
-    const [patternForPrevEmpDept, setPatternForPrevEmpDept] = useState(''); // pattern for previous employee Dept
-    const [patternForPrevManagerName, setPatternForPrevManagerName] = useState(''); // pattern for previous employee's Manager Name
-    const [patternForPrevManagerNo, setPatternForPrevManagerNo] = useState(''); // pattern for previous employee ManagerNo.
-    const [customErrorForCheckbox, setCustomErrorForCheckbox] = useState(false);
-    const [expCertDoc, setExpCertDoc] = useState(''); // state for holding experience certificate  file
-    const [errorForExpCertFileSize, setErrorForExpCertFileSize] = useState(''); // error for wrong file size
-    const [relievingLetterDoc, setRelievingLetterDoc] = useState(''); // state for holding relievin letter  file
-    const [errorForRelievingLetterFileSize, setErrorForRelievingLetterFileSize] = useState(''); // error for wrong file size
-    const [lastMonthSalarySlipDoc, setLastMonthSalarySlipDoc] = useState(''); // state for holding last month salary slip  file
-    const [errorForLastMonthSalarySlipFileSize, setErrorForLastMonthSalarySlipFileSize] = useState(''); // error for wrong file size
-    const [appointmentLetterDoc, setAppointmentLetterDoc] = useState(''); // state for holding appointment letter  file
-    const [errorForAppointmentLetterFileSize, setErrorForAppointmentLetterFileSize] = useState(''); // error for wrong file size
+    // state for overall handling of pattern
+    const [pattern, setPattern] = useState({});
 
-    const fileRefs = useRef({
-        expCertRef: null,
-        relievingLetterRef: null,
-        lastSalarySlipRef: null,
-        offerLetterRef: null
-    })
+    // error msg for its failure
+    const [customErrorForPattern, setCustomErrorForPattern] = useState({});
 
-    const [pattern, setPattern] = useState({
-        PrevEmpName: '',
-        telephoneNo: '',
-        designation: '',
-        department: '',
-        managerName: '',
-        managerContactNo: ''
-    }); // state for overall handling of pattern
-    const [customErrorForPattern, setCustomErrorForPattern] = useState({
-        PrevEmpName: '',
-        telephoneNo: '',
-        designation: '',
-        department: '',
-        managerName: '',
-        managerContactNo: ''
-    }); // error msg for its failure
+    // state for overall handling of documents validation
 
-    const [doc, setDoc] = useState({
-        expCertFile: '',
-        relievingLetterFile: '',
-        lastSalarySlip: '',
-        offerLetter: ''
-    }) // state for overall handling of documents validation
-    // const [fileUploadedLocal, setFileUploadedLocal] = useState({
-    //     expCertFile: false,
-    //     relievingLetterFile: false,
-    //     lastSalarySlip: false,
-    //     offerLetter: false
-    // }); // Tracks if files have been uploaded
-    const [customErrorForDoc, setCustomErrorForDoc] = useState({
-        expCertFile: '',
-        relievingLetterFile: '',
-        lastSalarySlip: '',
-        offerLetter: ''
-    }) // error msg for its failure
-    // const [customErrorForDocUpload, setCustomErrorForDocUpload] = useState({
-    //     expCertFile: '',
-    //     relievingLetterFile: '',
-    //     lastSalarySlip: '',
-    //     offerLetter: ''
-    //   }); // error msg on not uploading the file
-    const [successfulUploadMsg, setSuccessfulUploadMsg] = useState({
-        expCertFile: '',
-        relievingLetterFile: '',
-        lastSalarySlip: '',
-        offerLetter: ''
-    }); // state for displaying successful upload msg
+    const [empHistoryDoc, setEmpHistoryDoc] = useState({}); // state for holding degree document file
+    const [empHistoryFileUploaded, setEmpHistoryFileUploaded] = useState({}); // Tracks if files have been uploaded
+    // const [customErrorForEmpHistoryDocUpload, setCustomErrorForEmpHistoryDocUpload] = useState({}); // error msg on not uploading the file
+    const [successfulEmpHistoryFileUploadMsg, setSuccessfulEmpHistoryFileUploadMsg] = useState({}); // state for displaying successful upload msg
 
     // pattern failure validation 
-    const handlePatternForPrevEmp = (e, pattern, field) => {
-        const value = e.target.value;
-        setPattern(prev => ({ ...prev, [field]: value }))
-        if (field === 'PrevEmpName') setPatternForPrevEmpName(value);
-        if (field === 'telephoneNo') setPatternForPrevEmpTeleNo(value);
-        if (field === 'designation') setPatternForPrevEmpDesg(value);
-        if (field === 'department') setPatternForPrevEmpDept(value);
-        if (field === 'managerName') setPatternForPrevManagerName(value);
-        if (field === 'managerContactNo') setPatternForPrevManagerNo(value);
+    const handlePatternForPrevEmp = (e, pattern, field, index) => {
+        let value = e.target.value;
+        const fieldKey = `${field}[${index}]`; // Create a dynamic key like "PrevEmpName[0]"
+        // Update pattern state dynamically
+        setPattern(prev => ({ ...prev, [fieldKey]: value }));
+
         let patternErrorMessage = '';
         if ((field === 'PrevEmpName' || field === 'managerName') && value && !pattern.test(value)) {
             patternErrorMessage = 'No numbers or special characters are allowed';
         }
         else if (field === 'telephoneNo' || field === 'managerContactNo') {
+            if (value.length > 10) {
+                value = value.slice(0, 10); // Slice to 10 digits
+                e.target.value = value;  // Update the input value directly
+            }
             if (value && !pattern.test(value)) {
                 patternErrorMessage = 'Only numbers are allowed';
-            } else if (value.length !== 10) {
-                patternErrorMessage = 'Contact No. must be of 10 digits';
+            }
+        }
+        else if (field === 'employeeCode') {
+            // If emp id exceeds 6 digits, slice it to 6 digits
+            if (value.length > 6) {
+                value = value.slice(0, 6);
+                e.target.value = value;  // Update the input value directly
+            }
+            // perform validation
+            if (value && !pattern.test(value)) {
+                patternErrorMessage = 'Only numbers are allowed';
             }
         }
         else if (field === 'designation' || field === 'department') {
             if (value && !pattern.test(value)) {
                 patternErrorMessage = 'Please write as per the correct format';
             }
+        } else if (field === "managerEmailId") {
+            if (value && !pattern.test(value)) {
+                patternErrorMessage = 'Please write the valid email address';
+            }
         }
-        setCustomErrorForPattern(prev => ({ ...prev, [field]: patternErrorMessage }));
+        // Update error state dynamically
+        setCustomErrorForPattern(prev => ({ ...prev, [fieldKey]: patternErrorMessage }));
+
+        // Clear error if validation passes
         if (patternErrorMessage === '') {
-            clearErrors(field);
+            clearErrors(fieldKey);
         }
     }
 
-    // const dispatch = useDispatch();
     // file type for certificates upload
     const handleFileForDocs = (e, field) => {
         const file = e.target.files[0]; // Get the first file from the input
-        console.log('Selected file:', file); // Log the selected file
+        console.log(`Selected file for ${field}:`, file);
+
+        // Clear error messages immediately upon file selection
+        //  setCustomErrorForEmpHistoryDocUpload(prev => ({ ...prev, [field]: '' })); // Clear any upload errors
+        setSuccessfulEmpHistoryFileUploadMsg(prev => ({ ...prev, [field]: '' })); // Clear success message
+        setEmpHistoryFileUploaded(prev => ({ ...prev, [field]: false })); // Reset file uploaded state
+
         if (file) {
             const fileType = file.type;
             const allowedFileTypes = ["application/pdf"];  // file type allowed
             if (!allowedFileTypes.includes(fileType)) {
                 window.alert("Only PDF files are supported");
-                fileRefs.current[field].value = ''; // Use ref to clear the input field
-                // dispatch(setFileUploaded({ field, value: false })); // Mark the file as not uploaded on invalid file type
+                fileInputRefs.current[field].value = ""; // Clear file input
                 return;
             }
+            setEmpHistoryDoc(prevState => ({
+                ...prevState,
+                [field]: file, // Store file with dynamic field name
+            }));
+            clearErrors(field);
             const fileSize = file.size;
             if (fileSize / 1024 > 20) {
-                setCustomErrorForDoc(prev => ({ ...prev, [field]: "File should be less than or upto 20kb" }));  // file size validation
-                fileRefs.current[field].value = '';
-                // dispatch(setFileUploaded({ field, value: false })); // Mark the file as not uploaded on invalid file type
+                window.alert("File should be less than or upto 20kb");  // file size validation
+                fileInputRefs.current[field].value = ""; // Clear file input
                 return;
             }
-            // Clear previous file and upload state if a new file is selected
-            setDoc(prev => ({ ...prev, [field]: file })) // set all the files in their state
-            console.log('document saved:', doc[field])
-            setCustomErrorForDoc(prev => ({ ...prev, [field]: '' }));
-            // dispatch(setFileUploaded({ field, value: false })); // Mark the new file as not uploaded until being uploaded
-            setSuccessfulUploadMsg(prev => ({ ...prev, [field]: '' }));
-        }
-        else {
-            // Reset file and errors if no file selected
-            setDoc(prev => ({ ...prev, [field]: null }));
-            // dispatch(setFileUploaded({ field, value: false }));
-            setCustomErrorForDoc(prev => ({ ...prev, [field]: '' }));
-            setSuccessfulUploadMsg(prev => ({ ...prev, [field]: '' }));
         }
     }
 
-    // const { customErrorForDocUpload } = useSelector((state) => {
-    //     console.log('Current file upload state:', state.fileUpload); // Log the current Redux state
-    //     return state.fileUpload;
-    // })
-    // console.log('setCustomErrorForDocUpload function:', setCustomErrorForDocUpload); // Check if it's defined
-    const handleFileUpload = (field) => {
-        if (doc[field]) {
-            setValue(field, doc[field]); // Manually set the file in React Hook Form on upload button click
-            // dispatch(setFileUploaded({ field: field, value: true })); // Dispatch Redux action to mark file as uploaded
-            setSuccessfulUploadMsg(prev => ({ ...prev, [field]: 'Uploaded successfully' }));
-            // dispatch(setCustomErrorForDocUpload({ [field]: '' })); // Clear any previous error messages
+    // handle file upload
+    const handleFileUpload = async (field) => {
+
+        const file = empHistoryDoc[field];
+        if (!file) {
+            console.log(`No file found for ${field}, setting error`);
+            // setCustomErrorForEmpHistoryDocUpload(prev => ({ ...prev, [field]: 'Please select a file to upload' }));
+            window.alert("Please select a file to upload");
+            return;
         }
-        else {
-           
-            // Dispatch error if file not uploaded
-            setSuccessfulUploadMsg(prev => ({ ...prev, [field]: '' }));
+
+        const formData = new FormData();
+        formData.append('file', file);
+        console.log('FormData being sent:', formData);
+
+        try {
+            // Retrieve the token from localStorage
+            const token = localStorage.getItem('token');
+            if (!token) {
+                setServerError('Authentication issue');
+                return; // Exit if token is not found
+            }
+            const response = await axios.post('http://localhost:8081/api/files/uploadFile', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${token}`
+                },
+            });
+            console.log('file upload response:', response.data); // Check the response
+
+            if (response.data.data && response.data.data.url) {
+                const fileUrl = response.data.data.url; // Extract the file URL from the respons
+                console.log(`File uploaded successfully for ${field}:`, fileUrl);
+
+                setEmploymentHistoryDetails((prev) => {
+                    const updatedDetails = {
+                    ...prev,
+                    [field.split(".")[0]]: {
+                        ...prev[field.split(".")[0]],
+                        [field.split(".")[1]]: fileUrl,
+                    }
+                }
+                    console.log("Updated Employment History Details after upload:", JSON.stringify(updatedDetails, null, 2));
+                    return updatedDetails;
+                });
+                setValue(field, fileUrl);  // This tells the form that the file exists
+                clearErrors(field);           
+                setEmpHistoryFileUploaded(prev => ({ ...prev, [field]: true }));
+                setSuccessfulEmpHistoryFileUploadMsg(prev => ({ ...prev, [field]: 'Uploaded successfully' }));
+
+                // Clear any previous error for this field
+                // setCustomErrorForEmpHistoryDocUpload(prev => ({ ...prev, [field]: '' }));
+                return fileUrl;
+            } else {
+                throw new Error('No file URL returned in the response');
+            }
+        } catch (error) {
+            console.error('File upload failed with error: ', error); // Log the entire error object
+            console.error('Error response:', error.response); // Log the response object if available
+            console.error('Error message:', error.message); // Log the specific error message
+
+            if (error.response && error.response.data) {
+                const errorMessage = error.response.data.message;
+                if (errorMessage.includes('File already exists')) {
+                    console.log('file already exist error:', errorMessage);
+                    // setCustomErrorForEmpHistoryDocUpload(prev => ({ ...prev, [field]: 'This file is already uploaded' }));
+                    window.alert("This file is already uploaded");
+                    fileInputRefs.current[field].value = ""; // Clear file input
+                    setEmpHistoryDoc(prev => ({ ...prev, [field]: null }));
+                    setEmpHistoryFileUploaded(prev => ({ ...prev, [field]: false }));
+                    setSuccessfulEmpHistoryFileUploadMsg(prev => ({ ...prev, [field]: '' }));
+                    return;
+                } else {
+                    console.log('common error:', errorMessage);
+                    // setCustomErrorForEmpHistoryDocUpload(prev => ({ ...prev, [field]: 'Upload failed, Please try again' }));
+                    window.alert("Upload failed, Please try again");
+                    fileInputRefs.current[field].value = ""; // Clear file input
+                    setEmpHistoryDoc(prev => ({ ...prev, [field]: null }));
+                    setEmpHistoryFileUploaded(prev => ({ ...prev, [field]: false }));
+                    setSuccessfulEmpHistoryFileUploadMsg(prev => ({ ...prev, [field]: '' }));
+                }
+            }
+            else {
+                // Handle generic errors
+                // setCustomErrorForEmpHistoryDocUpload(prev => ({ ...prev, [field]: 'Upload failed, Please try again' }));
+                window.alert("Upload failed, Please try again");
+                fileInputRefs.current[field].value = ""; // Clear file input
+                setEmpHistoryDoc(prev => ({ ...prev, [field]: null }));
+                setEmpHistoryFileUploaded(prev => ({ ...prev, [field]: false }));
+                setSuccessfulEmpHistoryFileUploadMsg(prev => ({ ...prev, [field]: '' }));
+            }
         }
     };
 
-    const numberToWords = (num) => {
-        const words = ['first', 'second', 'third'];
-        return words[num - 1] || num;
-    }
-    const wordIndex = numberToWords(index + 1); // for converting no. to words
+    // to store theese fields in context
+    const handleInputChange = (field, index, value) => {
+        setEmploymentHistoryDetails((prev) => ({
+            ...prev,
+            [field]: {
+                ...prev[field],
+                [index]: value,  // Store values under their respective index
+            },
+        }));
+    };
+
 
     return (
         <div className='empHistoryContainer' key={index}>
             <div>
-                <div className='empHistoryDetailHeading'> <h6 className='educationalHeadline'>EMPLOYMENT HISTORY-</h6><span><p className='educationalNote'>
+                <div className='empHistoryDetailHeading'> <h6 className='educationalHeadline'>EMPLOYMENT HISTORY -</h6><span><p className='educationalNote'>
                     Previous {wordIndex} employment history</p></span> </div>
             </div>
             {/* employment history form */}
             <form onSubmit={handleSubmit(onSubmit)} className='empHistoryForm'>
                 <div className='PrevEmpNameContainer'>
                     <label>Previous Employer Name <span className='required'>*</span> <span className='separatorForPrevEmpName'>:</span></label>
-                    <input type='text' placeholder='Previous Employer Name' className={`PrevEmpNameInput ${errors.PrevEmpName ? 'invalid' : ''}`} {...register("PrevEmpName", { required: true, maxLength: 50 })}
-                        value={pattern.PrevEmpName} onChange={(e) => handlePatternForPrevEmp(e, /^[A-Za-z\s]+$/, 'PrevEmpName')} />
-                    {customErrorForPattern.PrevEmpName ? <div className='empErrorMessage'>{customErrorForPattern.PrevEmpName}</div> : ''}
+                    <input type='text' placeholder='Previous Employer Name' className={`PrevEmpNameInput ${errors?.[`PrevEmpName[${index}]`] ? 'invalid' : ''}`} {...register(`PrevEmpName[${index}]`, {
+                        required: true,
+                        minLength: {
+                            value: 3,
+                            message: 'Name must be at least 3 characters'
+                        },
+                        maxLength: {
+                            value: 50,
+                            message: 'Name cannot exceed 50 characters'
+                        }
+                    })}
+                        value={pattern[`PrevEmpName[${index}]`]} onChange={(e) => { handlePatternForPrevEmp(e, /^[A-Za-z\s]+$/, "PrevEmpName", index); handleInputChange("PrevEmpName", index, e.target.value) }} />
+                    {customErrorForPattern[`PrevEmpName[${index}]`] ? <div className='empErrorMessage'>{customErrorForPattern[`PrevEmpName[${index}]`]}</div> : ''}
+                    {errors[`PrevEmpName[${index}]`] && (<div className="empErrorMessage">{errors[`PrevEmpName[${index}]`].message}</div>)}
                 </div>
                 <div className='PrevEmpNameContainer'>
-                    <label>Address <span className='required'>*</span> <span className='separatorForPrevEmpAddress'>:</span></label>
-                    <input type='text' placeholder='Previous Employer Address' className={`PrevEmpAddressInput ${errors.PrevEmpAddress ? 'invalid' : ''}`} {...register("PrevEmpAddress", { required: true, maxLength: 100 })} />
+                    <label>Address <span className='required'>*</span> <span className='separatorForPrevEmpAdd'>:</span></label>
+                    <input type='text' placeholder='Previous Employer Address' className={`PrevEmpAddressInput ${errors?.[`PrevEmpAddress[${index}]`] ? 'invalid' : ''}`} {...register(`PrevEmpAddress[${index}]`, { required: true, maxLength: 100 })}
+                        onChange={(e) => handleInputChange("PrevEmpAddress", index, e.target.value)} />
                 </div>
                 <div className='noCodeContainer'>
                     <div>
                         <label>Telephone No. <span className='required'>*</span> <span className='separationForTelephone'> : </span></label>
-                        <input type='telephone' placeholder='Mobile No.' className={`teleInput ${errors.telephoneNo ? 'invalid' : ''}`}  {...register("telephoneNo", { required: true })}
-                            value={pattern.telephoneNo} onChange={(e) => handlePatternForPrevEmp(e, /^[0-9]+$/, 'telephoneNo')} />
-                        {customErrorForPattern.telephoneNo ? <div className='empErrorMessage'>{customErrorForPattern.telephoneNo}</div> : ''}
+                        <input type='telephone' placeholder='Mobile No.' className={`teleInput ${errors?.[`telephoneNo[${index}]`] ? 'invalid' : ''}`}  {...register(`telephoneNo[${index}]`, {
+                            required: true,
+                            minLength: {
+                                value: 10,
+                                message: 'Telephone no. must be of ten digits only'
+                            }
+                        })}
+                            value={pattern[`telephoneNo[${index}]`]} onChange={(e) => { handlePatternForPrevEmp(e, /^[0-9]+$/, "telephoneNo", index); handleInputChange("telephoneNo", index, e.target.value) }} />
+                        {customErrorForPattern[`telephoneNo[${index}]`] ? <div className='empErrorMessage'>{customErrorForPattern[`telephoneNo[${index}]`]}</div> : ''}
+                        {errors[`telephoneNo[${index}]`] && (<div className="empErrorMessage">{errors[`telephoneNo[${index}]`].message}</div>)}
                     </div>
                     <div className='codeContainer'>
                         <label>Employee Code <span className='required'>*</span> <span className='separationForEmpCode'> : </span></label>
-                        <input type='text' placeholder='Employee Code' className={`empCodeInput ${errors.employeeCode ? 'invalid' : ''} `}  {...register("employeeCode", { required: true })} />
+                        <input type='text' placeholder='Employee Code' className={`empCodeInput ${errors?.[`employeeCode[${index}]`] ? 'invalid' : ''} `}  {...register(`employeeCode[${index}]`, {
+                            required: true,
+                            minLength: {
+                                value: 6,
+                                message: 'Employee Code must be of six digits only'
+                            }
+                        })}
+                            onChange={(e) => { handleInputChange("employeeCode", index, e.target.value); handlePatternForPrevEmp(e, /^[0-9]+$/, "employeeCode", index) }} />
+                        {customErrorForPattern[`employeeCode[${index}]`] ? <div className='empErrorMessage'>{customErrorForPattern[`employeeCode[${index}]`]}</div> : ''}
+                        {errors[`employeeCode[${index}]`] && (<div className="empErrorMessage">{errors[`employeeCode[${index}]`].message}</div>)}
                     </div>
                 </div>
                 <div className='noCodeContainer'>
                     <div>
                         <label>Designation<span className='required'>*</span> <span className='separationForDesg'> : </span></label>
-                        <input type='text' placeholder='Designation' className={`desgInput ${errors.designation ? 'invalid' : ''} `} {...register("designation", { required: true, maxLength: 50 })}
-                            value={pattern.designation} onChange={(e) => handlePatternForPrevEmp(e, /^[A-Za-z0-9-\s]+$/, 'designation')} />
-                        {customErrorForPattern.designation ? <div className='empErrorMessage'>{customErrorForPattern.designation}</div> : ''}
+                        <input type='text' placeholder='Designation' className={`desgInput ${errors?.[`designation[${index}]`] ? 'invalid' : ''} `} {...register(`designation[${index}]`, { required: true, maxLength: 50 })}
+                            value={pattern[`designation[${index}]`]} onChange={(e) => { handlePatternForPrevEmp(e, /^[A-Za-z0-9-\s]+$/, "designation", index); handleInputChange("designation", index, e.target.value) }} />
+                        {customErrorForPattern[`designation[${index}]`] ? <div className='empErrorMessage'>{customErrorForPattern[`designation[${index}]`]}</div> : ''}
                     </div>
                     <div className='codeContainer'>
                         <label>Department <span className='required'>*</span> <span className='separationForDept'> : </span></label>
-                        <input type='text' placeholder='Department' className={`deptInput ${errors.department ? 'invalid' : ''}`} {...register("department", { required: true, maxLength: 50 })}
-                            value={pattern.department} onChange={(e) => handlePatternForPrevEmp(e, /^[A-Za-z0-9-\s]+$/, 'department')} />
-                        {customErrorForPattern.department ? <div className='empHistoryErrorMessage'>{customErrorForPattern.department}</div> : ''}
+                        <input type='text' placeholder='Department' className={`deptInput ${errors?.[`department[${index}]`] ? 'invalid' : ''}`} {...register(`department[${index}]`, { required: true, maxLength: 50 })}
+                            value={pattern[`department[${index}]`]} onChange={(e) => { handlePatternForPrevEmp(e, /^[A-Za-z0-9-\s]+$/, "department", index); handleInputChange("department", index, e.target.value) }} />
+                        {customErrorForPattern[`department[${index}]`] ? <div className='empHistoryErrorMessage'>{customErrorForPattern[`department[${index}]`]}</div> : ''}
                     </div>
                 </div>
                 <div className='noCodeContainer'>
                     <div>
                         <label>Manager's Name <span className='required'>*</span> <span className='separationForManagerName'> : </span></label>
-                        <input type='text' placeholder='Manager Name' className={`managerNameInput ${errors.managerName ? 'invalid' : ''}`} {...register("managerName", { required: true, maxLength: 50 })}
-                            value={pattern.managerName} onChange={(e) => handlePatternForPrevEmp(e, /^[A-Za-z\s]+$/, 'managerName')} />
-                        {customErrorForPattern.managerName ? <div className='empErrorMessage'>{customErrorForPattern.managerName}</div> : ''}
+                        <input type='text' placeholder='Manager Name' className={`managerNameInput ${errors?.[`managerName[${index}]`] ? 'invalid' : ''}`} {...register(`managerName[${index}]`, {
+                            required: true,
+                            minLength: {
+                                value: 3,
+                                message: 'Name must be at least 3 characters'
+                            },
+                            maxLength: {
+                                value: 50,
+                                message: 'Name cannot exceed 50 characters'
+                            }
+                        })}
+                            value={pattern[`managerName[${index}]`]} onChange={(e) => { handlePatternForPrevEmp(e, /^[A-Za-z\s]+$/, "managerName", index); handleInputChange("managerName", index, e.target.value) }} />
+                        {customErrorForPattern[`managerName[${index}]`] ? <div className='empErrorMessage'>{customErrorForPattern[`managerName[${index}]`]}</div> : ''}
+                        {errors[`managerName[${index}]`] && (<div className="empErrorMessage">{errors[`managerName[${index}]`].message}</div>)}
                     </div>
                     <div className='codeContainer'>
                         <label>Manager's Contact No. <span className='required'>*</span> <span className='separationForManagerNo'> : </span></label>
-                        <input type='telephone' placeholder='Contact No.' className={`managerContactInput ${errors.managerContactNo ? 'invalid' : ''}`}  {...register("managerContactNo", { required: true })}
-                            value={pattern.managerContactNo} onChange={(e) => handlePatternForPrevEmp(e, /^[0-9]+$/, 'managerContactNo')} />
-                        {customErrorForPattern.managerContactNo ? <div className='empHistoryErrorMessage'>{customErrorForPattern.managerContactNo}</div> : ''}
+                        <input type='telephone' placeholder='Contact No.' className={`managerContactInput ${errors?.[`managerContactNo[${index}]`] ? 'invalid' : ''}`}  {...register(`managerContactNo[${index}]`, {
+                            required: true,
+                            minLength: {
+                                value: 10,
+                                message: 'Contact no. must be of ten digits only'
+                            }
+                        })}
+                            value={pattern[`managerContactNo[${index}]`]} onChange={(e) => { handlePatternForPrevEmp(e, /^[0-9]+$/, "managerContactNo", index); handleInputChange("managerContactNo", index, e.target.value) }} />
+                        {customErrorForPattern[`managerContactNo[${index}]`] ? <div className='empHistoryErrorMessage'>{customErrorForPattern[`managerContactNo[${index}]`]}</div> : ''}
+                        {errors[`managerContactNo[${index}]`] && (<div className="empErrorMessage">{errors[`managerContactNo[${index}]`].message}</div>)}
                     </div>
                 </div>
                 <div className='PrevEmpNameContainer'>
                     <label>Manager's Email ID <span className='required'>*</span> <span className='separatorForManagerEmail'>:</span></label>
-                    <input type='text' placeholder='Email ID' className={`managerEmailInput ${errors.managerEmailId ? 'invalid' : ''}`} {...register("managerEmailId", { required: true })} />
+                    <input type='text' placeholder='Email ID' className={`managerEmailInput ${errors?.[`managerEmailId[${index}]`] ? 'invalid' : ''}`} {...register(`managerEmailId[${index}]`, { required: true })}
+                        onChange={(e) => { handleInputChange("managerEmailId", index, e.target.value); handlePatternForPrevEmp(e, /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, "managerEmailId", index) }} />
+                    {customErrorForPattern[`managerEmailId[${index}]`] ? <div className='empHistoryErrorMessage'>{customErrorForPattern[`managerEmailId[${index}]`]}</div> : ''}
                 </div>
                 <div className='PrevEmpNameContainer'>
                     <label>Reasons for Leaving <span className='required'>*</span> <span className='separatorForLeaveReason'>:</span></label>
-                    <input type='text' placeholder='Leaving Reason' className={`leaveReasonInput  ${errors.leaveReason ? 'invalid' : ''}`} {...register("leaveReason", { required: true, maxLength: 100 })} />
+                    <input type='text' placeholder='Leaving Reason' className={`leaveReasonInput  ${errors?.[`leaveReason[${index}]`] ? 'invalid' : ''}`} {...register(`leaveReason[${index}]`, { required: true, maxLength: 100 })}
+                        onChange={(e) => handleInputChange("leaveReason", index, e.target.value)} />
                 </div>
                 <div className='PrevEmpFromToContainer'>
                     <label>Employment Period <span className='required'>*</span> <span className='separatorForStayEmpFrom'>:</span></label>
                     <div>
                         <label>From <span className='required'>*</span> </label>
-                        <input type='date' placeholder='Select Date' className={`empFromInput ${errors.empPeriodFrom ? 'invalid' : ''}`} {...register("empPeriodFrom", { required: true })} />
+                        <input type='date' placeholder='Select Date' className={`empFromInput ${errors?.[`empPeriodFrom[${index}]`] ? 'invalid' : ''}`} {...register(`empPeriodFrom[${index}]`, { required: true })}
+                            onChange={(e) => { handleInputChange("empPeriodFrom", index, e.target.value); handleEmpPeriodFromDateColorChange(e, index); handleDynamicEmpPeriodFromStayDatesChange(index, e) }}
+                            style={{ color: selectEmpPeriodFromDateColor }} />
                     </div>
                     <div className='empToContainer'>
                         <label className='empToLabel'>To<span className='required'>*</span> </label>
-                        <input type='date' placeholder='Select Date' className={`empToInput ${errors.empPeriodTo ? 'invalid' : ''}`} {...register("empPeriodTo", { required: true })} />
+                        <input type='date' placeholder='Select Date' className={`empToInput ${errors?.[`empPeriodTo[${index}]`] ? 'invalid' : ''}`} {...register(`empPeriodTo[${index}]`, { required: true })}
+                            onChange={(e) => { handleInputChange("empPeriodTo", index, e.target.value); handleEmpPeriodToDateColorChange(e, index) }}
+                            style={{ color: selectEmpPeriodToDateColor }} min={empPeriodFromStayDates[index]} />
                     </div>
                 </div>
                 <div className='PrevEmpNameContainer'>
-                    <label>Was this Position? <span className='required'>*</span> </label><span className='separatorForPosition'>:</span>
-                    Permanent<input type='radio' name="position" className='radioCheck'  {...register("position", { required: true })} value="permanent" />
-                    Temporary<input type='radio' name="position" className='radioCheck'  {...register("position", { required: true })} value="temporary" />
-                    Contractual<input type='radio' name="position" className='radioCheck' {...register("position", { required: true })} value="contractual" />
+                    <label>Was this Position? <span className='required'>*</span> </label>
+                    <span className='separatorForPosition'>:</span>
+
+                    <label>Permanent
+                        <input type='radio' name="position" className='radioCheck'
+                            {...register(`position[${index}]`, { required: true })}
+                            value="permanent" onChange={(e) => handleInputChange("position", index, e.target.value)}
+                        />
+                    </label>
+
+                    <label>Temporary
+                        <input type='radio' name="position" className='radioCheck'
+                            {...register(`position[${index}]`, { required: true })}
+                            value="temporary" onChange={(e) => handleInputChange("position", index, e.target.value)}
+                        />
+                    </label>
+
+                    <label>Contractual
+                        <input type='radio' name="position" className='radioCheck'
+                            {...register(`position[${index}]`, { required: true })}
+                            value="contractual" onChange={(e) => handleInputChange("position", index, e.target.value)}
+                        />
+                    </label>
                 </div>
-                {errors.position && <div className='errorMessage'>Please select the position type</div>}
+
+                {errors[`position[${index}]`] && <div className='errorMessage'>Please select the position type</div>}
+
                 <div>
                     <h6 className='prevDoc'>Please submit a scan copy of your previous relevant documents-</h6>
                 </div>
                 <div className='docGrpContainer'>
-                    <div>
-                        <label>Experience Certificate</label><span className='required'>*</span><span className='separatorForExpCert'>:</span>
-                        <input type='file' className={`uploadFileOfExpCert ${errors.expCertFile ? 'invalid' : ''}`} {...register("expCertFile", { required: true })}
-                            ref={(el) => (fileRefs.current.expCertRef = el)} // store DOM reference for direct access
-                            onChange={(e) => handleFileForDocs(e, "expCertFile")} />
-                        {customErrorForDoc.expCertFile && (<div className="docErrorMessage">{customErrorForDoc.expCertFile}</div>)}
-                        <div className='expCertErrorMessage'>{errorForExpCertFileSize}</div>
-                        <button type="button" className="uploadEmp" onClick={() => handleFileUpload('expCertFile')}>upload</button>
-                        {customErrorForDocUpload.expCertFile ? <div className="docUploadErrorMessage">{customErrorForDocUpload.expCertFile}</div> : ''}
-                        {successfulUploadMsg.expCertFile ? <div className="docUploadSuccessMessage">{successfulUploadMsg.expCertFile}</div> : ''}
+                    <label>Experience Certificate</label><span className='required'>*</span><span className='separatorForExpCert'>:</span>
+                    <div className='emp-file-container'>
+                        <input type='file' className={`uploadFileOfExpCert ${errors?.[`expCertFile.${index}`] ? 'invalid' : ''}`} {...register(`expCertFile.${index}`, { required: true })}
+                            ref={(el) => fileInputRefs.current[`expCertFile.${index}`] = el}  // Assign ref dynamically 
+                            onChange={(e) =>  handleFileForDocs(e, `expCertFile.${index}`) } />
+                        {/* {customErrorForEmpHistoryDocUpload[`expCertFile[${index}]`] && (<div className="docErrorMessage">{customErrorForEmpHistoryDocUpload[`expCertFile[${index}]`]}</div>)} */}
+                        <button type="button" className="uploadEmp" onClick={() => handleFileUpload(`expCertFile.${index}`)}>upload</button>
+                        {successfulEmpHistoryFileUploadMsg[`expCertFile.${index}`] ? <div className="docUploadSuccessMessage">{successfulEmpHistoryFileUploadMsg[`expCertFile.${index}`]}</div> : ''}
                     </div>
-                    <div>
-                        <label className='relievingLabel'>Relieving Letter</label><span className='required'>*</span><span className='separatorForRelievingLetter'>:</span>
-                        <input type='file' className={`uploadFileOfRelievingLetter ${errors.relievingLetterFile ? 'invalid' : ''}`} {...register("relievingLetterFile", { required: true })}
-                            ref={(el) => (fileRefs.current.relievingLetterRef = el)} onChange={(e) => handleFileForDocs(e, "relievingLetterFile")} />
-                        {customErrorForDoc.relievingLetterFile ? <div className="docErrorMessage">{customErrorForDoc.relievingLetterFile}</div> : ''}
-                        <div className='relievingLetterErrorMessage'>{errorForRelievingLetterFileSize}</div>
-                        <button type="button" className="uploadEmp" onClick={() => handleFileUpload('relievingLetterFile')}>upload</button>
-                        {customErrorForDocUpload.relievingLetterFile ? <div className="docUploadErrorMessage">{customErrorForDocUpload.relievingLetterFile}</div> : ''}
-                        {successfulUploadMsg.relievingLetterFile ? <div className="docUploadSuccessMessage">{successfulUploadMsg.relievingLetterFile}</div> : ''}
+                    <div style={{ marginLeft: '-95px' }}>
+                        <label className='relievingLabel'>Relieving Letter</label><span className='required'>*</span><span className='separatorForExpCert'>:</span>
+                        <div className='emp-relieving-file-container'>
+                            <input type='file' className={`uploadFileOfExpCert ${errors?.[`relievingLetterFile.${index}`] ? 'invalid' : ''}`} {...register(`relievingLetterFile.${index}`, { required: true })}
+                                ref={(el) => fileInputRefs.current[`relievingLetterFile.${index}`] = el}  // Assign ref dynamically
+                                onChange={(e) =>  handleFileForDocs(e, `relievingLetterFile.${index}`) } />
+                            {/* {customErrorForEmpHistoryDocUpload[`relievingLetterFile[${index}]`] ? <div className="docErrorMessage">{customErrorForEmpHistoryDocUpload[`relievingLetterFile[${index}]`]}</div> : ''} */}
+                            <button type="button" className="uploadEmp" onClick={() => handleFileUpload(`relievingLetterFile.${index}`)}>upload</button>
+                            {successfulEmpHistoryFileUploadMsg[`relievingLetterFile.${index}`] ? <div className="docUploadSuccessMessage">{successfulEmpHistoryFileUploadMsg[`relievingLetterFile.${index}`]}</div> : ''}
+                        </div>
                     </div>
                 </div>
-                <div className='docGrpContainer'>
-                    <div>
-                        <label>Last month Salary Slip</label><span className='required'>*</span><span className='separatorForSalarySlip'>:</span>
-                        <input type='file' className={`uploadFileOfExpCert ${errors.lastSalarySlip ? 'invalid' : ''}`} {...register("lastSalarySlip", { required: true })}
-                            ref={(el) => (fileRefs.current.lastSalarySlipRef = el)} onChange={(e) => handleFileForDocs(e, "lastSalarySlip")} />
-                        {customErrorForDoc.lastSalarySlip ? <div className="docErrorMessage">{customErrorForDoc.lastSalarySlip}</div> : ''}
-                        <div className='lastMonthSalarySlipErrorMessage'>{errorForLastMonthSalarySlipFileSize}</div>
-                        <button type="button" className="uploadEmp" onClick={() => handleFileUpload('lastSalarySlip')}>upload</button>
-                        {customErrorForDocUpload.lastSalarySlip ? <div className="docUploadErrorMessage">{customErrorForDocUpload.lastSalarySlip}</div> : ''}
-                        {successfulUploadMsg.lastSalarySlip ? <div className="docUploadSuccessMessage">{successfulUploadMsg.lastSalarySlip}</div> : ''}
+                <div className='lastDocGrpContainer'>
+                    <label>Last month Salary Slip</label><span className='required'>*</span><span className='separatorForExpCert'>:</span>
+                    <div className='emp-file-container'>
+                        <input type='file' className={`uploadFileOfExpCert ${errors?.[`lastSalarySlip.${index}`] ? 'invalid' : ''}`} {...register(`lastSalarySlip.${index}`, { required: true })}
+                            ref={(el) => fileInputRefs.current[`lastSalarySlip.${index}`] = el}  // Assign ref dynamically
+                            onChange={(e) =>  handleFileForDocs(e, `lastSalarySlip.${index}`) } />
+                        {/* {customErrorForEmpHistoryDocUpload[`lastSalarySlip[${index}]`] ? <div className="docErrorMessage">{customErrorForEmpHistoryDocUpload[`lastSalarySlip[${index}]`]}</div> : ''} */}
+                        <button type="button" className="uploadEmp" onClick={() => handleFileUpload(`lastSalarySlip.${index}`)}>upload</button>
+                        {successfulEmpHistoryFileUploadMsg[`lastSalarySlip.${index}`] ? <div className="docUploadSuccessMessage">{successfulEmpHistoryFileUploadMsg[`lastSalarySlip.${index}`]}</div> : ''}
                     </div>
-                    <div>
-                        <label className='relievingLabel'>Appointment Letter</label><span className='required'>*</span><span className='separatorForOfferLetter'>:</span>
-                        <input type='file' className={`uploadFileOfRelievingLetter ${errors.offerLetter ? 'invalid' : ''}`} {...register("offerLetter", { required: true })}
-                            ref={(el) => (fileRefs.current.relievingLetterRef = el)} onChange={(e) => handleFileForDocs(e, "offerLetter")} />
-                        {customErrorForDoc.offerLetter ? <div className="docErrorMessage">{customErrorForDoc.offerLetter}</div> : ''}
-                        <div className='appointmentLetterErrorMessage'>{errorForAppointmentLetterFileSize}</div>
-                        <button type="button" className="uploadEmp" onClick={() => handleFileUpload('offerLetter')}>upload</button>
-                        {customErrorForDocUpload.offerLetter ? <div className="docUploadErrorMessage">{customErrorForDocUpload.offerLetter}</div> : ''}
-                        {successfulUploadMsg.offerLetter ? <div className="docUploadSuccessMessage">{successfulUploadMsg.offerLetter}</div> : ''}
+                    <div style={{ marginLeft: '-95px' }}>
+                        <label className='relievingLabel'>Appointment Letter</label><span className='required'>*</span><span style={{ margin: '21px' }}>:</span>
+                        <div className='emp-relieving-file-container'>
+                            <input type='file' className={`uploadFileOfExpCert ${errors?.[`offerLetter.${index}`] ? 'invalid' : ''}`} {...register(`offerLetter.${index}`, { required: true })}
+                                ref={(el) => fileInputRefs.current[`offerLetter.${index}`] = el}  // Assign ref dynamically
+                                onChange={(e) =>  handleFileForDocs(e, `offerLetter.${index}`) } />
+                            {/* {customErrorForEmpHistoryDocUpload[`offerLetter[${index}]`] ? <div className="docErrorMessage">{customErrorForEmpHistoryDocUpload[`offerLetter[${index}]`]}</div> : ''} */}
+                            <button type="button" className="uploadEmp" onClick={() => handleFileUpload(`offerLetter.${index}`)}>upload</button>
+                            {successfulEmpHistoryFileUploadMsg[`offerLetter.${index}`] ? <div className="docUploadSuccessMessage">{successfulEmpHistoryFileUploadMsg[`offerLetter.${index}`]}</div> : ''}
+                        </div>
                     </div>
                 </div>
             </form>

@@ -25,6 +25,7 @@ $bkngd-color: linear-gradient(to right, #6A1B9A, #bc47b1);
     display: flex;
     justify-content: center; 
     align-items: center; 
+    margin-top: 34px;
         
 
 .right,
@@ -47,6 +48,7 @@ $bkngd-color: linear-gradient(to right, #6A1B9A, #bc47b1);
         font-weight: 600;
         font-size: 20px;
         color: $font-color !important;
+        margin-bottom: -6px;
     }
     .signup-info-text{
         color: $font-color !important;
@@ -180,6 +182,7 @@ $bkngd-color: linear-gradient(to right, #6A1B9A, #bc47b1);
     .serverErrorMessage{
         text-align: center;
         font-size: 13px;
+        margin-top: 10px;
     }
 
     .patternErrorMessage {
@@ -199,6 +202,7 @@ $bkngd-color: linear-gradient(to right, #6A1B9A, #bc47b1);
     width: 90%;
     display: flex;
     justify-content: center;
+    margin-bottom: 58px;
 
     p {
         margin-left: 5px;

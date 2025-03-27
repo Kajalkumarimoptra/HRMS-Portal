@@ -33,44 +33,43 @@ export default function DeclarationForm() {
     <Navbar />
         <div className='declaration-form'>
             <div className='UniversalHeadlines'>
-                <h6 className='mainHeading'>ASSOCIATE INFORMATION AND BACKGROUND CHECK FORM</h6>
+                <h6 className='mainHeading'>ASSOCIATE INFORMATION AND ONBOARDING FORM</h6>
             </div>
             <div className='noteHeading'>
-                <h5 className='noteContent'>Note:<span className='noteDescription'>Please update all cells with correct and relevant data. The information provided in this document
-                    will form part of your official records in the Company<br /> and is subjected to verification.</span></h5>
+                <p className='noteContent'><b>Note: </b>Please update all cells with correct and relevant data. The information provided in this document
+                    will form part of your official records in the Company<br /> and is subjected to verification.</p>
             </div>
             <hr/>
 
             {/* form content */}
             <div className='personalDetailForm'>
                 <div className='personalDetailHeading'> <h6 className='otherDetailHeadline'>OTHER DETAILS-</h6></div>
-            <form onSubmit={handleSubmit(handleFormSubmit)} className='personalDetailContainer'>
+            <form onSubmit={handleSubmit(handleFormSubmit)} className='personalDetailContainer' style={{padding: '0px 15px 0 1px'}}>
                 <div className='illnessDetailContainer'>
-                    <label className='illnessLabel'>Have you suffered from any major illness or undergone any surgery in the past 3 years?If yes,please give details:</label>
+                    <label className='illnessLabel'>Have you suffered from any major illness or undergone any surgery in the past 3 years? If yes, please give details :</label>
                     <textarea name="postContent" rows={5} {...register("anyIllnessDetail")}/>
                 </div>
                     <div className='selfIntrolHeading'> <h6 className='personalDetailHeadline'>SELF INTRODUCTION-</h6></div>
                 <div className='illnessDetailContainer'>
-                    <label className='hobbiesLabel'>Please use free following text and tell us regarding your Hobbies,Interest,how you spend your free time and your professional alignments
-                        /memberships etc</label>
+                    <label className='hobbiesLabel'>Please use free following text and tell us regarding your Hobbies,Interest,how you spend your free time and your professional alignments/memberships etc.</label>
                     <textarea name="postContent" rows={5} {...register("hobbies")}/>
                 </div>
                     <div className='selfIntrolHeading'> <h6 className='personalDetailHeadline'>Declaration and Authorization-</h6></div>
                 <div>
                     <p>
                         <section className='numbering'>(1)</section>I am accepting the defined policies and processes in Moptra Infotech. <br />
-                        <section className='numbering'>(2)</section>I also agree that my candidature with Moptra Infotech is valid only till I abide by the policies and processes of
+                        <section className='numbering' style={{marginRight: '14px'}}>(2)</section>I also agree that my candidature with Moptra Infotech is valid only till I abide by the policies and processes of
                         Moptra Infotech.<br />
-                        <section className='numbering'>(3)</section>I give my consent and authorize Moptra Infotech (or a third party appointed by Moptra Infotech) to contact any
-                        former employee as<p className='textShift'> indicated above and carry out all Background checks not restricted to education, employment, database search,
+                        <section className='numbering' style={{marginRight: '14px'}}>(3)</section>I give my consent and authorize Moptra Infotech (or a third party appointed by Moptra Infotech) to contact any
+                        former employee as indicated above <p className='textShift'>and carry out all Background checks not restricted to education, employment, database search,
                         address verification, criminal check, reference check <br/> deemed appropriate through this selection procedure/continued employment.
-                        I authorize my former employers, agencies educational institutes  etc. to release any <br/> information pertaining to any employment/
+                        I authorize my former employers, agencies educational institutes etc. <br/> to release any information pertaining to any employment/
                         education and I release them from any liability in doing so.</p><br />
-                        <section className='numbering'>(4)</section>I have not been charge sheeted for any offense under the CRPC and the IPC or any other criminal Laws in India or any other country.
-                        I shall promptly notify Moptra <p className='anotherTextShift'> Infotech and the relevant stakeholders, if I am being sheeted for any offense now or any time during
+                        <section className='numbering' style={{marginRight: '14px'}}>(4)</section>I have not been charge sheeted for any offense under the CRPC and the IPC or any other criminal Laws in India or any other country.
+                    I shall promptly<p className='anotherTextShift'> notify Moptra  Infotech and the relevant stakeholders, if I am being sheeted for any offense now or any time during
                         my tenure at Moptra Infotech.</p><br />
-                        <section className='declarationCheck'><input type='checkbox' className='lastDeclarecheck' {...register("declaration", { required: true })}/><span className='required'>*</span>I hereby declare that all information that I have provided in this form are true to the best of my acknowledge,and that
-                        anymisrepresentation of information by  <p className='lastLine'> me will disqualify my candidature and subsequent employment with Moptra Infotech Pvt. Ltd.</p> </section>
+                        <section className='declarationCheck'><input type='checkbox' className='lastDeclarecheck' {...register("declaration", { required: true })}/><span className='required'>*</span>I hereby declare that all information that I have provided in this form are true to the best of my acknowledge, and that
+                        any misrepresentation <p className='lastLine'> of information by me will disqualify my candidature and subsequent employment with Moptra Infotech Pvt. Ltd.</p> </section>
                     </p>
                     {errors.declaration && <p className='declarationErrorMessage'>Please check the declaration to proceed further</p>}
                 </div>

@@ -1,20 +1,20 @@
 // Contact form SCSS
 
 .personaldetail-form {
-    .contactDetailContainer{
+    .contactDetailContainer {
         width: 100%;
-        padding: 18px 16px;
+        padding: 18px 12px 0 0;
         box-sizing: border-box;
 
     }
-   
+
     .UniversalHeadline {
         display: flex;
         justify-content: center;
         padding: 25px 10px 10px 10px;
-      }
-      
-      .mainHeading {
+    }
+
+    .mainHeading {
         border: 1px solid #512f9f;
         background-color: #6A1B9A;
         color: white;
@@ -23,23 +23,23 @@
         display: flex;
         align-items: center;
         justify-content: center;
-      }
-      
-      .noteHeading {
+    }
+
+    .noteHeading {
         padding: 5px 5px 5px 253px;
-      }
-      
-      .noteContent {
+    }
+
+    .noteContent {
         font-size: 13px;
         font-weight: bold;
         text-align: justify;
         margin-left: 15px;
-      }
-      
-      .noteDescription {
+    }
+
+    .noteDescription {
         font-weight: 500;
         margin-left: 6px;
-      }
+    }
 
     .permanentAddressLabel {
         display: flex;
@@ -48,7 +48,7 @@
 
     .flatNoInput,
     .streetInput {
-        width: 95.5%;
+        width: 95.3%;
     }
 
     .flatNoInput {
@@ -79,7 +79,7 @@
     }
 
     .pinCodeInput {
-        width: 266px;
+        width: 285px;
     }
 
     .stateCityContainer {
@@ -88,6 +88,13 @@
 
         div {
             flex: 1;
+        }
+
+        .disabledDropdown {
+            background-color: #efefef !important;
+            border-color: rgba(118, 118, 118, 0.6) !important;
+            color: #666 !important;
+            cursor: not-allowed !important;
         }
     }
 
@@ -105,7 +112,7 @@
     }
 
     .cityContainer {
-        margin-left: -522px;
+        margin-left: -561px;
     }
 
     .separatorForStayFrom {
@@ -127,7 +134,7 @@
     }
 
     .toContainer {
-        margin-right: -342px;
+        margin-right: -361px;
     }
 
     .emergencyContainer {
@@ -150,11 +157,11 @@
     }
 
     .relationshipLabelContainer {
-        margin-left: -243px;
+        margin-left: -149px;
     }
 
     .emergencyNameInput {
-        width: 302px;
+        width: 401px;
     }
 
     .currentaddressContainer {
@@ -216,19 +223,19 @@
         display: flex;
         gap: 10px;
         float: right;
-        margin: 48px 47px 0px 0px;
+        margin: 48px 53px 0px 0px;
         width: 100%;
     }
 
     .backBtn {
-        background-color: #616161c4;
+        background-color: rgba(97, 97, 97, 0.768627451);
         color: white;
         border: none;
         width: 121px;
         height: 42px;
         font-size: 14px;
         margin-right: auto;
-        margin-left: 34px;
+        margin-left: 50px;
 
         &:active {
             box-shadow: 2px 5px 10px 2px #263238;
@@ -253,10 +260,10 @@
     }
 
     .emergencyNoErrorMessage {
-        margin-left: 310px;
+        margin-left: 174px;
     }
 
-    .addressErrorMessage{
+    .addressErrorMessage {
         font-size: 13px;
         color: red;
         text-align: center;

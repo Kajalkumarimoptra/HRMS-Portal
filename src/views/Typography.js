@@ -16,7 +16,7 @@ function Typography() {
   return (
     <>
       <Container fluid>
-        <Row>
+        <Row >
           <Col md="12">
             <Card>
               <Card.Header>

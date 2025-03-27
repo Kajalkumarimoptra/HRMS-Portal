@@ -1,11 +1,16 @@
 .header-base {
     height: 50px;
-    background: transparent;
+    // background-image: url('https://cdn.pixabay.com/photo/2022/01/14/09/05/bubble-background-6936777_640.jpg');
+    // background-image: url('/assets/img/bubble-7.jpg');
+    // background-repeat: no-repeat;
+    // background-size: cover;
+    // background-position: center;
     display: flex;
     padding: 0 20px;
     position: relative;
     overflow: visible !important;
-
+    background: linear-gradient(to left, #512F9F, #793282) !important;
+    
     .header-logo {
         display: flex;
         align-items: center;
@@ -16,7 +21,7 @@
         .header-logo-image {
             height: 40px;
             width: 95px;
-            margin-left: 18px;
+            margin-left: 10px;
 
             img {
                 height: 100%;
@@ -33,7 +38,7 @@
             position: relative;
             padding: 0;
             margin-right: auto;
-            margin-left: 161px;
+            margin-left: 169px;
 
             .search {
                 width: 226px;
@@ -73,7 +78,8 @@
         // icons
         .nav-link {
             border: none;
-            color: #4d5052;
+            // color: #4d5052;
+            color: white;
 
             .profile-img {
                 width: 40px;

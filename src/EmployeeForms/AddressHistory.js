@@ -13,6 +13,9 @@ export default function AddressHistory() {
     const [countries, setCountries] = useState([]); // initialize the state to track all the country invaid input in array
     const [contactHistories, setContactHistories] = useState([]); // initialize the state to track all the contact no. invaid input in array
     const [isValid, setIsValid] = useState(true); // To track whether input is valid for length validation
+    const [fromStayDate, setFromStayDate] = useState("");
+    const [fromStayDates, setFromStayDates] = useState({});
+
     // const [rows, setRows] = useState([]);  // for addition of rows on click
     // const [showAddButtonOfAddressHistory, setShowAddButton] = useState(true); // state to control add row button visibility
     
@@ -35,7 +38,7 @@ export default function AddressHistory() {
 
             // Validate the input value
             if (value && !pattern.test(value)) {
-                alert('Zip Code contains only digits');
+                alert('Only numbers are allowed');
                 const validValue = value.slice(0, -1); // Removing the last entered invalid character
                 newZipcodes[index] = validValue;
                 setZipcodes(newZipcodes);
@@ -62,17 +65,17 @@ export default function AddressHistory() {
         }
         else if (field.includes('Contact')) {
             const newContactHistories = [...contactHistories];
-
+            let newValue = value;
+            
+            if (newValue.length > 10) {
+                newValue = newValue.slice(0, 10); // Slice to 10 digits
+              }
             // Validate the input value
-            if (value && !pattern.test(value)) {
-                alert('Contact No. contains only digits');
-                const validValue = value.slice(0, -1); // Removing the last entered invalid character
-                newContactHistories[index] = validValue;
-                setContactHistories(newContactHistories);
-                setIsValid(false);
-                return;
+            if (newValue && !pattern.test(newValue)) {
+                alert('Only numbers are allowed');
+                newValue = newValue.slice(0, -1);
             }
-            newContactHistories[index] = value;
+            newContactHistories[index] = newValue;
             setContactHistories(newContactHistories);
             setIsValid(true);
         }
@@ -111,7 +114,18 @@ export default function AddressHistory() {
         setAddressHistoryDetails( (prev) => ({
             ...prev, [field] : value,
         }));
-    }
+    };
+
+    const handleFromStayDateChange = (value) => {
+        setFromStayDate(value);
+    };
+    const handleDynamicFromStayDatesChange = (index, e) => {
+        let value = e.target.value;
+        setFromStayDates((prev) => ({
+            ...prev,
+            [index]: value,
+        }))
+    };
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -144,17 +158,17 @@ export default function AddressHistory() {
                             <td className='tableBody'></td>
                         </tr>
                         <tr>
-                            <td className='tableBodyLight'>1</td>
-                            <td className={`tableBodyLight ${errors.firstAddressFrom ? 'invalid' : ''}`} ><input type='date' className='addressTableInput' {...register("firstAddressFrom", { required: true })} 
-                            onChange={ (e) => handleInputChange("firstAddressFrom", e.target.value)}
+                            <td className='tableBody'>1.</td>
+                            <td className={`tableBody ${errors.firstAddressFrom ? 'invalid' : ''}`} ><input type='date' className='addressTableInput' {...register("firstAddressFrom", { required: true })} 
+                            onChange={ (e) => {handleInputChange("firstAddressFrom", e.target.value); handleFromStayDateChange(e.target.value)}}
                             /></td>
-                            <td className={`tableBodyLight ${errors.firstAddressTo ? 'invalid' : ''}`} ><input type='date' className='addressTableInput' {...register("firstAddressTo", { required: true })} 
-                            onChange={ (e) => handleInputChange("firstAddressTo", e.target.value)}
+                            <td className={`tableBody ${errors.firstAddressTo ? 'invalid' : ''}`} ><input type='date' className='addressTableInput' {...register("firstAddressTo", { required: true })} 
+                            onChange={ (e) => handleInputChange("firstAddressTo", e.target.value)} min={fromStayDate}
                             /></td>
-                            <td className={`tableBodyLight ${errors.firstFullAddress ? 'invalid' : ''}`} ><input type='text area' className='addressTableInput' {...register("firstFullAddress", { required: true })} 
+                            <td className={`tableBody ${errors.firstFullAddress ? 'invalid' : ''}`} ><input type='text area' className='addressTableInput' {...register("firstFullAddress", { required: true })} 
                             onChange={ (e) => handleInputChange("firstFullAddress", e.target.value)}
                             /></td>
-                            <td className={`tableBodyLight ${errors.firstAddressZipcode ? 'invalid' : ''}`} ><input type='text' className='addressTableInput' {...register("firstAddressZipcode",
+                            <td className={`tableBody ${errors.firstAddressZipcode ? 'invalid' : ''}`} ><input type='text' className='addressTableInput' {...register("firstAddressZipcode",
                                 { required: true })} value={zipcodes[0]}
                                 onChange={(e) => {handlePatternForAddressHistoryTableInputs(0, /^[0-9]+$/, 'firstAddressZipcode', e); 
                                      handleInputChange("firstAddressZipcode", e.target.value)
@@ -162,12 +176,12 @@ export default function AddressHistory() {
                                 // onBlur={(e) => handlePatternForTotalDigits(0, 'firstAddressZipcode', e)}
                                  />
                             </td>
-                            <td className={`tableBodyLight ${errors.firstAddressCountry ? 'invalid' : ''}`} ><input type='text' className='addressTableInput' {...register("firstAddressCountry", { required: true })} value={countries[0]}
+                            <td className={`tableBody ${errors.firstAddressCountry ? 'invalid' : ''}`} ><input type='text' className='addressTableInput' {...register("firstAddressCountry", { required: true })} value={countries[0]}
                                 onChange={(e) => {handlePatternForAddressHistoryTableInputs(0, /^[A-Za-z\s]+$/, 'firstAddressCountry', e);
                                     handleInputChange("firstAddressCountry", e.target.value)
                                 }}/>
                             </td>
-                            <td className={`tableBodyLight ${errors.firstAddressRtnContact ? 'invalid' : ''}`}><input type='text' className='addressTableInput'  {...register("firstAddressRtnContact", { required: true })} value={contactHistories[0]}
+                            <td className={`tableBody ${errors.firstAddressRtnContact ? 'invalid' : ''}`}><input type='text' className='addressTableInput'  {...register("firstAddressRtnContact", { required: true })} value={contactHistories[0]}
                                 onChange={(e) => {handlePatternForAddressHistoryTableInputs(0, /^[0-9]+$/, 'firstAddressRtnContact', e);
                                     handleInputChange("firstAddressRtnContact", e.target.value)
                                 }}
@@ -177,36 +191,38 @@ export default function AddressHistory() {
                         </tr>
                         {rowsOfAddressHistory.map((_, index) => (
                             <tr key={index}>
-                                <td className={index % 2 === 0 ? 'tableBody' : 'tableBodyLight'}>{index + 2}</td>
-                                <td className={`${index % 2 === 0 ? 'tableBody' : 'tableBodyLight'} ${errors[`anotherAddressFrom_${index}`] ? 'invalid' : ''}`}>
+                                 <td className='tableBody'>{index + 2}.</td>
+                                {/* <td className={index % 2 === 0 ? 'tableBody' : 'tableBodyLight'}>{index + 2}.</td> */}
+                                {/* <td className={`${index % 2 === 0 ? 'tableBody' : 'tableBodyLight'}  */}
+                                <td className={`tableBody ${errors[`anotherAddressFrom_${index}`] ? 'invalid' : ''}`}>
                                     <input type='date' className='addressTableInput' {...register(`anotherAddressFrom_${index}`, { required: true })} 
-                                    onChange={ (e) => handleInputChange(`anotherAddressFrom_${index}`, e.target.value)}
+                                    onChange={ (e) => {handleInputChange(`anotherAddressFrom_${index}`, e.target.value); handleDynamicFromStayDatesChange(index,e)}}
                                     />
                                 </td>
-                                <td className={`${index % 2 === 0 ? 'tableBody' : 'tableBodyLight'} ${errors[`anotherAddressTo_${index}`] ? 'invalid' : ''}`}>
+                                <td className={`tableBody ${errors[`anotherAddressTo_${index}`] ? 'invalid' : ''}`}>
                                     <input type='date' className='addressTableInput' {...register(`anotherAddressTo_${index}`, { required: true })} 
-                                    onChange={ (e) => handleInputChange(`anotherAddressTo_${index}`, e.target.value)}
+                                    onChange={ (e) => handleInputChange(`anotherAddressTo_${index}`, e.target.value)} min={fromStayDates[index]}
                                     />
                                 </td>
-                                <td className={`${index % 2 === 0 ? 'tableBody' : 'tableBodyLight'} ${errors[`anotherFullAddress_${index}`] ? 'invalid' : ''}`}>
+                                <td className={`tableBody ${errors[`anotherFullAddress_${index}`] ? 'invalid' : ''}`}>
                                     <input type='text area' className='addressTableInput' {...register(`anotherFullAddress_${index}`, { required: true })} 
                                     onChange={ (e) => handleInputChange(`anotherFullAddress_${index}`, e.target.value)}
                                     />
                                 </td>
-                                <td className={`${index % 2 === 0 ? 'tableBody' : 'tableBodyLight'} ${errors[`anotherAddressZipcode_${index}`] ? 'invalid' : ''}`}>
+                                <td className={`tableBody ${errors[`anotherAddressZipcode_${index}`] ? 'invalid' : ''}`}>
                                     <input type='text' className='addressTableInput' {...register(`anotherAddressZipcode_${index}`, { required: true })} value={zipcodes[index + 1]}
                                         onChange={(e) => {handlePatternForAddressHistoryTableInputs(index + 1, /^[0-9]+$/, `anotherAddressZipcode_${index}`, e);
                                         handleInputChange(`anotherAddressZipcode_${index}`, e.target.value)}}
                                         // onBlur={(e) => handlePatternForTotalDigits(index + 1, `anotherAddressZipcode_${index}`, e)} 
                                         />
                                 </td>
-                                <td className={`${index % 2 === 0 ? 'tableBody' : 'tableBodyLight'} ${errors[`anotherAddressCountry_${index}`] ? 'invalid' : ''}`}>
+                                <td className={`tableBody ${errors[`anotherAddressCountry_${index}`] ? 'invalid' : ''}`}>
                                     <input type='text' className='addressTableInput' {...register(`anotherAddressCountry_${index}`, { required: true })}
                                         onChange={(e) => {handlePatternForAddressHistoryTableInputs(index + 1, /^[A-Za-z\s]+$/, `anotherAddressCountry_${index}`, e);
                                         handleInputChange(`anotherAddressCountry_${index}`, e.target.value)
                                         }} value={countries[index + 1]} />
                                 </td>
-                                <td className={`${index % 2 === 0 ? 'tableBody' : 'tableBodyLight'} ${errors[`anotherAddressRtnContact_${index}`] ? 'invalid' : ''}`}>
+                                <td className={`tableBody ${errors[`anotherAddressRtnContact_${index}`] ? 'invalid' : ''}`}>
                                     <input type='text' className='addressTableInput' {...register(`anotherAddressRtnContact_${index}`, { required: true })} value={contactHistories[index + 1]}
                                         onChange={(e) => {handlePatternForAddressHistoryTableInputs(index + 1, /^[0-9]+$/, `anotherAddressRtnContact_${index}`, e);
                                         handleInputChange(`anotherAddressRtnContact_${index}`, e.target.value)}}

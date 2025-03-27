@@ -26,40 +26,62 @@ import dashboardRoutes from "routes";
 // import routes from "routes.js";
 import Dashboard from "views/Dashboard";
 import Signup from "views/Signup";
-
+import Leaves from "views/Leaves";
 import sidebarImage from "assets/img/sidebar-3.jpg";
 import Header from "components/Header/Header";
 import EmployeePage from "views/EmployeePage";
+import EditEmpDetails from "views/EditEmpDetails";
 import RegisterPage from "views/RegisterPage";
 import ResendActivationLinkForm from "views/ResendActivationLinkForm";
 import Users from "views/Users";
 import AddNewUser from "views/AddNewUser";
+import EditUser from "views/EditUser";
 import Department from "views/Department";
+import AddNewDept from "views/AddNewDept";
+import EditDept from "views/EditDept"
+import Performance from "views/Performance";
 import Report from "views/Report";
+import Document from "views/Document";
 import JobPortal from "views/JobPortal";
 import JobDashboard from "views/JobDashboard";
-import Leave from "views/Leave";
 import Applicant from "views/Applicant";
 import Positions from "views/Positions";
 import Resumes from "views/Resumes";
 import Settings from "views/Settings";
 import Authentication from "views/Authentication";
-import Documents from "views/Documents";
-import Holidays from "views/Holidays";
-import Activities from "views/Activities";
-import Payroll from "views/Payroll";
-import Accounts from "views/Accounts";
+import OfferLetter from "views/OfferLetter";
+import AppointmentLetter from "views/AppointmentLetter";
+import RelievingLetter from "views/RelievingLetter";
+import ExperienceLetter from "views/ExperienceLetter";
+import ConfirmationLetter from "views/ConfirmationLetter";
 import Project from "views/Project";
-import Language from "views/Language";
+import Holidays from "views/Holidays";
+import Appraisal from "views/Appraisal";
+import Banner from "views/Banner";
+import Attendance from "views/Attendance";
+import EditAttendance from "views/EditAttendance";
+import ApplyLeave from "views/ApplyLeave";
+import Faq from "views/Faq";
+import Profile from "views/Profile";
+import OffboardForAdmins from "views/OffboardForAdmins";
+import Offboard from "views/Offboard";
+import Policies from "views/Policies";
+import Events from "views/Events";
+import EmpAttendance from "views/EmpAttendance";
+import EmpReport from "views/EmpReport";
+import Post from "views/Post";
 
 function Admin() {
 
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Hide Sidebar when the user is on the Events page
+  const shouldShowSidebar = location.pathname !== "/admin/Events";
 
   const [image, setImage] = useState(sidebarImage);
   const [color, setColor] = useState("black");
   const [hasImage, setHasImage] = useState(true);
-  const location = useLocation();
   const mainPanel = useRef(null);
 
   const getRoutes = (routes) => {
@@ -67,7 +89,7 @@ function Admin() {
       if (prop.layout === "/admin") {
         return (
           <Route
-            path={prop.layout + prop.path}
+            path={prop.path}
             element={<prop.component />}
             key={key}
           />
@@ -96,42 +118,62 @@ function Admin() {
     <>
       <div className="wrapper">
         <Header />
-        <Sidebar color={color} image={hasImage ? image : ""} routes={dashboardRoutes} />
-        <div className="main-panel" ref={mainPanel}>
+       {shouldShowSidebar && <Sidebar color={color} image={hasImage ? image : ""} routes={dashboardRoutes()} /> }
+        <div className={`main-panel ${shouldShowSidebar ? "" : "full-width"}`} ref={mainPanel}>
           <AdminNavbar />
           <div className="content">
             <Routes>
               {/* Render the dashboard component */}
-              <Route path="dashboard" element={<Dashboard />} />
-              <Route path="signup" element={<Signup />} />
-              <Route path="employeepage" element={<EmployeePage />} />
-              <Route path="leave" element={<Leave />} />
-              <Route path="resendactivationlink" element={<ResendActivationLinkForm />} />
-              <Route path="registerpage" element={<RegisterPage />} />
-              <Route path="users" element={<Users />} />
-              <Route path="addnewuser" element={<AddNewUser />} />
-              <Route path="project" element={<Project />} />
-              <Route path="department" element={<Department />} />
-              <Route path="report" element={<Report />} />
-              <Route path="jobportal" element={<JobPortal />} />
-              <Route path="jobdashboard" element={<JobDashboard />} />
-              <Route path="applicant" element={<Applicant />} />
-              <Route path="positions" element={<Positions />} />
-              <Route path="resumes" element={<Resumes />} />
-              <Route path="settings" element={<Settings />} />
-              <Route path="authentication" element={<Authentication />} />
-              <Route path="documents" element={<Documents />} />
-              <Route path="activities" element={<Activities />} />
-              <Route path="holidays" element={<Holidays />} />
-              <Route path="payroll" element={<Payroll />} />
-              <Route path="accounts" element={<Accounts/>} />
-              <Route path="language" element={<Language/>} />
+              <Route path="Dashboard" element={<Dashboard />} />
+              <Route path="Leaves" element={<Leaves />} />
+              <Route path="Applyleave" element={<ApplyLeave />} />
+              <Route path="Attendance" element={<Attendance />} />
+              <Route path="EmployeeAttendance" element={<EmpAttendance />} />
+              <Route path="Attendance/:name" element={<EditAttendance />} />
+              <Route path="Banner" element={<Banner/>} />
+              <Route path="Profile" element={<Profile/>} />
+              <Route path="FAQ" element={<Faq/>} />
+              <Route path="Post" element={<Post/>} />
+              <Route path="Users" element={<Users />} />
+              <Route path="Users/Addnewuser" element={<AddNewUser />} />
+              <Route path="Users/:name" element={<EditUser />} />
+              <Route path="Events" element={<Events />} />
+              <Route path="Department" element={<Department />} />
+              <Route path="Addnewdept" element={<AddNewDept />} />
+              <Route path="Editdept" element={<EditDept />} />
+              <Route path="Users/Signup" element={<Signup />} />
+              <Route path="Employeepage" element={<EmployeePage />} />
+              <Route path="Editempdetails" element={<EditEmpDetails />} />
+              <Route path="Resendactivationlink" element={<ResendActivationLinkForm />} />
+              <Route path="Registerpage" element={<RegisterPage />} />
+              <Route path="Performance" element={<Performance />} />
+              <Route path="Project" element={<Project />} />
+              <Route path="Report" element={<Report />} />
+              <Route path="EmployeeReport" element={<EmpReport />} />
+              <Route path="Report" element={<Document />} />
+              <Route path="Jobportal" element={<JobPortal />} />
+              <Route path="Jobdashboard" element={<JobDashboard />} />
+              <Route path="Applicant" element={<Applicant />} />
+              <Route path="Positions" element={<Positions />} />
+              <Route path="Resumes" element={<Resumes />} />
+              <Route path="Settings" element={<Settings />} />
+              <Route path="Authentication" element={<Authentication />} />
+              <Route path="Offerletter" element={<OfferLetter />} />
+              <Route path="Relievingletter" element={<RelievingLetter />} />
+              <Route path="Experienceletter" element={<ExperienceLetter />} />
+              <Route path="Appointmentletter" element={<AppointmentLetter />} />
+              <Route path="Confirmationletter" element={<ConfirmationLetter />} />
+              <Route path="Holidays" element={<Holidays />} />
+              <Route path="Appraisal" element={<Appraisal/>} />
+              <Route path="Policies" element={<Policies/>} />
+              <Route path="Offboard" element={<Offboard/>} />
+              <Route path="Offboarded" element={<OffboardForAdmins/>} />
               
               {/* Dynamically generate all the routes from dashboardRoutes */}
-              {getRoutes(dashboardRoutes)}
+              {getRoutes(dashboardRoutes())}
 
               {/* Redirect /admin to /admin/dashboard */}
-              <Route path="/" element={<Navigate to="dashboard" />} />
+              <Route path="/" element={<Navigate to="Dashboard" />} />
 
             </Routes>
           </div>

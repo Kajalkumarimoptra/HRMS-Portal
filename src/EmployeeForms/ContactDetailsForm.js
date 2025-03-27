@@ -16,8 +16,15 @@ export default function ContactDetailsForm() {
     register, handleSubmit, errors, onSubmit, setValue, watch, reset, clearErrors
   } = useFormContext();
   const { registrationData } = useRegistrationContext();  // Access registration data from context
-  const { addressHistoryDetails, rowsOfAddressHistory  } = useAddressHistoryContext();
-  const [storedPersonalDetails, setStoredPersonalDetails] = useState(''); // State to hold parsed personalDetails
+  const { addressHistoryDetails, rowsOfAddressHistory } = useAddressHistoryContext();
+  const [selectPermanentContactDetailStateColor, setPermanentContactDetailStateColor] = useState("#d3d3d3"); // for giving diff color to select placeholder and option
+  const [selectPermanentContactDetailCityColor, setPermanentContactDetailCityColor] = useState("#d3d3d3");
+  const [selectPermanentContactDetailFromDateColor, setPermanentContactDetailFromDateColor] = useState("#d3d3d3"); // for giving diff color to date placeholder and option
+  const [selectPermanentContactDetailToDateColor, setPermanentContactDetailToDateColor] = useState("#d3d3d3");
+  const [selectCurrentContactDetailStateColor, setCurrentContactDetailStateColor] = useState("#d3d3d3");
+  const [selectCurrentContactDetailCityColor, setCurrentContactDetailCityColor] = useState("#d3d3d3");
+  const [selectCurrentContactDetailFromDateColor, setCurrentContactDetailFromDateColor] = useState("#d3d3d3");
+  const [selectCurrentContactDetailToDateColor, setCurrentContactDetailToDateColor] = useState("#d3d3d3");
   const [pincodeData, setPincodeData] = useState(false); // contains postoffice object which consists all details based on pincode
   const [stateOption, setStateOption] = useState(statesOfIndia); // whole list of states
   const [pincodeState, setPincodeState] = useState(''); // State derived from pincode
@@ -109,6 +116,9 @@ export default function ContactDetailsForm() {
         setSelectedState(state); // Also set the selected state to pincode state initially
         setCityOption(getCitiesByState(state)); // set the related cities list based on state coming from pincode
         setPermanentAddress(prevState => ({ ...prevState, state: state })); // Update permanent address state
+
+        // Update the color to black when state comes from pincode
+        setPermanentContactDetailStateColor("black");
         console.log(postOffice);
       } else {
         console.error('Error: Invalid pincode');
@@ -173,31 +183,80 @@ export default function ContactDetailsForm() {
       patternErrorMessage = 'No numbers or special characters are allowed';
     }
     else if (field === 'pincode' || field === 'anotherPincode') {
+      if (value.length > 6) {
+        value = value.slice(0, 6); // Slice to 6 digits
+        e.target.value = value;  // Update the input value directly
+      }
       if (value && !pattern.test(value)) {
         patternErrorMessage = 'Only numbers are allowed';
-      } else if (value.length !== 6) {
-        patternErrorMessage = 'Pincode must be of 6 digits';
       }
+      if (field === 'pincode') setPatternForPincode(value);
+      if (field === 'anotherPincode') setPatternForAnotherPincode(value);
     }
     else if (field === 'emergencyContactNo' || field === 'anotherEmergencyContactNo') {
-    //    // If mobile number exceeds 10 digits, slice it to 10 digits
-    //    if (value.length > 10) {
-    //     value = value.slice(0, 10); // Slice to 10 digits
-    // }
-    // if (field === 'emergencyContactNo')setPatternForEmergencyTelephone(value);
-    // if (field === 'anotherEmergencyContactNo') setPatternForAnotherEmergencyTelephone(value);
-    // Perform validation
+      // If mobile number exceeds 10 digits, slice it to 10 digits
+      if (value.length > 10) {
+        value = value.slice(0, 10); // Slice to 10 digits
+        e.target.value = value;  // Update the input value directly
+      }
+      // Perform validation
       if (value && !pattern.test(value)) {
         patternErrorMessage = 'Only numbers are allowed';
-      } else if (value.length !== 10) {
-        patternErrorMessage = 'Contact No. must be of 10 digits';
       }
+      if (field === 'emergencyContactNo') setPatternForEmergencyTelephone(value);
+      if (field === 'anotherEmergencyContactNo') setPatternForAnotherEmergencyTelephone(value);
     }
     setCustomErrorForPattern(prev => ({ ...prev, [field]: patternErrorMessage }));
     if (patternErrorMessage === '') {
       clearErrors(field);
     }
   }
+
+  // 🔥 Fix: Change color dynamically, but ensure placeholder remains gray
+  const handlePermanentContactDetailsStateColorChange = (e) => {
+    const selectedValue = e.target.value;
+    setPermanentContactDetailStateColor(selectedValue ? "black" : "#d3d3d3");
+    clearErrors('state');
+  };
+  const handlePermanentContactDetailsCityColorChange = (e) => {
+    const selectedValue = e.target.value;
+    setPermanentContactDetailCityColor(selectedValue ? "black" : "#d3d3d3");
+    clearErrors('city');
+  };
+  const handlePermanentContactDetailsFromDateColorChange = (e) => {
+    const selectedValue = e.target.value;
+    setPermanentContactDetailFromDateColor(selectedValue ? "black" : "#d3d3d3");
+    setPermanentContactDetailToDateColor("#d3d3d3");
+    clearErrors('fromStay');
+  };
+  const handlePermanentContactDetailsToDateColorChange = (e) => {
+    const selectedValue = e.target.value;
+    setPermanentContactDetailToDateColor(selectedValue ? "black" : "#d3d3d3");
+    clearErrors('toStay');
+  };
+
+  // 🔥 Fix: Change color dynamically, but ensure placeholder remains gray
+  const handleCurrentContactDetailsStateColorChange = (e) => {
+    const selectedValue = e.target.value;
+    setCurrentContactDetailStateColor(selectedValue ? "black" : "#d3d3d3");
+    clearErrors('anotherState');
+  };
+  const handleCurrentContactDetailsCityColorChange = (e) => {
+    const selectedValue = e.target.value;
+    setCurrentContactDetailCityColor(selectedValue ? "black" : "#d3d3d3");
+    clearErrors('anotherCity');
+  };
+  const handleCurrentContactDetailsFromDateColorChange = (e) => {
+    const selectedValue = e.target.value;
+    setCurrentContactDetailFromDateColor(selectedValue ? "black" : "#d3d3d3");
+    setCurrentContactDetailToDateColor("#d3d3d3");
+    clearErrors('anotherFromStay');
+  };
+  const handleCurrentContactDetailsToDateColorChange = (e) => {
+    const selectedValue = e.target.value;
+    setCurrentContactDetailToDateColor(selectedValue ? "black" : "#d3d3d3");
+    clearErrors('anotherToStay');
+  };
 
   // get location from pin code for current address
   const getAnotherLocationData = async (anotherPincode) => {
@@ -215,6 +274,9 @@ export default function ContactDetailsForm() {
         setAnotherPincodeState(anotherState); // Set state based on pincode
         setAnotherSelectedState(anotherState); // Also set the selected state to pincode state initially
         setAnotherCityOption(getAnotherCitiesByState(anotherState)); // set the related cities list based on state coming from pincode
+
+        // Update the color to black when state comes from pincode
+        setCurrentContactDetailStateColor("black");
         console.log(anotherPostOffice);
       } else {
         console.error('Error: Invalid pincode');
@@ -309,6 +371,8 @@ export default function ContactDetailsForm() {
         anotherEmergencyContactNo: '',
         anotherEmergencyRtnName: ''
       });
+      setAnotherSelectedState("");
+      setAnotherSelectedCity("")
     }
   };
 
@@ -324,8 +388,8 @@ export default function ContactDetailsForm() {
   const backToPersonalPage = () => {
     navigate("/personaldetailsform");
   }
-
-  const handleFormSubmit = async(data) => {
+  
+  const handleFormSubmit = async (data) => {
     if (rowsOfAddressHistory.length < 2) {
       setCustomErrorForAddRows('please fill the address history details for whole three years by clicking on add row button'); // error msg display on not filling all three yrs address history details
       setTimeout(() => {
@@ -339,7 +403,7 @@ export default function ContactDetailsForm() {
       navigate("/educationaldetailsform");
       reset();
     }
-
+    sessionStorage.setItem('addressCheckbox', JSON.stringify(checked));
     const addressDetails = [
       {
         "stayFrom": addressHistoryDetails.firstAddressFrom,
@@ -363,6 +427,14 @@ export default function ContactDetailsForm() {
       });
     }
 
+    // Retrieve personal details from sessionStorage
+    const personalFormDetails = sessionStorage.getItem('personalDetails');
+    let parsedPersonalDetails = {};
+    if (personalFormDetails) {
+      parsedPersonalDetails = JSON.parse(personalFormDetails);
+      console.log('Parsed personal details:', parsedPersonalDetails);
+    }
+
     const newPayload = {
       "createdDate": registrationData.createdDate || "",
       "dateOfBirth": registrationData.dateOfBirth || "",
@@ -370,26 +442,25 @@ export default function ContactDetailsForm() {
       "password": registrationData.password || "",
       "fullName": registrationData.fullName || "",
       "mobileNumber": registrationData.mobileNumber || "",
-      "personalDetailsDTO": {
-        "aadharNumber": storedPersonalDetails?.personalDetails?.aadharNumber,
-        "aadharUrl": storedPersonalDetails?.personalDetails?.aadharUrl,
-        "dob": storedPersonalDetails?.personalDetails?.dob,
-        "email": storedPersonalDetails?.personalDetails?.email,
-        "fatherName": storedPersonalDetails?.personalDetails?.fatherName,
-        "firstName": storedPersonalDetails?.personalDetails?.firstName,
-        "gender": storedPersonalDetails?.personalDetails?.gender,
-        "imageUrl": storedPersonalDetails?.personalDetails?.imageUrl,
-        "middleName": storedPersonalDetails?.personalDetails?.middleName,
-        "mobile": storedPersonalDetails?.personalDetails?.mobile,
-        "motherName": storedPersonalDetails?.personalDetails?.motherName,
-        "panNumber": storedPersonalDetails?.personalDetails?.panNumber,
-        "panUrl": storedPersonalDetails?.personalDetails?.panUrl,
-        "passportNumber": storedPersonalDetails?.personalDetails?.passportNumber,
-        "passportUrl": storedPersonalDetails?.personalDetails?.passportUrl,
-        // "personalId": "",
-        "surname": storedPersonalDetails?.personalDetails?.surname
-      },
       "roleName": "EMPLOYEE",
+      "personalDetailsDTO": {
+        "aadharNumber": parsedPersonalDetails?.aadharNumber,
+        "aadharUrl": parsedPersonalDetails?.aadharUrl,
+        "dob": parsedPersonalDetails?.dob,
+        "email": parsedPersonalDetails?.email,
+        "fatherName": parsedPersonalDetails?.fatherName,
+        "firstName": parsedPersonalDetails?.firstName,
+        "gender": parsedPersonalDetails?.gender,
+        "imageUrl": parsedPersonalDetails?.imageUrl,
+        "middleName": parsedPersonalDetails?.middleName,
+        "mobile": parsedPersonalDetails?.mobile,
+        "motherName": parsedPersonalDetails?.motherName,
+        "panNumber": parsedPersonalDetails?.panNumber,
+        "panUrl": parsedPersonalDetails?.panUrl,
+        "passportNumber": parsedPersonalDetails?.passportNumber,
+        "passportUrl": parsedPersonalDetails?.passportUrl,
+        "surname": parsedPersonalDetails?.surname
+      },
       "permanentAddress": {
         "houseNumber": data.flatNo,
         "streetName": data.street,
@@ -397,13 +468,12 @@ export default function ContactDetailsForm() {
         "pincode": data.pincode,
         "state": data.state,
         "city": data.city,
-        "stayFrom": data.fromStay,
-        "stayTo": data.toStay,
+        "stayFrom":data.fromStay,
+        "stayTo":data.toStay,
         "emergencyContactNumber": data.emergencyContactNo,
         "emergencyContactNameAndRelationship": data.emergencyRtnName
       },
       "currentAddresses": {
-        // "sameAsPermanentAddress": false,
         "sameAsPermanentAddress": checked, // Reflects if the checkbox is checked
         "houseNumber": checked ? data.flatNo : data.anotherFlatNo,
         "streetName": checked ? data.street : data.anotherStreet,
@@ -415,55 +485,165 @@ export default function ContactDetailsForm() {
         "stayTo": checked ? data.toStay : data.anotherToStay,
         "emergencyContactNumber": checked ? data.emergencyContactNo : data.anotherEmergencyContactNo,
         "emergencyContactNameAndRelationship": checked ? data.emergencyRtnName : data.anotherEmergencyRtnName
+      },
+      "addressDetails": addressDetails, // Using the dynamically populated address details
+      "educationalQualifications": [
+        {
+          "degreeName": "",
+          "subject": "",
+          "passingYear": "",
+          "rollNumber": "",
+          "gradeOrPercentage": ""
+        },
+        {
+          "degreeName": "",
+          "subject": "",
+          "passingYear": "",
+          "rollNumber": "",
+          "gradeOrPercentage": ""
+        }
+      ],
+      "documents": [
+       
+      ],
+      "employmentHistories": [
+        {
+          "previousEmployerName": "",
+          "employerAddress": "",
+          "telephoneNumber": "",
+          "employeeCode": "",
+          "designation": "",
+          "department": "",
+          "managerName": "",
+          "managerEmail": "",
+          "managerContactNo": "",
+          "reasonsForLeaving": "",
+          "employmentStartDate": "",
+          "employmentEndDate": "",
+          "employmentType": "",
+          "experienceCertificateUrl": "",
+          "relievingLetterUrl": "",
+          "lastMonthSalarySlipUrl": "",
+          "appointmentLetterUrl": ""
+        },
+        {
+          "previousEmployerName": "",
+          "employerAddress": "",
+          "telephoneNumber": "",
+          "employeeCode": "",
+          "designation": "",
+          "department": "",
+          "managerName": "",
+          "managerEmail": "",
+          "managerContactNo": "",
+          "reasonsForLeaving": "",
+          "employmentStartDate": "",
+          "employmentEndDate": "",
+          "employmentType": "",
+          "experienceCertificateUrl": "",
+          "relievingLetterUrl": "",
+          "lastMonthSalarySlipUrl": "",
+          "appointmentLetterUrl": ""
+        }
+      ],
+      "professionalReferences": [
+        {
+          "name": "",
+          "designation": "",
+          "email": "",
+          "contactNumber": ""
+        },
+        {
+          "name": "",
+          "designation": "",
+          "email": "",
+          "contactNumber": ""
+        }
+      ],
+      "relativeInfos": [
+        {
+          "name": "",
+          "employeeId": "",
+          "relationship": "",
+          "department": "",
+          "location": "",
+          "remarks": ""
+        },
+        {
+          "name": "",
+          "employeeId": "",
+          "relationship": "",
+          "department": "",
+          "location": "",
+          "remarks": ""
+        }
+      ],
+      "passportDetails": {
+        "passportNumber": "",
+        "issueDate": "",
+        "placeOfIssue": "",
+        "expiryDate": "",
+        "countryOfIssue": "",
+        "nationality": "",
+        "citizenship": "",
+        "expatOnGreenCard": false,
+        "expatOnWorkPermit": false,
+        "expatOnPermanentResidencyPermit": false,
+        "anyOtherStatus": "",
+        "legalRightToWorkInCountry": false,
+        "workPermitExpiryDate": "",
+        "workPermitDetails": "",
+        "passportCopy": "",
+        "passportUrl": ""
+      },
+      "visaStatus": {
+        "visaType": "",
+        "legalRightToWork": false,
+        "workPermitDetails": "",
+        "workPermitValidTill": "",
+        "passportCopyPath": ""
     },
-    "addressDetails": addressDetails, // Using the dynamically populated address details
-    // "addressDetails": [
-    //     {
-    //         "stayFrom": addressHistoryDetails.firstAddressFrom,
-    //         "stayTo":  addressHistoryDetails.firstAddressTo,
-    //         "addressLine":  addressHistoryDetails.firstFullAddress,
-    //         "pincode":  addressHistoryDetails.firstAddressZipcode,
-    //         "country":  addressHistoryDetails.firstAddressCountry,
-    //         "contactNumberWithRelationship":  addressHistoryDetails.firstAddressRtnContact
-    //     },
-    //     {
-    //         "stayFrom": addressHistoryDetails.`anotherAddressFrom_${index}`,
-    //         "stayTo": "",
-    //         "addressLine": "",
-    //         "pincode": "",
-    //         "country": "",
-    //         "contactNumberWithRelationship": ""
-    //     },
-    //     {
-    //         "stayFrom": "",
-    //         "stayTo": "",
-    //         "addressLine": "",
-    //         "pincode": "",
-    //         "country": "",
-    //         "contactNumberWithRelationship": ""
-    //     }
-    // ],
+      "otherDetails": {
+      "illness": "",
+      "selfIntroduction": ""
   }
+    }
     console.log("Payload of contact page :", newPayload);
 
-    try{
+    try {
+      // Retrieve the token from localStorage
+      const token = localStorage.getItem('token');
+      console.log('token needed:', token);
+      if (!token) {
+        setServerError('Authentication issue');
+        return; // Exit if token is not found
+      }
+
       const response = await axios.post('http://localhost:8081/primaryDetails/save', newPayload, {
         headers: {
-          Authorization: `Bearer ${'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluMTIzQGdtYWlsLmNvbSIsInJvbGUiOiJTVVBFUl9BRE1JTiIsImVtYWlsSWQiOiJzdXBlcmFkbWluMTIzQGdtYWlsLmNvbSIsInByaW1hcnlJZCI6bnVsbCwiZXhwIjoxNzM4MzkzNzcxLCJpYXQiOjE3Mzc1Mjk3NzEsImp0aSI6ImVjMmM3MTMyLTAxMWQtNDdkYy1iZjU4LTUxYjE2NmU4ZjA2NiIsInZhbGlkU2Vzc2lvbiI6dHJ1ZX0.JYeengxGEXUTZ6ixEmrWcDQu6mc3fyxZyIdlFJEPOn4'}`
+          'Authorization': `Bearer ${token}`
         }
       });
 
-      if(response && response.data){
+      if (response && response.data) {
         console.log("Form submitted successfully:", response.data);
         sessionStorage.setItem('contactDetails', JSON.stringify(response.data))
         navigate("/educationaldetailsform");
+        setPermanentContactDetailStateColor("#d3d3d3");
+        setPermanentContactDetailCityColor("#d3d3d3");
+        setPermanentContactDetailFromDateColor("#d3d3d3");
+        setPermanentContactDetailToDateColor("#d3d3d3");
+        setCurrentContactDetailStateColor("#d3d3d3");
+        setCurrentContactDetailCityColor("#d3d3d3");
+        setCurrentContactDetailFromDateColor("#d3d3d3");
+        setCurrentContactDetailToDateColor("#d3d3d3");
         reset();
       } else {
         console.error("Error submitting form:", response);
         console.error("Error submitting form. Status:", response.status);
         console.error("Error details:", response.data);
       }
-    }catch (error) {
+    } catch (error) {
       if (error.response) {
         console.error("Error response:", error.response);
         console.error("Response status:", error.response.status);
@@ -494,225 +674,272 @@ export default function ContactDetailsForm() {
     console.log("Address History Data:", addressHistoryDetails);
   }, [addressHistoryDetails]);
 
-  useEffect( () => {
-    const personalFormDetails = sessionStorage.getItem('personalDetails');
-    if (personalFormDetails){
-      const parsedPersonalDetails = JSON.parse(personalFormDetails);
-      setStoredPersonalDetails(parsedPersonalDetails);
-      console.log('parsed personal details data:', parsedPersonalDetails);
-      console.log('retrieved personal details data:', storedPersonalDetails);
-    }else {
-      console.log('No personalDetails found in sessionStorage');
-    }
-  }, []);
+  // useEffect( () => {
+  //   const personalFormDetails = sessionStorage.getItem('personalDetails');
+  //   if (personalFormDetails){
+  //     const parsedPersonalDetails = JSON.parse(personalFormDetails);
+  //     setStoredPersonalDetails(parsedPersonalDetails);
+  //     console.log('parsed personal details data:', parsedPersonalDetails);
+  //     console.log('retrieved personal details data:', storedPersonalDetails);
+  //   }else {
+  //     console.log('No personalDetails found in sessionStorage');
+  //   }
+  // }, []);
 
   return (
     <div className='container-fluid form-navbar'>
-    <Navbar />
- 
-    <div className='personaldetail-form'>
+      <Navbar />
 
-      <div className='UniversalHeadline'>
-        <h6 className='mainHeading'>ASSOCIATE INFORMATION AND BACKGROUND CHECK FORM</h6>
-      </div>
-      <div className='noteHeading'>
-        <h5 className='noteContent'>Note:<span className='noteDescription'>Please update all cells with correct and relevant data. The information provided in this document
-          will form part of your official records in the Company<br /> and is subjected to verification.</span></h5>
-      </div>
-      <hr />
+      <div className='personaldetail-form'>
+
+        <div className='UniversalHeadline'>
+          <h6 className='mainHeading'>ASSOCIATE INFORMATION AND ONBOARDING FORM</h6>
+        </div>
+        <div className='noteHeading'>
+          <h5 className='noteContent'>Note:<span className='noteDescription'>Please update all cells with correct and relevant data. The information provided in this document
+            will form part of your official records in the Company<br /> and is subjected to verification.</span></h5>
+        </div>
+        <hr />
 
 
-      {/* contact detail form */}
-      <div className='personalDetailForm'>
+        {/* contact detail form */}
+        <div className='personalDetailForm'>
 
-        <div className='personalDetailHeading'> <h6 className='personalDetailHeadline'>CONTACT DETAILS</h6> </div>
-        <form onSubmit={handleSubmit(handleFormSubmit)} className='contactDetailContainer'>
-          <div>
-            <label className='permanentAddressLabel'>Permanent Address <span className='required'>*</span> <span className='separatorForPermanentAddress'>:</span></label>
-            <input type='text' placeholder='Flat/House Number' className={`flatNoInput ${errors.flatNo ? 'invalid' : ''}`} {...register("flatNo", { required: true, maxLength: 100 })}
-              value={permanentAddress.flatNo} onChange={(e) => handleAddressChange('permanent', 'flatNo', e.target.value)} />
-            <input type='text' placeholder='Street Name' className={`streetInput ${errors.street ? 'invalid' : ''}`} {...register("street", { required: true, maxLength: 100 })}
-              value={permanentAddress.street} onChange={(e) => { handlePatternForAddressInputs(e, /^[A-Za-z\s]+$/, 'street'); handleAddressChange('permanent', 'street', e.target.value) }} />
-            {customErrorForPattern.street ? <div className="contactErrorMessage">{customErrorForPattern.street}</div> : ''}
-          </div>
-          <div className='townPinCodeBox'>
-          </div>
-          <div className='townPinCodeBox'>
+          <div className='personalDetailHeading'> <h6 className='personalDetailHeadline'>CONTACT DETAILS</h6> </div>
+          <form onSubmit={handleSubmit(handleFormSubmit)} className='contactDetailContainer'>
             <div>
-              <input type='text' placeholder='Town' className={`townInput ${errors.town ? 'invalid' : ''}`} {...register("town", { required: true, maxLength: 50 })}
-                value={permanentAddress.town} onChange={(e) => { handlePatternForAddressInputs(e, /^[A-Za-z\s]+$/, 'town'); handleAddressChange('permanent', 'town', e.target.value) }} />
-              {customErrorForPattern.town ? <div className="contactErrorMessage">{customErrorForPattern.town}</div> : ''}
+              <label className='permanentAddressLabel'>Permanent Address <span className='required'>*</span> <span className='separatorForPermanentAddress'>:</span></label>
+              <input type='text' placeholder='Flat/House Number' className={`flatNoInput ${errors.flatNo ? 'invalid' : ''}`} {...register("flatNo", { required: true, maxLength: 100 })}
+                value={permanentAddress.flatNo} onChange={(e) => handleAddressChange('permanent', 'flatNo', e.target.value)} />
+              <input type='text' placeholder='Street Name' className={`streetInput ${errors.street ? 'invalid' : ''}`} {...register("street", { required: true, maxLength: 100 })}
+                value={permanentAddress.street} onChange={(e) => { handlePatternForAddressInputs(e, /^[A-Za-z\s]+$/, 'street'); handleAddressChange('permanent', 'street', e.target.value) }} />
+              {customErrorForPattern.street ? <div className="contactErrorMessage">{customErrorForPattern.street}</div> : ''}
             </div>
-            <div>
-              <label>Pin Code <span className='separatorForPinCode'>:</span></label>
-              <input type='text' placeholder='Pin Code' className={`pinCodeInput  ${errors.pincode ? 'invalid' : ''}`} {...register("pincode",
-                { required: true, minLength: 6, maxLength: 6 })} value={permanentAddress.pincode} onChange={(e) => {
-                  handlePincode(e); handlePatternForAddressInputs(e, /^[0-9]+$/, 'pincode');
-                  handleAddressChange('permanent', 'pincode', e.target.value)
-                }} />
-              {customErrorForPattern.pincode ? <div className="pincodeErrorMessage">{customErrorForPattern.pincode}</div> : ''}
+            <div className='townPinCodeBox'>
             </div>
-          </div>
-          <div className='stateCityContainer'>
-            <div>
-              <label>State <span className='separatorForState'>:</span></label>
-              <select
-                className={`stateInput ${errors.state ? 'invalid' : ''}`}
-                {...register("state", { required: true })}
-                value={selectedState} // Bind select element to state value
-                onChange={(e) => { handleStateChange(e); handleAddressChange('permanent', 'state', e.target.value) }} // Update state variable on change
-              > <option hidden>Select State</option>
-                {stateOption.map((eachState, index) => (
-                  <option key={index} value={eachState}>{eachState}</option>
-                ))}
-              </select>
-            </div>
-            <div className='cityContainer'>
-              <label>City <span className='separatorForCity'>:</span></label>
-              <select className={`cityInput  ${errors.city ? 'invalid' : ''}`} {...register("city", { required: true })}
-                value={selectedCity} // Bind select element to city value
-                onChange={(e) => { handleCityChange(e); handleAddressChange('permanent', 'city', e.target.value) }} // Update city variable on change
-              > <option hidden>Select City</option>
-                {cityOption.map((eachCity, id) => (
-                  <option key={id} value={eachCity}>{eachCity}</option>
-                ))}
-              </select>
-            </div>
-
-          </div>
-          <div className='stateCityContainer'>
-            <div className='fromContainer'>
-              <label>Period Of Stay <span className='separatorForStayFrom'>:</span></label>  <label className='fromLabel'>From</label>
-              <input type='date' placeholder='Select Date' className={`fromInput ${errors.fromStay ? 'invalid' : ''}`} {...register("fromStay", { required: true })}
-                value={permanentAddress.fromStay} onChange={(e) => handleAddressChange('permanent', 'fromStay', e.target.value)} />
-            </div>
-            <div className='toContainer'>
-              <label className='toLabel'>To</label>
-              <input type='date' placeholder='Select Date' className={`toInput ${errors.toStay ? 'invalid' : ''}`} {...register("toStay", { required: true })}
-                value={permanentAddress.toStay} onChange={(e) => handleAddressChange('permanent', 'toStay', e.target.value)} />
-            </div>
-          </div>
-          <div className='emergencyContainer'>
-            <div>
-              <label className='emergencyContactLabel'>Emergency Contact No. <span className='required'>*</span><span className='separatorForEmergencyNo'>:</span></label>
-              <input type='telephone' placeholder='Enter Emergency Mobile No.' className={`emergencyNoInput ${errors.emergencyContactNo ? 'invalid' : ''}`} {...register("emergencyContactNo", { required: true, minLength: 10, maxLength: 10 })}
-                value={permanentAddress.emergencyContactNo} onChange={(e) => { handlePatternForAddressInputs(e, /^[0-9]+$/, 'emergencyContactNo'); handleAddressChange('permanent', 'emergencyContactNo', e.target.value) }} />
-              {customErrorForPattern.emergencyContactNo ? <div className="emergencyErrorMessage">{customErrorForPattern.emergencyContactNo}</div> : ''}
-            </div>
-            <div className='relationshipLabelContainer'>
-              <label className='relationshipLabel'>Name & Relationship of Contact No. <span className='required'>*</span><span className='separatorForNameOfEmergencyNo'>:</span> </label>
-              <input type='text' placeholder='Name & Relationship of Contact No. ' className={`emergencyNameInput ${errors.emergencyRtnName ? 'invalid' : ''}`} {...register("emergencyRtnName", { required: true, maxLength: 50 })}
-                value={permanentAddress.emergencyRtnName} onChange={(e) => { handlePatternForAddressInputs(e, /^[A-Za-z\s]+$/, 'emergencyRtnName'); handleAddressChange('permanent', 'emergencyRtnName', e.target.value) }} />
-              {customErrorForPattern.emergencyRtnName ? <div className="emergencyNoErrorMessage">{customErrorForPattern.emergencyRtnName}</div> : ''}
-            </div>
-          </div>
-
-          {/* current address */}
-          <div className='currentaddressDetailContainer'>
-            <div className='currentaddressContainer'>
-              <label>Current Address <span className='required'>*</span> <span className='separatorForCurrentAddress'>:</span></label>
-              <input type='checkbox' className='check' checked={checked} onChange={fillSamePermanentAddress}
-                disabled={isCheckboxDisabled}
-              />
-              <label className='sameAddressLabel'>Same as Permanent address?</label>
-            </div>
-            <div className='sameForm'>
+            <div className='townPinCodeBox'>
               <div>
-                <input type='text' placeholder='Flat/House Number' className={`flatNoInput ${errors.anotherFlatNo ? 'invalid' : ''}`}
-                  {...register("anotherFlatNo", { required: true, maxLength: 100 })}
-                  value={currentAddress.anotherFlatNo} onChange={(e) => handleAddressChange('current', 'anotherFlatNo', e.target.value)}
-                  disabled={checked ? true : false} />
-                <input type='text' placeholder='Street Name' className={`streetInput  ${errors.anotherStreet ? 'invalid' : ''}`} {...register("anotherStreet", { required: true, maxLength: 100 })}
-                  value={currentAddress.anotherStreet} onChange={(e) => { handlePatternForAddressInputs(e, /^[A-Za-z\s]+$/, 'anotherStreet'); handleAddressChange('current', 'anotherStreet', e.target.value) }} disabled={checked ? true : false} />
-                {customErrorForPattern.anotherStreet ? <div className="contactErrorMessage">{customErrorForPattern.anotherStreet}</div> : ''}
+                <input type='text' placeholder='Town' className={`townInput ${errors.town ? 'invalid' : ''}`} {...register("town", { required: true, maxLength: 50 })}
+                  value={permanentAddress.town} onChange={(e) => { handlePatternForAddressInputs(e, /^[A-Za-z\s]+$/, 'town'); handleAddressChange('permanent', 'town', e.target.value) }} />
+                {customErrorForPattern.town ? <div className="contactErrorMessage">{customErrorForPattern.town}</div> : ''}
               </div>
-              <div className='townPinCodeBox'>
-                <div>
-                  <input type='text' placeholder='Town' className={`townInput  ${errors.anotherTown ? 'invalid' : ''}`} {...register("anotherTown", { required: true, maxLength: 50 })}
-                    value={currentAddress.anotherTown} onChange={(e) => { handlePatternForAddressInputs(e, /^[A-Za-z\s]+$/, 'anotherTown'); handleAddressChange('current', 'anotherTown', e.target.value) }} disabled={checked ? true : false} />
-                  {customErrorForPattern.anotherTown ? <div className="contactErrorMessage">{customErrorForPattern.anotherTown}</div> : ''}
-                </div>
-                <div>
-                  <label>Pin Code <span className='separatorForPinCode'>:</span></label>
-                  <input
-                    type='text'
-                    placeholder='Pin Code'
-                    className={`pinCodeInput ${errors.anotherPincode ? 'invalid' : ''}`}
-                    {...register("anotherPincode", { required: true })}
-                    value={currentAddress.anotherPincode} // Bind to current address state
-                    onChange={(e) => { handleAnotherPincode(e); handlePatternForAddressInputs(e, /^[0-9]+$/, 'anotherPincode'); handleAddressChange('current', 'anotherPincode', e.target.value) }} disabled={checked ? true : false} />
-                  {customErrorForPattern.anotherPincode ? <div className="pincodeErrorMessage">{customErrorForPattern.anotherPincode}</div> : ''}
-                </div>
+              <div>
+                <label>Pin Code <span className='separatorForPinCode'>:</span></label>
+                <input type='text' placeholder='Pin Code' className={`pinCodeInput  ${errors.pincode ? 'invalid' : ''}`} {...register("pincode",
+                  {
+                    required: true, minLength: {
+                      value: 6,
+                      message: "Pincode must be of six digits only"
+                    }
+                  })} value={permanentAddress.pincode} onChange={(e) => {
+                    handlePincode(e); handlePatternForAddressInputs(e, /^[0-9]+$/, 'pincode');
+                    handleAddressChange('permanent', 'pincode', e.target.value)
+                  }} />
+                {customErrorForPattern.pincode ? <div className="pincodeErrorMessage">{customErrorForPattern.pincode}</div> : ''}
+                {errors.pincode && (<div className="errorMessage">{errors.pincode.message}</div>)}
               </div>
-              <div className='stateCityContainer'>
-                <div>
-                  <label>State <span className='separatorForState'>:</span></label>
-                  <select className={`stateInput ${errors.anotherState ? 'invalid' : ''}`}
-                    {...register("anotherState", { required: true })}
-                    value={anotherSelectedState} // Bind select element to state value
-                    onChange={(e) => { handleAnotherStateChange(e); handleAddressChange('current', 'anotherState', e.target.value) }} // Update state variable on change
-                    disabled={checked ? true : false}> <option hidden>Select State</option>
-                    {anotherStateOption.map((anotherEachState, index) => (
-                      <option key={index} value={anotherEachState}>{anotherEachState}</option>
-                    ))}
-                  </select>
-                </div>
-                <div className='cityContainer'>
-                  <label className='cityLabel'>City <span className='separatorForCity'>:</span></label>
-                  <select className={`cityInput ${errors.anotherCity ? 'invalid' : ''}`} {...register("anotherCity", { required: true })}
-                    value={anotherSelectedCity} // Bind select element to city value
-                    onChange={(e) => { handleAnotherCityChange(e); handleAddressChange('current', 'anotherCity', e.target.value) }} // Update city variable on change
-                    disabled={checked ? true : false}> <option hidden>Select City</option>
-                    {anotherCityOption.map((anotherEachCity, id) => (
-                      <option key={id} value={anotherEachCity}>{anotherEachCity}</option>
-                    ))}
-                  </select>
-                </div>
+            </div>
+            <div className='stateCityContainer'>
+              <div>
+                <label>State <span className='separatorForState'>:</span></label>
+                <select
+                  className={`stateInput ${errors.state ? 'invalid' : ''}`}
+                  {...register("state", { required: true })}
+                  value={selectedState} // Bind select element to state value
+                  onChange={(e) => { handleStateChange(e); handleAddressChange('permanent', 'state', e.target.value); handlePermanentContactDetailsStateColorChange(e) }} // Update state variable on change
+                  style={{ color: selectPermanentContactDetailStateColor }}> <option hidden style={{ color: "#d3d3d3" }}>Select State</option>
+                  {stateOption.map((eachState, index) => (
+                    <option key={index} value={eachState} style={{ color: "black" }}>{eachState}</option>
+                  ))}
+                </select>
               </div>
-              <div className='stateCityContainer'>
-                <div className='fromContainer'>
-                  <label>Period Of Stay <span className='separatorForStayFrom'>:</span></label>  <label className='fromLabel'>From</label>
-                  <input type='date' placeholder='Select Date' className={`fromInput ${errors.anotherFromStay ? 'invalid' : ''}`} {...register("anotherFromStay", { required: true })}
-                    value={currentAddress.anotherFromStay} onChange={(e) => handleAddressChange('current', 'anotherFromStay', e.target.value)} disabled={checked ? true : false} />
-                </div>
-                <div className='toContainer'>
-                  <label className='toLabel'>To</label>
-                  <input type='date' placeholder='Select Date' className={`toInput  ${errors.anotherToStay ? 'invalid' : ''}`} {...register("anotherToStay", { required: true })}
-                    value={currentAddress.anotherToStay} onChange={(e) => handleAddressChange('current', 'anotherToStay', e.target.value)} disabled={checked ? true : false} />
-                </div>
+              <div className='cityContainer'>
+                <label>City <span className='separatorForCity'>:</span></label>
+                <select className={`cityInput  ${errors.city ? 'invalid' : ''}`} {...register("city", { required: true })}
+                  value={selectedCity} // Bind select element to city value
+                  onChange={(e) => { handleCityChange(e); handleAddressChange('permanent', 'city', e.target.value); handlePermanentContactDetailsCityColorChange(e) }} // Update city variable on change
+                  style={{ color: selectPermanentContactDetailCityColor }}> <option hidden style={{ color: "#d3d3d3" }}>Select City</option>
+                  {cityOption.map((eachCity, id) => (
+                    <option key={id} value={eachCity} style={{ color: "black" }}>{eachCity}</option>
+                  ))}
+                </select>
               </div>
-              <div className='emergencyContainer'>
+
+            </div>
+            <div className='stateCityContainer'>
+              <div className='fromContainer'>
+                <label>Period Of Stay <span className='separatorForStayFrom'>:</span></label>  <label className='fromLabel'>From</label>
+                <input type='date' placeholder='Select Date' className={`fromInput ${errors.fromStay ? 'invalid' : ''}`} {...register("fromStay", { required: true })}
+                  value={permanentAddress.fromStay} onChange={(e) => { 
+                    const newFromDate = e.target.value;
+                    handleAddressChange('permanent', 'fromStay', newFromDate);
+                    handlePermanentContactDetailsFromDateColorChange(e);
+              
+                    // Reset "To Date" when "From Date" changes
+                    handleAddressChange('permanent', 'toStay', ""); 
+                  }}
+                  style={{ color: selectPermanentContactDetailFromDateColor }} 
+                  max={new Date().toISOString().split("T")[0]} // Cannot be future date
+                  />
+              </div>
+              <div className='toContainer'>
+                <label className='toLabel'>To</label>
+                <input type='date' placeholder='Select Date' className={`toInput ${errors.toStay ? 'invalid' : ''}`} {...register("toStay", { required: true })}
+                  {...(permanentAddress.toStay ? { value: permanentAddress.toStay } : {})}
+                   onChange={(e) => { handleAddressChange('permanent', 'toStay', e.target.value); handlePermanentContactDetailsToDateColorChange(e) }}
+                  style={{ color: selectPermanentContactDetailToDateColor }}
+                  min={permanentAddress.fromStay ? new Date(new Date(permanentAddress.fromStay).setDate(new Date(permanentAddress.fromStay).getDate() + 1)).toISOString().split("T")[0] : undefined}/>
+              </div>
+            </div>
+            <div className='emergencyContainer'>
+              <div>
+                <label className='emergencyContactLabel'>Emergency Contact No. <span className='required'>*</span><span className='separatorForEmergencyNo'>:</span></label>
+                <input type='telephone' placeholder='Enter Emergency Mobile No.' className={`emergencyNoInput ${errors.emergencyContactNo ? 'invalid' : ''}`} {...register("emergencyContactNo", {
+                  required: true, minLength: {
+                    value: 10,
+                    message: "Contact no. must be of ten digits only"
+                  }
+                })}
+                  value={permanentAddress.emergencyContactNo} onChange={(e) => { handlePatternForAddressInputs(e, /^[0-9]+$/, 'emergencyContactNo'); handleAddressChange('permanent', 'emergencyContactNo', e.target.value) }} />
+                {customErrorForPattern.emergencyContactNo ? <div className="emergencyErrorMessage">{customErrorForPattern.emergencyContactNo}</div> : ''}
+                {errors.emergencyContactNo && (<div className="errorMessage">{errors.emergencyContactNo.message}</div>)}
+              </div>
+              <div className='relationshipLabelContainer'>
+                <label className='relationshipLabel'>Name (Relation) <span className='required'>*</span><span className='separatorForNameOfEmergencyNo'>:</span> </label>
+                <input type='text' placeholder='Name & Relationship of Contact No. ' className={`emergencyNameInput ${errors.emergencyRtnName ? 'invalid' : ''}`} {...register("emergencyRtnName", { required: true, maxLength: 50 })}
+                  value={permanentAddress.emergencyRtnName} onChange={(e) => { handlePatternForAddressInputs(e, /^[A-Za-z,()&\s]+$/, 'emergencyRtnName'); handleAddressChange('permanent', 'emergencyRtnName', e.target.value) }} />
+                {customErrorForPattern.emergencyRtnName ? <div className="emergencyNoErrorMessage">{customErrorForPattern.emergencyRtnName}</div> : ''}
+              </div>
+            </div>
+
+            {/* current address */}
+            <div className='currentaddressDetailContainer'>
+              <div className='currentaddressContainer'>
+                <label>Current Address <span className='required'>*</span> <span className='separatorForCurrentAddress'>:</span></label>
+                <input type='checkbox' className='check' checked={checked} onChange={fillSamePermanentAddress}
+                  disabled={isCheckboxDisabled}
+                />
+                <label className='sameAddressLabel'>Same as Permanent address?</label>
+              </div>
+              <div className='sameForm'>
                 <div>
-                  <label className='emergencyContactLabel'>Emergency Contact No.<span className='required'>*</span><span className='separatorForEmergencyNo'>:</span></label>
-                  <input type='text' placeholder='Enter Emergency Mobile No.' className={`emergencyNoInput ${errors.anotherEmergencyContactNo ? 'invalid' : ''}`} {...register("anotherEmergencyContactNo", { required: true })}
-                    value={currentAddress.anotherEmergencyContactNo} onChange={(e) => { handlePatternForAddressInputs(e, /^[0-9]+$/, 'anotherEmergencyContactNo'); handleAddressChange('current', 'anotherEmergencyContactNo', e.target.value) }} disabled={checked ? true : false} />
-                  {customErrorForPattern.anotherEmergencyContactNo ? <div className="emergencyErrorMessage">{customErrorForPattern.anotherEmergencyContactNo}</div> : ''}
+                  <input type='text' placeholder='Flat/House Number' className={`flatNoInput ${errors.anotherFlatNo ? 'invalid' : ''}`}
+                    {...register("anotherFlatNo", { required: true, maxLength: 100 })}
+                    value={currentAddress.anotherFlatNo} onChange={(e) => handleAddressChange('current', 'anotherFlatNo', e.target.value)}
+                    disabled={checked ? true : false} />
+                  <input type='text' placeholder='Street Name' className={`streetInput  ${errors.anotherStreet ? 'invalid' : ''}`} {...register("anotherStreet", { required: true, maxLength: 100 })}
+                    value={currentAddress.anotherStreet} onChange={(e) => { handlePatternForAddressInputs(e, /^[A-Za-z\s]+$/, 'anotherStreet'); handleAddressChange('current', 'anotherStreet', e.target.value) }} disabled={checked ? true : false} />
+                  {customErrorForPattern.anotherStreet ? <div className="contactErrorMessage">{customErrorForPattern.anotherStreet}</div> : ''}
                 </div>
-                <div className='relationshipLabelContainer'>
-                  <label className='relationshipLabel'>Name & Relationship of Contact No. <span className='required'>*</span><span className='separatorForNameOfEmergencyNo'>:</span> </label>
-                  <input type='text' placeholder='Name & Relationship of Contact No. ' className={`emergencyNameInput ${errors.anotherEmergencyRtnName ? 'invalid' : ''}`} {...register("anotherEmergencyRtnName", { required: true })}
-                    value={currentAddress.anotherEmergencyRtnName} onChange={(e) => { handlePatternForAddressInputs(e, /^[A-Za-z\s]+$/, 'anotherEmergencyRtnName'); handleAddressChange('current', 'anotherEmergencyRtnName', e.target.value) }} disabled={checked ? true : false} />
-                  {customErrorForPattern.anotherEmergencyRtnName ? <div className="emergencyNoErrorMessage">{customErrorForPattern.anotherEmergencyRtnName}</div> : ''}
+                <div className='townPinCodeBox' style={{marginTop: '9px'}}>
+                  <div>
+                    <input type='text' placeholder='Town' className={`townInput  ${errors.anotherTown ? 'invalid' : ''}`} {...register("anotherTown", { required: true, maxLength: 50 })}
+                      value={currentAddress.anotherTown} onChange={(e) => { handlePatternForAddressInputs(e, /^[A-Za-z\s]+$/, 'anotherTown'); handleAddressChange('current', 'anotherTown', e.target.value) }} disabled={checked ? true : false} />
+                    {customErrorForPattern.anotherTown ? <div className="contactErrorMessage">{customErrorForPattern.anotherTown}</div> : ''}
+                  </div>
+                  <div>
+                    <label>Pin Code <span className='separatorForPinCode'>:</span></label>
+                    <input
+                      type='text'
+                      placeholder='Pin Code'
+                      className={`pinCodeInput ${errors.anotherPincode ? 'invalid' : ''}`}
+                      {...register("anotherPincode", {
+                        required: true,
+                        minLength: {
+                          value: 6,
+                          message: "Pincode must be of six digits only"
+                        }
+                      })}
+                      value={currentAddress.anotherPincode} // Bind to current address state
+                      onChange={(e) => { handleAnotherPincode(e); handlePatternForAddressInputs(e, /^[0-9]+$/, 'anotherPincode'); handleAddressChange('current', 'anotherPincode', e.target.value) }} disabled={checked ? true : false} />
+                    {customErrorForPattern.anotherPincode ? <div className="pincodeErrorMessage">{customErrorForPattern.anotherPincode}</div> : ''}
+                    {errors.anotherPincode && (<div className="errorMessage">{errors.anotherPincode.message}</div>)}
+                  </div>
+                </div>
+                <div className='stateCityContainer'>
+                  <div>
+                    <label>State <span className='separatorForState'>:</span></label>
+                    <select className={`stateInput ${errors.anotherState ? 'invalid' : ''}`}
+                      {...register("anotherState", { required: true })}
+                      value={anotherSelectedState} // Bind select element to state value
+                      onChange={(e) => { handleAnotherStateChange(e); handleAddressChange('current', 'anotherState', e.target.value); handleCurrentContactDetailsStateColorChange(e) }} // Update state variable on change
+                      style={{ color: selectCurrentContactDetailStateColor }} disabled={checked ? true : false}> <option hidden style={{ color: "#d3d3d3" }}>Select State</option>
+                      {anotherStateOption.map((anotherEachState, index) => (
+                        <option key={index} value={anotherEachState} style={{ color: "black" }}>{anotherEachState}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className='cityContainer'>
+                    <label className='cityLabel'>City <span className='separatorForCity'>:</span></label>
+                    <select className={`cityInput ${errors.anotherCity ? 'invalid' : ''}`} {...register("anotherCity", { required: true })}
+                      value={anotherSelectedCity} // Bind select element to city value
+                      onChange={(e) => { handleAnotherCityChange(e); handleAddressChange('current', 'anotherCity', e.target.value); handleCurrentContactDetailsCityColorChange(e) }} // Update city variable on change
+                      style={{ color: selectCurrentContactDetailCityColor }} disabled={checked ? true : false}> <option hidden style={{ color: "#d3d3d3" }}>Select City</option>
+                      {anotherCityOption.map((anotherEachCity, id) => (
+                        <option key={id} value={anotherEachCity} style={{ color: "black" }}>{anotherEachCity}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                <div className='stateCityContainer'>
+                  <div className='fromContainer'>
+                    <label>Period Of Stay <span className='separatorForStayFrom'>:</span></label>  <label className='fromLabel'>From</label>
+                    <input type='date' placeholder='Select Date' className={`fromInput ${errors.anotherFromStay ? 'invalid' : ''} ${checked ? 'disabledDropdown' : ''}`} {...register("anotherFromStay", { required: true })}
+                      value={currentAddress.anotherFromStay} onChange={(e) => { handleAddressChange('current', 'anotherFromStay', e.target.value); handleCurrentContactDetailsFromDateColorChange(e) 
+                        handleAddressChange('current', 'anotherToStay', ""); 
+                      }}
+                      style={{ color: selectCurrentContactDetailStateColor}}
+                       disabled={checked ? true : false} 
+                      max={new Date().toISOString().split("T")[0]}/>
+                  </div>
+                  <div className='toContainer'>
+                    <label className='toLabel'>To</label>
+                    <input type='date' placeholder='Select Date' className={`toInput  ${errors.anotherToStay ? 'invalid' : ''}`} {...register("anotherToStay", { required: true })}
+                      value={currentAddress.anotherToStay} onChange={(e) => { handleAddressChange('current', 'anotherToStay', e.target.value); handleCurrentContactDetailsToDateColorChange(e) }}
+                      style={{ color: selectCurrentContactDetailToDateColor }} disabled={checked ? true : false}  
+                      min={currentAddress.anotherFromStay ? new Date(new Date(currentAddress.anotherFromStay).setDate(new Date(currentAddress.anotherFromStay).getDate() + 1)).toISOString().split("T")[0] : undefined}/>
+                  </div>
+                </div>
+                <div className='emergencyContainer'>
+                  <div>
+                    <label className='emergencyContactLabel'>Emergency Contact No.<span className='required'>*</span><span className='separatorForEmergencyNo'>:</span></label>
+                    <input type='text' placeholder='Enter Emergency Mobile No.' className={`emergencyNoInput ${errors.anotherEmergencyContactNo ? 'invalid' : ''}`} {...register("anotherEmergencyContactNo", {
+                      required: true,
+                      minLength: {
+                        value: 10,
+                        message: "Contact no. must be of ten digits only"
+                      }
+                    })}
+                      value={currentAddress.anotherEmergencyContactNo} onChange={(e) => { handlePatternForAddressInputs(e, /^[0-9]+$/, 'anotherEmergencyContactNo'); handleAddressChange('current', 'anotherEmergencyContactNo', e.target.value) }} disabled={checked ? true : false} />
+                    {customErrorForPattern.anotherEmergencyContactNo ? <div className="emergencyErrorMessage">{customErrorForPattern.anotherEmergencyContactNo}</div> : ''}
+                    {errors.anotherEmergencyContactNo && (<div className="errorMessage">{errors.anotherEmergencyContactNo.message}</div>)}
+                  </div>
+                  <div className='relationshipLabelContainer'>
+                    <label className='relationshipLabel'>Name (Relation) <span className='required'>*</span><span className='separatorForNameOfEmergencyNo'>:</span> </label>
+                    <input type='text' placeholder='Name & Relationship of Contact No. ' className={`emergencyNameInput ${errors.anotherEmergencyRtnName ? 'invalid' : ''}`} {...register("anotherEmergencyRtnName", { required: true })}
+                      value={currentAddress.anotherEmergencyRtnName} onChange={(e) => { handlePatternForAddressInputs(e, /^[A-Za-z,()&\s]+$/, 'anotherEmergencyRtnName'); handleAddressChange('current', 'anotherEmergencyRtnName', e.target.value) }} disabled={checked ? true : false} />
+                    {customErrorForPattern.anotherEmergencyRtnName ? <div className="emergencyNoErrorMessage">{customErrorForPattern.anotherEmergencyRtnName}</div> : ''}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          {/* address history form */}
-          <div>
-            <AddressHistory />
-          </div>
-          {customErrorForAddRows ? <div className='addressErrorMessage'>{customErrorForAddRows}</div> : ''}
+            <hr style={{width: '95.6%', marginTop:'30px', height:'3px', backgroundColor: 'lightgray', border: 'none'}}/>
+            {/* address history form */}
+            <div>
+              <AddressHistory />
+             </div>
+            {customErrorForAddRows ? <div className='addressErrorMessage'>{customErrorForAddRows}</div> : ''}
 
-          {/* save buttons */}
-          <div className='contactSaveButtons'>
-            <button type="button" className="backBtn" onClick={backToPersonalPage}>Back</button>
-            <button type="button" className="saveBtn" onClick={saveInLocalStorage}>Save Draft</button>
-            <button type="submit" className="saveNextBtn">Save And Next </button>
-          </div>
-        </form>
+            {/* save buttons */}
+            <div className='contactSaveButtons'>
+              <button type="button" className="backBtn" onClick={backToPersonalPage}>Back</button>
+              <button type="button" className="saveBtn" onClick={saveInLocalStorage}>Save Draft</button>
+              <button type="submit" className="saveNextBtn">Save And Next </button>
+            </div>
+          </form>
+        </div>
+
       </div>
-
-    </div>
     </div>
   )
 }

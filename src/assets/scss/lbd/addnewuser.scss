@@ -1,0 +1,110 @@
+.Signup-form {
+    .info-text {
+        color: #5A5A5A !important;
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .user-input-icons {
+        width: 100%;
+        margin-bottom: 10px;
+
+        input,
+        select {
+            border-radius: 5px !important;
+            width: 100%;
+            padding: 6px !important;
+            padding-left: 11px !important;
+            border-color: #616161 !important;
+            font-size: 13px;
+            // color: #d3d3d3;
+            border-top: 1px solid darkgray;
+            /* Mimic top border */
+            border-left: 1px solid darkgray;
+            /* Mimic left border */
+            border-right: 1px solid darkgray;
+            /* Mimic right border */
+            border-bottom: 1px solid darkgray;
+            /* Mimic bottom border */
+
+
+            &::placeholder {
+                font-size: 13px !important;
+                color: #d3d3d3 !important;
+            }
+
+            // &:hover {
+            //     box-shadow: 0 0 10px 0px #6a1b9ac9;
+            //     border-color: #bc47b1;
+            // }
+
+            // &:focus {
+            //     outline: none;
+            //     box-shadow: 0 0 10px 0px #bc47b199;
+            //     border-color: #bc47b1;
+            // }
+        }
+
+        select {
+            padding: 9px !important;
+            color: #d3d3d3 Im !important;
+            appearance: none;
+            /* Hides default arrow (optional) */
+            background: url('/assets/img/dropdown_icon.png') no-repeat right 15px center;
+            background-size: 10px;
+
+            &:has(option:checked:not([value=""])) {
+                color: black !important; // Change to black when a valid option is selected
+            }
+        }
+
+        input[type="date"] {
+            color: #d3d3d3;
+            padding-right: 10px !important;
+        }
+
+
+    }
+
+    .edit-delete-btn-container {
+        display: flex;
+        justify-content: center;
+        gap: 14px;
+
+        .delete-btn {
+            padding: $padding-large;
+            color: white;
+            font-size: $font-size-medium;
+            text-align: center;
+            background: $bkngd-color;
+            box-shadow: rgba(0, 0, 0, 0.1) 1px 0px 6px 8px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+            border-radius: 9px;
+            border: none;
+            width: 20%;
+            font-weight: bold;
+            cursor: pointer;
+
+            &:hover {
+                box-shadow: 1px 4px 10px 0px rgb(106 27 154);
+                border-color: #bc47b1;
+            }
+
+            &:focus {
+                outline: none;
+                box-shadow: 1px 8px 10px 0px rgba(188, 71, 177, 0.6);
+                border-color: #bc47b1;
+            }
+
+            .delete-btn {
+                background: indianred !important;
+            }
+
+        }
+    }
+
+    .userErrorMessage {
+        font-size: 13px;
+        color: red;
+        margin-left: 7px;
+    }
+}

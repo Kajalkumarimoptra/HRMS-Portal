@@ -5,27 +5,37 @@ import { Navigate, useSearchParams } from 'react-router-dom';
 
 const ProtectedRoutes = ({ children }) => {
     let [searchParams] = useSearchParams();
-    let token = sessionStorage.getItem('token'); // Check if the token exists
-    // const token = sessionStorage.getItem('token') || searchParams.get('token'); // Check if the token exists
+    let token = localStorage.getItem('token'); // Check if the token exists
 
-    // If token is found in URL and not already stored in sessionStorage, store it
+    // Get role from localStorage
+    let role = localStorage.getItem('role');
+
+    // If other token has to get from URL, store it
     let urlToken = searchParams.get('token');
 
      // If the token is found in sessionStorage but not already stored, store it
-    if (token && !sessionStorage.getItem('token')) {
-        sessionStorage.setItem('token', token);
+    if (token && !localStorage.getItem('token')) {
+        localStorage.setItem('token', token);
     }
 
     // If the token is found in the URL and not in sessionStorage, store it
-    if (urlToken && !token) {
-        sessionStorage.setItem('token', urlToken);
-        token = urlToken; // Update the token variable to reflect the URL token
+    if (urlToken) {
+        console.log("URL Token:", urlToken);
+        sessionStorage.setItem('urltoken', urlToken);
+        // token = urlToken; // Update the token variable to reflect the URL token
+    }
+
+    // Check if both token and role exist
+    if (!token && !role) {
+        return <Navigate to="/" />; // Redirect to login if no token or role
     }
 
     console.log('got token:', token);
-    if (!token) {
-        return <Navigate to="/" />;
-    }
+    console.log('role stored:', role);
+    console.log("URL Token:", urlToken);
+    // if (!token) {
+    //     return <Navigate to="/" />;
+    // }
 
     return children;
 };

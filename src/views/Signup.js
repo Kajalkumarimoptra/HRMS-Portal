@@ -1,15 +1,13 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { Link } from "react-router-dom";
 import { useFormContext } from "../components/ContextProvider/Context";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { MdEmail } from "react-icons/md";
-import { IoPersonSharp } from "react-icons/io5";
-import { RiLockPasswordFill } from "react-icons/ri";
-import { RiLockPasswordLine } from "react-icons/ri";
 import { BiSolidHide } from "react-icons/bi";
 import { BiSolidShow } from "react-icons/bi";
+import Breadcrumb from "./Breadcrumb";
 
 export default function Signup() {
     const {
@@ -27,35 +25,38 @@ export default function Signup() {
         setServerError
     } = useFormContext();
 
+    const navigate = useNavigate();
     const [signupName, setSignupName] = useState('');
     const [signupMobNo, setSignupMobNo] = useState('');
-    const [signupPassword, setSignupPassword] = useState('');
+    const [signupEmail, setSignupEmail] = useState('');
     const [passwordShow, setPasswordShow] = useState(false);  // for toggle between password show and hide
+    const [passwordShowIcon, setPasswordShowIcon] = useState(false); // to store password icon
+    const [confirmPasswordShowIcon, setConfirmPasswordShowIcon] = useState(false); // to store confirm password icon
     const [confirmPasswordShow, setConfirmPasswordShow] = useState(false);  // for toggle between password show and hide
     const [passwordCriteriaMessage, setPasswordCriteriaMessage] = useState(false);
     const [pattern, setPattern] = useState({
         signupName: '',
         signupMob: '',
+        signupEmail: '',
         signupPassword: ''
     });
 
     const [customErrorForSignupInputs, setCustomErrorForSignupInputs] = useState({
         signupName: '',
         signupMob: '',
+        signupEmail: '',
         signupPassword: ''
     });
 
     const handlePatternForSignup = (e, pattern, field) => {
         let value = e.target.value;
         setServerError('');
+        clearErrors(field);
 
         setPattern(prev => ({ ...prev, [field]: value }))
         if (field === 'signupName') setSignupName(value);
         if (field === 'signupMob') setSignupMobNo(value);
-        if (field === 'signupPassword') {
-            setSignupPassword(value);
-            signupPasswordRef.current = value; // Update the ref with the latest value
-        }
+        if(field === 'signupEmail') setSignupEmail(value);
 
         let patternErrorMessage = '';
         if (field === 'signupName' && value && !pattern.test(value)) {
@@ -68,15 +69,10 @@ export default function Signup() {
             // Perform validation
             if (value && !pattern.test(value)) {
                 patternErrorMessage = 'Only numbers are allowed';
-            } else if (value.length !== 10) {
-                patternErrorMessage = 'Mobile number must be of 10 digits';
-            }
-            // Update the value after applying the limit of 10 digits
+            } 
             setSignupMobNo(value);
-        } else if (field === 'signupPassword') {
-            if (value && !pattern.test(value)) {
-                patternErrorMessage = 'Password must be between 8 and 20 characters, including at least one uppercase letter, one lowercase letter, one number, and one special character (e.g., @$!%*?&)';
-            }
+        }else if (field === 'signupEmail' && value && !pattern.test(value)){
+            patternErrorMessage = 'Please enter the valid email address';
         }
         setCustomErrorForSignupInputs(prev => ({ ...prev, [field]: patternErrorMessage }));
 
@@ -85,33 +81,51 @@ export default function Signup() {
             setCustomErrorForSignupInputs(prev => ({ ...prev, [field]: '' }));
             clearErrors(field);
         }
-
-        // Handle password criteria message visibility
-        if (field === 'signupPassword') {
-            if (value === '') {
-                setPasswordCriteriaMessage(false);  // Hide message when password field is empty
-            } else {
-                setPasswordCriteriaMessage(true);  // Show message when password field is not empty
-            }
-        }
-
     };
 
-     // for password visibility
-     const handlePasswordVisibility = () => {
+    // for password visibility
+    const handlePasswordVisibility = () => {
         setPasswordShow(!passwordShow);
     }
-     const handleConfirmPasswordVisibility = () => {
+    const handleConfirmPasswordVisibility = () => {
         setConfirmPasswordShow(!confirmPasswordShow);
     }
 
     const signupPasswordRef = useRef({});
     signupPasswordRef.current = watch("signupPassword", "");
 
-    const clearErrorFields = () => {  // to clear the error msg on any input change
-
-        clearErrors();
+    const clearErrorFields = (field) => {  // to clear the error msg on any input change
+         clearErrors(field);
+         setServerError('');
     }
+
+    // for conditionally showing passwordCriteriaMessage
+    const handlePasswordCriteriaMessage = (e) => {
+        const showPasswordCriteriaMessage = e.target.value;
+        if (showPasswordCriteriaMessage) {
+            setPasswordCriteriaMessage(true);
+            setPasswordShowIcon(true);
+            console.log('passwordCriteriaMessage is:', passwordCriteriaMessage);
+        }else{
+            setPasswordCriteriaMessage(false);
+            setPasswordShowIcon(false);
+            console.log('passwordCriteriaMessage is:', passwordCriteriaMessage);
+        }
+     }
+
+     // for conditionally showing password icon
+     const handleConfirmPasswordIcon = (e) => {
+        const getConfirmPasswordIcon = e.target.value;
+        if(getConfirmPasswordIcon){
+            setConfirmPasswordShowIcon(true);
+        }else{
+            setConfirmPasswordShowIcon(false);
+        }
+     }
+
+    useEffect(() => {
+        console.log('passwordCriteriaMessage changed:', passwordCriteriaMessage);
+    }, [passwordCriteriaMessage]);
 
     // Handle form submission
     const handleFormSubmit = async (data) => {
@@ -131,7 +145,7 @@ export default function Signup() {
         try {
 
             // Retrieve the token from sessionStorage
-            const token = sessionStorage.getItem('token');
+            const token = localStorage.getItem('token');
             if (!token) {
                 setServerError('User is not authenticated. Please log in again.');
                 return; // Exit if token is not found
@@ -146,14 +160,22 @@ export default function Signup() {
 
             if (response && response.data) {
                 // localStorage.setItem('token', response.data.token); // Store the token after registration
-                toast.success("Admin account is created successfully!");
+                toast.success("Admin account is created successfully, and their credentials have been sent to the respective email ID!");
                 console.log("credentials created successfully:", response.data);
-                reset();
-                setPattern({ signupName: '', signupMob: '' }); // Clear patterns
-                setCustomErrorForSignupInputs({ signupName: '', signupMob: '' }); // Clear errors
+                reset({
+                    signupPassword: '',
+                    signupConfirmPassword: ''
+                });
+                setPattern({ signupName: '', signupMob: '',  signupEmail: '' }); // Clear patterns
+                setCustomErrorForSignupInputs({ signupName: '', signupMob: '',  signupEmail: '' }); // Clear errors
                 setServerError('');
                 setCustomErrorForSignupInputs('');
                 setPasswordCriteriaMessage(false);
+                setPasswordShowIcon(false);
+                setConfirmPasswordShowIcon(false);
+                setTimeout(() => {
+                    navigate('/admin/Users')
+                }, 2000);
             } else {
                 console.error("Unexpected response status:", result.status);
             }
@@ -183,110 +205,104 @@ export default function Signup() {
 
     return (
         <div className="container-fluid">
-            <div className="signup-row">
-                <div className="col-6 left">
-                    <div className="login-form">
-                        <div className="top-logo">
-                            <img src={require("assets/img/company_logo.png")} alt="..." />
-                        </div>
-                        <div className="signup-title">
-                            <p className="welcome">CREATE ROLE</p>
-                        </div>
-                        <div className="form">
-                            <form onSubmit={handleSubmit(handleFormSubmit)}>
-                                <p className="register-title">Add new Credentials</p>
-                                <div className="form-detail">
-                                    <div className={`input-text ${errors.signupName ? 'error' : ''}`}>
-                                        <p className="logo-txt">Full Name</p>
-
-                                        <div className="input-icons">
-                                            <IoPersonSharp className="icon" />
-                                            <input className="login-input-field" type="text" placeholder="Enter full name"  {...register("signupName", { required: "Full name is required", maxLength: 50 })}
-                                                value={pattern.signupName} onChange={(e) => handlePatternForSignup(e, /^[A-Za-z\s]+$/, 'signupName')} />
-                                            {errors.signupName && (<div className="error-message">{errors.signupName.message}</div>)}
-                                            {customErrorForSignupInputs.signupName && (<div className='error-message'>{customErrorForSignupInputs.signupName}</div>)}
-                                        </div>
-                                    </div>
-                                    <div className={`input-text ${errors.signupMob ? 'error' : ''}`}>
-                                        <p className="logo-txt">Mobile No</p>
-
-                                        <div className="input-icons">
-                                            <IoPersonSharp className="icon" />
-                                            <input className="login-input-field" type="text" placeholder="Enter mobile number"  {...register("signupMob", { required: "Mobile Number is required" })}
-                                                value={pattern.signupMob} onChange={(e) => handlePatternForSignup(e, /^[0-9]+$/, 'signupMob')} />
-                                            {errors.signupMob && (<div className="error-message">{errors.signupMob.message}</div>)}
-                                            {customErrorForSignupInputs.signupMob && (<div className='error-message'>{customErrorForSignupInputs.signupMob}</div>)}
-                                        </div>
-                                    </div>
-                                    <div className={`input-text ${errors.signupEmail ? 'error' : ''}`}>
-                                        <p className="logo-txt">Email ID</p>
-
-                                        <div className="input-icons">
-                                            <MdEmail className="icon" />
-                                            <input className="login-input-field" type="email" placeholder="Enter E-mail ID"  {...register("signupEmail", { required: "Email ID is required" })}
-                                                onChange={clearErrorFields} />
-                                            {errors.signupEmail && (
-                                                <p className="error-message">{errors.signupEmail.message}</p>
-                                            )}
-                                        </div>
-                                    </div>
-                                    <div className={`input-text ${errors.signupPassword ? 'error' : ''}`}>
-                                        <p className="logo-txt">Password</p>
-                                        <div className="input-icons">
-                                            <RiLockPasswordLine className="icon" />
-                                            <input class="login-input-field" type={passwordShow ? 'text' : 'password'} placeholder="Create Password"  {...register("signupPassword", {
-                                                required: "Password is required",
-                                                pattern: {
-                                                    value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/,
-                                                    message: 'Password must be between 8 and 20 characters, including at least one uppercase letter, one lowercase letter, one number, and one special character (e.g., @$!%*?&)'
-                                                }
-                                            })}
-                                                value={pattern.signupPassword} onChange={(e) => { setPasswordCriteriaMessage(true); handlePatternForSignup(e, /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/, 'signupPassword'); clearErrorFields() }} />
-                                            {signupPassword.length > 0 && (<button className='visibility-password' type='button' onClick={handlePasswordVisibility}>
-                                                {passwordShow ? <BiSolidHide /> : <BiSolidShow />}
-                                            </button>)}
-                                            {!errors.signupPassword && passwordCriteriaMessage && <div className="password-criteria visible">Password must be between 8 and 20 characters, including at least one uppercase letter, one lowercase letter, one number, and one special character (e.g., @$!%*?&)</div>}
-                                            {errors.signupPassword && (
-                                                <p className="error-message">{errors.signupPassword.message}</p>
-                                            )}
-                                        </div>
-                                    </div>
-                                    <div className={`input-text ${errors.signupConfirmPassword ? 'error' : ''} confirm ${passwordCriteriaMessage ? 'with-criteria' : ''}`}>
-                                        <p className="logo-txt confirm">Confirm Password</p>
-                                        <div className="input-icons">
-                                            <RiLockPasswordFill className="icon" />
-                                            <input class="login-input-field" type={confirmPasswordShow ? 'text' : 'password'} placeholder="Confirm Password"  {...register("signupConfirmPassword", {
-                                                required: "Password is required",
-                                                validate: value => value === signupPasswordRef.current || "Password does not match"
-                                            })} onChange={clearErrorFields} />
-                                            {signupPasswordRef.current.length > 0 && (<button className='visibility-password' type='button' onClick={handleConfirmPasswordVisibility}>
-                                                {confirmPasswordShow ? <BiSolidHide /> : <BiSolidShow />}
-                                            </button>)}
-                                            {errors.signupConfirmPassword && (
-                                                <p className="error-message">{errors.signupConfirmPassword.message}</p>
-                                            )}
-                                        </div>
-                                    </div>
-                                    <br />
+            <Breadcrumb/>
+            <div className='register-container'>
+                <div className="row Signup-row">
+                    <div className="col-6 left">
+                        <div className="Signup-form">
+                            <div className="title">
+                                <p className="name">Create Admin</p>
+                                {/* <p className='signup-info-text'>Add new Credentials</p> */}
+                            </div>
+                            <br />
+                            <div className="form">
+                                <form onSubmit={handleSubmit(handleFormSubmit)}>
                                     <div>
-                                        <div>
-                                            <button className="login" type="submit">
-                                                Create Credentials
-                                            </button>
+                                        <div className={`input-text ${errors.signupName ? 'error' : ''}`}>
+                                            <p>Full Name <span style={{ color: "red" }}>*</span></p>
+                                            <div className="user-input-icons">
+                                                <input className="input-field" type="text" placeholder="Enter full name"  {...register("signupName", { required: "Full name is required", maxLength: 50 })}
+                                                    value={pattern.signupName} onChange={(e) => handlePatternForSignup(e, /^[A-Za-z\s]+$/, 'signupName')} />
+                                                {errors.signupName && (<div className="userErrorMessage">{errors.signupName.message}</div>)}
+                                                {customErrorForSignupInputs.signupName && (<div className='userErrorMessage'>{customErrorForSignupInputs.signupName}</div>)}
+                                            </div>
                                         </div>
+                                        <div className={`input-text ${errors.signupMob ? 'error' : ''}`}>
+                                            <p className="logo-txt">Mobile No <span style={{ color: "red" }}>*</span></p>
+
+                                            <div className="user-input-icons">
+                                                <input className="input-field" type="text" placeholder="Enter mobile number"  {...register("signupMob", { required: "Mobile Number is required" ,
+                                                     minLength: {
+                                                        value: 10,
+                                                        message: 'Mobile no. must be of ten digits'
+                                                    }
+                                                })}
+                                                    value={pattern.signupMob} onChange={(e) => handlePatternForSignup(e, /^[0-9]+$/, 'signupMob')} />
+                                                {errors.signupMob && (<div className="userErrorMessage">{errors.signupMob.message}</div>)}
+                                                {customErrorForSignupInputs.signupMob && (<div className='userErrorMessage'>{customErrorForSignupInputs.signupMob}</div>)}
+                                            </div>
+                                        </div>
+                                        <div className={`input-text ${errors.signupEmail ? 'error' : ''}`}>
+                                            <p className="logo-txt">Email ID <span style={{ color: "red" }}>*</span></p>
+
+                                            <div className="user-input-icons">
+                                                <input className="input-field" type="email" placeholder="Enter E-mail ID"  {...register("signupEmail", { required: "Email ID is required" })}
+                                                value={pattern.signupEmail} onChange={(e) => handlePatternForSignup(e, /^[a-zA-Z0-9._+-]+@moptra\.com$/, 'signupEmail')} />
+                                                {errors.signupEmail && (
+                                                    <div className="userErrorMessage">{errors.signupEmail.message}</div>
+                                                )}
+                                                {customErrorForSignupInputs.signupEmail && (<div className='userErrorMessage'>{customErrorForSignupInputs.signupEmail}</div>)}
+                                            </div>
+                                        </div>
+                                        <div className={`input-text ${errors.signupPassword ? 'error' : ''}`}>
+                                            <p className="logo-txt">Password <span style={{ color: "red" }}>*</span></p>
+                                            <div className="user-input-icons">
+                                                <input class="input-field" type={passwordShow ? 'text' : 'password'} placeholder="Create Password"  {...register("signupPassword", {
+                                                    required: "Password is required",
+                                                    pattern: {
+                                                        value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/,
+                                                        message: 'Password must be between 8 and 20 characters, including at least one uppercase letter, one lowercase letter, one number, and one special character.(e.g., @$!%*?&)'
+                                                    }
+                                                })}
+                                                    onChange={(e) => { handlePasswordCriteriaMessage(e); clearErrorFields("signupPassword") }} />
+                                                { passwordShowIcon && <button className='visibility-password' type='button' onClick={handlePasswordVisibility}>
+                                                    {passwordShow ? <BiSolidHide /> : <BiSolidShow />}
+                                                </button>}
+                                                {!errors.signupPassword && passwordCriteriaMessage && <div className="password-criteria visible">Password must be between 8 and 20 characters, including at least one uppercase letter, one lowercase letter, one number, and one special character (e.g., @$!%*?&)</div>}
+                                                {errors.signupPassword && (
+                                                    <div className="userErrorMessage">{errors.signupPassword.message}</div>
+                                                )}
+                                            </div>
+                                        </div>
+                                        <div className={`input-text ${errors.signupConfirmPassword ? 'error' : ''} confirm ${passwordCriteriaMessage ? 'with-criteria' : ''}`}>
+                                            <p className="logo-txt confirm">Confirm Password <span style={{ color: "red" }}>*</span></p>
+                                            <div className="user-input-icons">
+                                                <input class="input-field" type={confirmPasswordShow ? 'text' : 'password'} placeholder="Confirm Password"  {...register("signupConfirmPassword", {
+                                                    required: "Password is required",
+                                                    validate: value => value === signupPasswordRef.current || (!errors.signupPassword && "Password does not match")
+                                                })} onChange={(e) => {handleConfirmPasswordIcon(e); clearErrorFields("signupConfirmPassword")}} />
+                                                {confirmPasswordShowIcon && <button className='confirm-visibility-password' type='button' onClick={handleConfirmPasswordVisibility}>
+                                                    {confirmPasswordShow ? <BiSolidHide /> : <BiSolidShow />}
+                                                </button>}
+                                                {errors.signupConfirmPassword && (
+                                                    <div className="userErrorMessage">{errors.signupConfirmPassword.message}</div>
+                                                )}
+                                            </div>
+                                        </div>
+                                        <br />
+                                        <div>
+                                            <div style={{textAlign: 'center'}}>
+                                                <button className="primary-btn" type="submit">
+                                                    Create Credentials
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <br />
+                                        {serverError && (<div className="signup-error-message">{serverError}</div>)}
+                                        <ToastContainer />
                                     </div>
-                                    {/* {errorMessage && <p className="invalidLoginErrorMessage">{errorMessage}</p>} */}
-
-                                    {/* <div className="bottom-text">
-                                        <p className="txt"><b>Already have an account?</b> <span> <Link to='/'> Log In </Link> </span></p>
-                                    </div> */}
-                                    <br />
-                                    <br />
-                                    {serverError && (<div className="signup-error-message">{serverError}</div>)}
-                                    <ToastContainer />
-
-                                </div>
-                            </form>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>

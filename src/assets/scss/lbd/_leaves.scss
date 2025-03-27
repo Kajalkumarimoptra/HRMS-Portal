@@ -1,0 +1,177 @@
+.container-fluid{
+.path-btn-container{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+
+}
+.clearfix {
+
+    // first leave circle
+    .card {
+        .leave-balance-card {
+            padding-top: 13px;
+            text-align: center;
+            background-color: #fff;
+            border-radius: 0.55rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.5s ease-in-out;
+            overflow: visible;
+
+            .leave-heading-details {
+                display: flex;
+                justify-content: space-between;
+                align-items: stretch;
+                align-content: space-around;
+                padding: 10px;
+                position: relative;
+
+                .typeofleave-heading {
+                    font-weight: bold;
+                    flex: 1;
+                    margin-left: 32px;
+                }
+
+                .info-icon {
+                    width: 21px;
+                    height: 21px;
+                    cursor: pointer;
+                }
+            }
+        }
+
+        .leave-details-popup-overlay {
+            position: fixed;
+            top: 5%;
+            left: 0%;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+
+            &::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 8%);
+                filter: blur(5px);
+                /* Blur background */
+                z-index: -1;
+                /* Make sure the blur effect is behind the popup */
+            }
+
+            .leave-details-popup {
+                background: white;
+                padding: 16px 20px 17px 20px;
+                border-radius: 8px;
+                box-shadow: 0px 4px 10px rgb(0 0 0 / 11%);
+                width: 50%;
+
+                h5{
+                    font-weight: 600;
+                    text-align: center;
+                    text-decoration: underline;
+                    margin-bottom: 16px;
+                }
+
+                li{
+                    font-size: 14px;
+                }
+            }
+        }
+
+        .circle-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 42px;
+            padding-top: 14px;
+        }
+
+        .earn-leave-circle,
+        .sick-leave-circle,
+        .lop-circle,
+        .maternity-leave-circle,
+        .marriage-leave-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 10px solid #E6E6F8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+            display: flex;
+        }
+
+        .sick-leave-circle {
+            border: 10px solid #fbd7bbcc;
+        }
+
+        .lop-circle {
+            border: 10px solid #8375535c;
+        }
+
+        .maternity-leave-circle {
+            border: 10px solid #ffc5d391;
+        }
+
+        .marriage-leave-circle {
+            border: 10px solid #ab47bc80;
+        }
+
+        .leave-details {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+
+            .leave-table {
+                width: 100%;
+                border-collapse: collapse;
+                table-layout: fixed;
+
+                & th,
+                & td {
+                    border: 1px solid #ddd; // Ensures visible borders for all cells
+                    padding: 10px;
+                    text-align: center;
+                    border-left: none;
+                }
+
+                & th {
+                    font-size: 12px;
+                    font-weight: bold;
+                    color: #777;
+                    text-transform: uppercase;
+                }
+
+                & td {
+                    font-size: 14px;
+                    color: #333;
+                }
+
+                & th:nth-child(2),
+                th:nth-child(4) {
+                    border-right: none;
+                }
+
+                & td:nth-child(2),
+                td:nth-child(4) {
+                    border-right: none;
+                }
+
+
+
+            }
+        }
+
+    }
+}
+}

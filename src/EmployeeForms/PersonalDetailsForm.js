@@ -13,7 +13,8 @@ export default function PersonalDetailsForm() {
     register, handleSubmit, errors, onSubmit, setValue, watch, reset, clearErrors
   } = useFormContext();
   const { registrationData } = useRegistrationContext();  // Access registration data from context
-
+  const [selectPersonalDetailGenderColor, setPersonalDetailGenderColor] = useState("#d3d3d3"); // for giving diff color to select placeholder and option
+  const [selectPersonalDetailDateColor, setPersonalDetailDateColor] = useState("#d3d3d3"); // for giving diff color to date placeholder and option
   const [patternForFirstName, setPatternForFirstName] = useState(''); // pattern for firstname
   const [patternForMiddleName, setPatternForMiddleName] = useState(''); // pattern for middle name
   const [patternForLastName, setPatternForLastName] = useState(''); // pattern for last name
@@ -30,6 +31,7 @@ export default function PersonalDetailsForm() {
   const [errorForPanFileSize, setErrorForPanFileSize] = useState(''); // error for wrong file size
   const [passportDoc, setPassportDoc] = useState(''); // state for holding passport file
   const [errorForPassportFileSize, setErrorForPassportFileSize] = useState(''); // error for wrong file size
+  const fileInputRefs = useRef({}); // Object to store multiple refs
   const [successfulUploadMsg, setSuccessfulUploadMsg] = useState({
     fileForAadhar: '',
     fileForPan: '',
@@ -109,22 +111,20 @@ export default function PersonalDetailsForm() {
       // perform validation
       if (value && !pattern.test(value)) {
         patternErrorMessage = 'Only numbers are allowed';
-      } else if (value.length !== 10) {
-        patternErrorMessage = 'Mobile number must be of 10 digits';
       }
+      setPatternForMobNo(value);
     }
 
     else if (field === 'aadharNo') {
       // If mobile number exceeds 10 digits, slice it to 10 digits
-      if (value.length > 10) {
+      if (value.length > 12) {
         value = value.slice(0, 12); // Slice to 10 digits
       }
       // perform validation
       if (value && !pattern.test(value)) {
         patternErrorMessage = 'Only numbers are allowed';
-      } else if (value.length !== 12) {
-        patternErrorMessage = 'Aadhar number must be of 12 digits';
       }
+      setPatternForAadhar(value);
     }
     else if (field === 'panNo') {
       // If mobile number exceeds 10 digits, slice it to 10 digits
@@ -134,9 +134,8 @@ export default function PersonalDetailsForm() {
       // perform validation
       if (value && !pattern.test(value)) {
         patternErrorMessage = 'Please fill the blank as per the right format of Pan No.';
-      } else if (value.length !== 10) {
-        patternErrorMessage = 'Pan number must be of 10 digits';
       }
+      setPatternForPan(value);
     }
     setCustomErrorForPattern(prev => ({ ...prev, [field]: patternErrorMessage }));
     // Clear error if input is valid
@@ -159,9 +158,19 @@ export default function PersonalDetailsForm() {
     } else {
       setCustomErrorForPassport('');
     }
-  }
+  };
 
-  // file type for documents upload
+  // 🔥 Fix: Change color dynamically, but ensure placeholder remains gray
+  const handlePersonalDetailsDateColorChange = (e) => {
+    const selectedValue = e.target.value;
+    setPersonalDetailDateColor(selectedValue ? "black" : "#d3d3d3");
+    clearErrors('dob');
+  };
+  const handlePersonalDetailsGenderColorChange = (e) => {
+    const selectedValue = e.target.value;
+    setPersonalDetailGenderColor(selectedValue ? "black" : "#d3d3d3");
+    clearErrors('gender');
+  };
   // const handleFileForDocs = (e, field) => {
   //   const file = e.target.files[0];
   //   if (file) {
@@ -288,7 +297,7 @@ export default function PersonalDetailsForm() {
           setImgDirection && setImgDirection(false);
           setIsCropping && setIsCropping(true);
           // Call handleFileUpload after file validation is done
-          handleFileUpload(field, setImageSizeError, setPhoto, setImgDirection, uploadAllowed, isCropping,setIsCropping); // Upload the file
+          handleFileUpload(field, setImageSizeError, setPhoto, setImgDirection, uploadAllowed, isCropping, setIsCropping); // Upload the file
         }, 1000); // Simulated delay for uploading
       }
     } else {
@@ -300,25 +309,15 @@ export default function PersonalDetailsForm() {
     }
   };
 
-
   const handleFileUpload = async (field, setImageSizeError, setPhoto, setImgDirection, uploadAllowed, isCropping, setIsCropping) => {
-    console.log('Upload allowed:' ,uploadAllowed);
+    console.log('Upload allowed:', uploadAllowed);
     console.log('Is cropping:', isCropping);
     // Check if upload is allowed (uploadAllowed flag) and if cropping is completed (isCropping flag)
-    if (field === 'photo') {
-      // Log the condition checks
-      if (!uploadAllowed) {
-        console.log(`Upload is not allowed for ${field}`);
-      }
-  
-      if (isCropping) {
-        console.log('Cropping is still in progress');
-      }
-  
-      if (!uploadAllowed || isCropping) {
-        return; // Prevent upload if conditions are not met
-      }
+    if (field === 'photo' && (!uploadAllowed || isCropping)) {
+      console.log(`Upload blocked for ${field}. UploadAllowed: ${uploadAllowed}, IsCropping: ${isCropping}`);
+      return;
     }
+
 
     const file = doc[field];
     if (!file) {
@@ -335,8 +334,17 @@ export default function PersonalDetailsForm() {
     console.log('cropping status before uploading:', isCropping);
 
     try {
+      // Retrieve the token from localStorage
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setServerError('Authentication issue');
+        return; // Exit if token is not found
+      }
       const response = await axios.post('http://localhost:8081/api/files/uploadFile', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${token}`
+        },
       });
       console.log('file upload response:', response.data); // Check the response
 
@@ -368,7 +376,7 @@ export default function PersonalDetailsForm() {
 
       if (error.response && error.response.data) {
         const errorMessage = error.response.data.message;
-        if (errorMessage.includes('File already exists')) {
+        if (errorMessage && errorMessage.includes('File already exists')) {
           console.log('file already exist error:', errorMessage);
           setCustomErrorForDocUpload(prev => ({ ...prev, [field]: 'This file is already uploaded' }));
           setImageSizeError && setImageSizeError('This file already exist');
@@ -400,7 +408,19 @@ export default function PersonalDetailsForm() {
     }
   };
 
-  
+  const handleRemoveFile = (field) => {
+    setDoc(prev => ({ ...prev, [field]: null }));
+    setFileUploaded(prev => ({ ...prev, [field]: false }));
+    setCustomErrorForDocUpload(prev => ({ ...prev, [field]: '' }));
+    setSuccessfulUploadMsg(prev => ({ ...prev, [field]: '' }));
+
+ 
+    // Reset the file input field using React ref
+    if (fileInputRefs.current[field]) { // ✅ Corrected
+      fileInputRefs.current[field].value = ""; // ✅ Corrected
+    }
+  };
+
   useEffect(() => {
     if (!registrationData) {
       console.log("No registration data found");
@@ -408,9 +428,11 @@ export default function PersonalDetailsForm() {
       console.log("Registration Data:", registrationData);
     }
   }, [registrationData]);
-  
+
 
   const handleFormSubmit = async (data) => {
+    console.log("Form submission triggered");
+    console.log("Form data before submission:", data);
 
     // Upload the image and get the URL
     let imageUrl = doc.photo;
@@ -437,26 +459,25 @@ export default function PersonalDetailsForm() {
       "password": registrationData.password || "",
       "fullName": registrationData.fullName || "",
       "mobileNumber": registrationData.mobileNumber || "",
-      "personalDetailsDTO": {
-        "aadharNumber": data.aadharNo,
-        "aadharUrl": doc.fileForAadhar,
-        "dob": data.dob,
-        "email": data.emailid,
-        "fatherName": data.fatherName,
-        "firstName": data.firstName,
-        "gender": data.gender,
-        "imageUrl": imageUrl,
-        "middleName": data.middleName,
-        "mobile": data.mob,
-        "motherName": data.motherName,
-        "panNumber": data.panNo,
-        "panUrl": doc.fileForPan,
-        "passportNumber": data.passport,
-        "passportUrl": doc.fileForPassport,
-        // "personalId": "",
-        "surname": data.lastName
-      },
       "roleName": "EMPLOYEE",
+      "personalDetailsDTO": {
+        "aadharNumber": data.aadharNo || "",
+        "aadharUrl": doc.fileForAadhar || "",
+        "dob": data.dob || "",
+        "email": data.emailid || "",
+        "fatherName": data.fatherName || "",
+        "firstName": data.firstName || "",
+        "gender": data.gender || "",
+        "imageUrl": imageUrl || "",
+        "middleName": data.middleName || "",
+        "mobile": data.mob || "",
+        "motherName": data.motherName || "",
+        "panNumber": data.panNo || "",
+        "panUrl": doc.fileForPan || "",
+        "passportNumber": data.passport || "",
+        "passportUrl": doc.fileForPassport || "",
+        "surname": data.lastName || ""
+      },
       "permanentAddress": {
         "houseNumber": "",
         "streetName": "",
@@ -481,36 +502,147 @@ export default function PersonalDetailsForm() {
         "stayTo": "",
         "emergencyContactNumber": "",
         "emergencyContactNameAndRelationship": ""
-    },
-    "addressDetails": [
+      },
+      "addressDetails": [
         {
-            "stayFrom": "",
-            "stayTo": "",
-            "addressLine": "",
-            "pincode": "",
-            "country": "",
-            "contactNumberWithRelationship": ""
+          "stayFrom": "",
+          "stayTo": "",
+          "addressLine": "",
+          "pincode": "",
+          "country": "",
+          "contactNumberWithRelationship": ""
         },
         {
-            "stayFrom": "",
-            "stayTo": "",
-            "addressLine": "",
-            "pincode": "",
-            "country": "",
-            "contactNumberWithRelationship": ""
-        },
-        {
-            "stayFrom": "",
-            "stayTo": "",
-            "addressLine": "",
-            "pincode": "",
-            "country": "",
-            "contactNumberWithRelationship": ""
+          "stayFrom": "",
+          "stayTo": "",
+          "addressLine": "",
+          "pincode": "",
+          "country": "",
+          "contactNumberWithRelationship": ""
         }
-    ],
+      ],
+      "educationalQualifications": [
+        {
+          "degreeName": "",
+          "subject": "",
+          "passingYear": "",
+          "rollNumber": "",
+          "gradeOrPercentage": ""
+        },
+        {
+          "degreeName": "",
+          "subject": "",
+          "passingYear": "",
+          "rollNumber": "",
+          "gradeOrPercentage": ""
+        }
+      ],
+      "documents": [
 
-     
+      ],
+      "employmentHistories": [
+        {
+          "previousEmployerName": "",
+          "employerAddress": "",
+          "telephoneNumber": "",
+          "employeeCode": "",
+          "designation": "",
+          "department": "",
+          "managerName": "",
+          "managerEmail": "",
+          "managerContactNo": "",
+          "reasonsForLeaving": "",
+          "employmentStartDate": "",
+          "employmentEndDate": "",
+          "employmentType": "",
+          "experienceCertificateUrl": "",
+          "relievingLetterUrl": "",
+          "lastMonthSalarySlipUrl": "",
+          "appointmentLetterUrl": ""
+        },
+        {
+          "previousEmployerName": "",
+          "employerAddress": "",
+          "telephoneNumber": "",
+          "employeeCode": "",
+          "designation": "",
+          "department": "",
+          "managerName": "",
+          "managerEmail": "",
+          "managerContactNo": "",
+          "reasonsForLeaving": "",
+          "employmentStartDate": "",
+          "employmentEndDate": "",
+          "employmentType": "",
+          "experienceCertificateUrl": "",
+          "relievingLetterUrl": "",
+          "lastMonthSalarySlipUrl": "",
+          "appointmentLetterUrl": ""
+        }
+      ],
+      "professionalReferences": [
+        {
+          "name": "",
+          "designation": "",
+          "email": "",
+          "contactNumber": ""
+        },
+        {
+          "name": "",
+          "designation": "",
+          "email": "",
+          "contactNumber": ""
+        }
+      ],
+      "relativeInfos": [
+        {
+          "name": "",
+          "employeeId": "",
+          "relationship": "",
+          "department": "",
+          "location": "",
+          "remarks": "."
+        },
+        {
+          "name": "",
+          "employeeId": "",
+          "relationship": "",
+          "department": "",
+          "location": "",
+          "remarks": "."
+        }
+      ],
+      "passportDetails": {
+        "passportNumber": "",
+        "issueDate": "",
+        "placeOfIssue": "",
+        "expiryDate": "",
+        "countryOfIssue": "",
+        "nationality": "",
+        "citizenship": "",
+        "expatOnGreenCard": false,
+        "expatOnWorkPermit": false,
+        "expatOnPermanentResidencyPermit": false,
+        "anyOtherStatus": "",
+        "legalRightToWorkInCountry": false,
+        "workPermitExpiryDate": "",
+        "workPermitDetails": "",
+        "passportCopy": "",
+        "passportUrl": ""
+      },
+      "visaStatus": {
+        "visaType": "",
+        "legalRightToWork": false,
+        "workPermitDetails": "",
+        "workPermitValidTill": "",
+        "passportCopyPath": ""
+      },
+      "otherDetails": {
+        "illness": "",
+        "selfIntroduction": ""
+      }
     }
+
     console.log("Payload of personal details page :", newPayload);
 
     let docsUpload = false;
@@ -538,8 +670,10 @@ export default function PersonalDetailsForm() {
     }
 
     if (docsUpload) {
+      console.error("Document upload validation failed.");
       return;
-    } // if any of the file is not 
+    }
+    console.log("All required documents are uploaded.");
 
     // Clear custom errors if all files are uploaded
     setCustomErrorForDocUpload({
@@ -549,8 +683,8 @@ export default function PersonalDetailsForm() {
     });
 
     try {
-      // Retrieve the token from sessionStorage
-      const token = sessionStorage.getItem('token');
+      // Retrieve the token from localStorage
+      const token = localStorage.getItem('token');
       console.log('token needed:', token);
       if (!token) {
         setServerError('Authentication issue');
@@ -564,12 +698,14 @@ export default function PersonalDetailsForm() {
         },
 
       });
-
+      console.log("Server response:", response);
       if (response && response.data) {
         console.log("Form submitted successfully:", response.data);
         sessionStorage.setItem('personalDetails', JSON.stringify(response.data.personalDetails));
         navigate("/contactdetailsform");
         reset();
+        setPersonalDetailDateColor("#d3d3d3");
+        setPersonalDetailGenderColor("#d3d3d3");
       } else {
         // Handle the 403 Forbidden error
         if (response.status === 403) {
@@ -583,7 +719,7 @@ export default function PersonalDetailsForm() {
       if (error.response) {
         console.error("Error response:", error.response);
         console.error("Response status:", error.response.status);
-        console.error("Response data:", error.response.data);
+        console.error("Response data:", error.response.data.message || error.response.data);
       } else if (error.request) {
         console.error("Error request:", error.request);
       } else {
@@ -609,7 +745,7 @@ export default function PersonalDetailsForm() {
           {/*general data */}
 
           <div className='UniversalHeadline'>
-            <h6 className='mainHeading'>ASSOCIATE INFORMATION AND BACKGROUND CHECK FORM</h6>
+            <h6 className='mainHeading'>ASSOCIATE INFORMATION AND ONBOARDING FORM</h6>
           </div>
           <div className='noteHeading'>
             <h5 className='noteContent'>Note:<span className='noteDescription'>Please update all cells with correct and relevant data. The information provided in this document
@@ -676,14 +812,16 @@ export default function PersonalDetailsForm() {
             <div className='dobGenderContainer'>
               <div>
                 <label>Date of Birth <span className='required'>*</span> <span className='separationForDOB'> : </span></label>
-                <input type='date' placeholder='DD/MM/YYYY' className={`dobInput ${errors.dob ? 'invalid' : ''}`} {...register("dob", { required: true })} />
+                <input type='date' placeholder='DD/MM/YYYY' className={`dobInput ${errors.dob ? 'invalid' : ''}`} {...register("dob", { required: true })}
+                  onChange={handlePersonalDetailsDateColorChange} style={{ color: selectPersonalDetailDateColor }} />
               </div>
               <div className='genderContainer'>
                 <label className='genderLabel'>Gender <span className='required'>*</span> <span className='separationForGender'> : </span></label>
-                <select className={`selectGenderInput ${errors.gender ? 'invalid' : ''}`}  {...register("gender", { required: true })}>
-                  <option value='' hidden>Select Gender</option>
-                  <option>Male</option>
-                  <option>Female</option>
+                <select className={`selectGenderInput ${errors.gender ? 'invalid' : ''}`}  {...register("gender", { required: true })}
+                  onChange={handlePersonalDetailsGenderColorChange} style={{ color: selectPersonalDetailGenderColor }} >
+                  <option value='' hidden style={{ color: "#d3d3d3" }}>Select Gender</option>
+                  <option style={{ color: "black" }}>Male</option>
+                  <option style={{ color: "black" }}>Female</option>
                 </select>
               </div>
             </div>
@@ -716,43 +854,73 @@ export default function PersonalDetailsForm() {
             <div className='smallGrpContainer'>
               <div>
                 <label>Mobile Number <span className='required'>*</span> <span className='separationForMob'> : </span></label>
-                <input type='telephone' placeholder='Mobile No.' className={`mobInput ${errors.mob ? 'invalid' : ''}`} {...register("mob", { required: true })}
+                <input type='telephone' placeholder='Mobile No.' className={`mobInput ${errors.mob ? 'invalid' : ''}`} {...register("mob", {
+                  required: true,
+                  minLength: {
+                    value: 10,
+                    message: 'Mobile no. must be of ten digits'
+                  }
+                })}
                   value={pattern.mob} onChange={(e) => handlePatternForPersonalDetailInputs(e, /^[0-9]+$/, 'mob')} />
                 {customErrorForPattern.mob ? <div className="errorMessage">{customErrorForPattern.mob}</div> : ''}
+                {errors.mob && (<div className="errorMessage">{errors.mob.message}</div>)}
               </div>
             </div>
 
             <div className='smallGrpContainer'>
               <div>
                 <label>Aadhaar No. <span className='required'>*</span> <span className='separationForAadhar'> : </span></label>
-                <input type='text' placeholder='Aadhaar Number' className={`aadharInput ${errors.aadharNo ? 'invalid' : ''}`} {...register("aadharNo", { required: true })}
+                <input type='text' placeholder='Aadhaar Number' className={`aadharInput ${errors.aadharNo ? 'invalid' : ''}`} {...register("aadharNo", {
+                  required: true,
+                  minLength: {
+                    value: 12,
+                    message: 'Aadhar no. must be of twelve digits'
+                  }
+                })}
                   value={pattern.aadharNo} onChange={(e) => handlePatternForPersonalDetailInputs(e, /^[0-9]+$/, 'aadharNo')} />
                 {customErrorForPattern.aadharNo ? <div className="errorMessage">{customErrorForPattern.aadharNo}</div> : ''}
+                {errors.aadharNo && (<div className="errorMessage">{errors.aadharNo.message}</div>)}
               </div>
               <div className='fileInputContainer'>
                 <input type='file' className={`uploadFileInput ${errors.fileForAadhar ? 'invalid' : ''}`}
-                  onChange={(e) => handleFileForDocs(e, 'fileForAadhar')} />
+                  onChange={(e) => handleFileForDocs(e, 'fileForAadhar')} 
+                  ref={(el) => {
+                    if (el) fileInputRefs.current["fileForAadhar"] = el; 
+                  }} 
+                  />
                 {customErrorForDoc.fileForAadhar ? <div className="docErrorMessage">{customErrorForDoc.fileForAadhar}</div> : ''}
                 <button type="button" className="upload" onClick={() => handleFileUpload('fileForAadhar')} >upload</button>
                 {customErrorForDocUpload.fileForAadhar ? <div className="docUploadErrorMessage">{customErrorForDocUpload.fileForAadhar}</div> : ''}
                 {successfulUploadMsg.fileForAadhar ? <div className="docUploadSuccessMessage">{successfulUploadMsg.fileForAadhar}</div> : ''}
+                {doc["fileForAadhar"] && (<img src={require("assets/img/file-cut-icon.png")} alt="..." className='cross-icon' onClick={() => handleRemoveFile("fileForAadhar")} />)}
               </div>
             </div>
             <div className='smallGrpContainer'>
               <div>
                 <label>Pan No. <span className='required'>*</span> <span className='separationForPan'> : </span></label>
-                <input type='text' placeholder='Pan Number' className={`panInput  ${errors.panNo ? 'invalid' : ''}`}  {...register("panNo", { required: true })}
+                <input type='text' placeholder='Pan Number' className={`panInput  ${errors.panNo ? 'invalid' : ''}`}  {...register("panNo", {
+                  required: true,
+                  minLength: {
+                    value: 10,
+                    message: 'Aadhar no. must be of twelve digits'
+                  }
+                })}
                   value={pattern.panNo} onChange={(e) => handlePatternForPersonalDetailInputs(e, /^[A-Z0-9]+$/, 'panNo')} />
                 {customErrorForPattern.panNo ? <div className="errorMessage">{customErrorForPattern.panNo}</div> : ''}
-
+                {errors.panNo && (<div className="errorMessage">{errors.panNo.message}</div>)}
               </div>
               <div className='fileInputContainer'>
                 <input type='file' className={`uploadFileInput ${errors.fileForPan ? 'invalid' : ''}`}
-                  onChange={(e) => handleFileForDocs(e, 'fileForPan')} />
+                  onChange={(e) => handleFileForDocs(e, 'fileForPan')} 
+                  ref={(el) => {
+                    if (el) fileInputRefs.current["fileForPan"] = el; // ✅ Ensures ref is assigned
+                  }} // Assign dynamic ref
+                  />
                 {customErrorForDoc.fileForPan ? <div className="docErrorMessage">{customErrorForDoc.fileForPan}</div> : ''}
                 <button type="button" className="upload" onClick={() => handleFileUpload('fileForPan')}>upload</button>
                 {customErrorForDocUpload.fileForPan ? <div className="docUploadErrorMessage">{customErrorForDocUpload.fileForPan}</div> : ''}
                 {successfulUploadMsg.fileForPan ? <div className="docUploadSuccessMessage">{successfulUploadMsg.fileForPan}</div> : ''}
+                {doc["fileForPan"] && (<img src={require("assets/img/file-cut-icon.png")} alt="..." className='cross-icon' onClick={() => handleRemoveFile("fileForPan")} />)}
               </div>
             </div>
 
@@ -764,17 +932,22 @@ export default function PersonalDetailsForm() {
                 {customErrorForPassport ? <div className="errorMessage">{customErrorForPassport}</div> : ''}
               </div>
               <div className='fileInputContainer'>
-                <input type='file' className='uploadFileInput' onChange={(e) => handleFileForDocs(e, 'fileForPassport')} />
+                <input type='file' className='uploadFileInput' onChange={(e) => handleFileForDocs(e, 'fileForPassport')} 
+                   ref={(el) => {
+                    if (el) fileInputRefs.current["fileForPassport"] = el; // ✅ Ensures ref is assigned
+                  }}  // Assign dynamic ref
+                />
                 {customErrorForDoc.fileForPassport ? <div className="docErrorMessage">{customErrorForDoc.fileForPassport}</div> : ''}
                 <button type="button" className="upload" onClick={() => handleFileUpload('fileForPassport')}>upload</button>
                 {customErrorForDocUpload.fileForPassport ? <div className="docUploadErrorMessage">{customErrorForDocUpload.fileForPassport}</div> : ''}
                 {successfulUploadMsg.fileForPassport ? <div className="docUploadSuccessMessage">{successfulUploadMsg.fileForPassport}</div> : ''}
+                {doc["fileForPassport"] && (<img src={require("assets/img/file-cut-icon.png")} alt="..." className='cross-icon' onClick={() => handleRemoveFile("fileForPassport")} />)}
               </div>
             </div>
 
             <div className='saveButtons'>
               <button type="button" className="saveBtn" onClick={saveInLocalStorage}>Save Draft</button>
-              <button type="submit" className="saveNextBtn">Save And Next</button>
+              <button type="submit" className="saveNextBtn" onClick={() => console.log("buttonclicked")}>Save And Next</button>
             </div>
           </form>
         </div>

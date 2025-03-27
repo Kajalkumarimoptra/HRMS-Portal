@@ -4,7 +4,10 @@ import { useFormContext } from "../components/ContextProvider/Context";
 import { IoPersonSharp } from "react-icons/io5";
 import { Link } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
+import Breadcrumb from './Breadcrumb';
 import { ImSearch } from "react-icons/im";
+import { GrEdit } from "react-icons/gr";
+import { useNavigate } from 'react-router-dom';
 
 export default function Department() {
 
@@ -18,7 +21,9 @@ export default function Department() {
     setServerError,
     clearErrors
   } = useFormContext();
-  const [show, setShow] = useState(false); // state variable to control the modal's visibility
+
+  const [roleBasedSection, setRoleBasedSection] = useState(null);
+  const navigate = useNavigate();
   const [patternForNewEmpName, setPatternFornewEmpName] = useState(''); // pattern for new emp name
   const [patternForDeptName, setPatternForDeptName] = useState(''); // pattern for dept name
   const [patternForDeptHead, setPatternForDeptHead] = useState(''); // pattern for dept head
@@ -34,16 +39,24 @@ export default function Department() {
     deptHead: ''
   }); // error msg for its failure
 
-  // for toggle the modal visibility
-  const handleClose = () =>
-    setShow(false);
-
-  const handleShow = () => setShow(true);
+  useEffect(() => {
+    // Directly read the role from localStorage
+    const storedRole = localStorage.getItem("role");
+    setRoleBasedSection(storedRole);
+    console.log("Role for conditional rendering of attendance page:", storedRole);
+  }, []);
 
   useEffect(() => {
     reset();
   }, []); // Reset after render
 
+  const handleNewDept = () => {
+    navigate("/admin/Addnewdept");
+  }
+
+  const handleEditDeptClick = () => {
+    navigate("/admin/Editdept");
+  }
 
   // for pattern handling
   const handlePatternForDeptInputs = (e, field) => {
@@ -74,22 +87,12 @@ export default function Department() {
 
   return (
     <div className='container-fluid'>
+      <Breadcrumb />
       <div class="section-body">
         <div class="container-fluid">
           <div class="d-flex justify-content-between align-items-center" style={{ flexDirection: 'row-reverse' }}>
-            {/* <ul class="nav nav-tabs page-header-tab">
-              <li class="nav-item">
-                <a class= "nav-link" id="user-list" data-toggle="tab" href="#user-list">List View</a>
-              </li>
-            </ul> */}
-            {/* <div class="header-action">
-              <button type="button" class="add-btn" fdprocessedid="g0g9qd" onClick={handleShow}>
-                <i class="fe fe-plus mr-2"></i>+Add Department
-              </button>
-            </div> */}
-
             {/* Modal */}
-            <Modal show={show} onHide={handleClose} className="modal-dialog-centered"
+            {/* <Modal show={show} onHide={handleClose} className="modal-dialog-centered"
               backdrop="static" // Prevent close on clicking outside
               keyboard={false}  // Prevent close on pressing "Escape"
             >
@@ -135,7 +138,7 @@ export default function Department() {
                   <ToastContainer />
                 </Form>
               </Modal.Body>
-            </Modal>
+            </Modal> */}
           </div>
         </div>
       </div>
@@ -146,111 +149,148 @@ export default function Department() {
           <div className='tab-content'>
             <div className='tab-pane fade active show' id="Employee-list" role='tabpanel'>
               <div className='card'>
-                <div class="card-header">
-                  <div className='employeelist-header ml-3'>
-                    <div class="header-action">
-                      <button type="button" class="add-btn" fdprocessedid="g0g9qd" onClick={handleShow}>
-                        <i class="fe fe-plus"></i>+Add Department
-                      </button>
+                {roleBasedSection === "SUPER_ADMIN" || roleBasedSection === "ADMIN" ? (
+                  <div class="card-header">
+                    <div className='employeelist-header ml-3'>
+                      <div class="header-action">
+                        <button type="button" class="primary-btn" fdprocessedid="g0g9qd" onClick={() => handleNewDept()}>
+                          <i class="fe fe-plus"></i>+Add Department
+                        </button>
+                      </div>
+                      {/* <h3 class="card-title  ml-4">DEPARTMENTS LIST :</h3> */}
+                      <div >
+                        <form className="user-searchForm">
+                          <input class="form-control me-2 search" type="search" placeholder="Search department" aria-label="Search" />
+                          <i> <ImSearch className='searchIcon' /></i>
+                        </form>
+                      </div>
                     </div>
-                    {/* <h3 class="card-title  ml-4">DEPARTMENTS LIST :</h3> */}
-                    <div >
-                      <form className="user-searchForm">
-                        <input class="form-control me-2 search" type="search" placeholder="Search department" aria-label="Search" />
-                        <i> <ImSearch className='searchIcon' /></i>
-                      </form>
-                    </div>
-                  </div>
-                  <div className='card-body'>
-                    <div className='table-responsive'>
-                      <table className='table table-hover table-striped table-vcenter text-nowrap mb-0'>
-                        <thead>
-                          <tr>
-                            <th>S.No.</th>
-                            <th>Department Name</th>
-                            <th>Total Employees</th>
-                            <th>Action</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td className='w40'>1.</td>
-                            {/* <td class="w40">
+                    <div className='card-body'>
+                      <div className='user-table'>
+                        <table className='table table-hover table-vcenter text-nowrap mb-0'>
+                          <thead>
+                            <tr>
+                              <th>Department Name</th>
+                              <th>Total Employees</th>
+                              <th>Edit Details</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              {/* <td className='w40'>1.</td> */}
+                              {/* <td class="w40">
                                                             <label class="custom-control custom-checkbox">
                                                                 <input type="checkbox" class="custom-control-input" name="example-checkbox1" value="option1" />
                                                                 <span class="custom-control-label">&nbsp;</span>
                                                             </label>
                                                         </td> */}
-                            <td>Web Development</td>
-                            <td>102</td>
-                            <td>
-                              <button type="button" class="btn btn-icon btn-sm icons" title="Edit" fdprocessedid="tvsb17">
-                                <img src={require("assets/img/edit.png")} alt="..." className='delete-icon' />
-                              </button>
-                              <button type="button" class="btn btn-icon btn-sm icons" title="Delete" data-type="confirm" fdprocessedid="f7knyq">
-                                <img src={require("assets/img/delete.png")} alt="..." className='delete-icon' />
-                              </button>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td class="w40">2.
-                              {/* <label class="custom-control custom-checkbox">
-                                                                <input type="checkbox" class="custom-control-input" name="example-checkbox1" value="option1" />
-                                                                <span class="custom-control-label">&nbsp;</span>
-                                                            </label> */}
-                            </td>
-                            <td>App Development</td>
-                            <td>50</td>
-                            <td>
+                              <td>Web Development</td>
+                              <td style={{ textAlign: 'center' }}>102</td>
+                              <td>
                               <button type="button" class="btn btn-icon btn-sm icons" title="Edit" fdprocessedid="b0za8">
-                                <img src={require("assets/img/edit.png")} alt="..." className='delete-icon' />
-                              </button>
-                              <button type="button" class="btn btn-icon btn-sm js-sweetalert icons" title="Delete" data-type="confirm" fdprocessedid="5qdlk5">
+                                  <GrEdit className='delete-icon' onClick={() => handleEditDeptClick()} />
+                                </button>
+                                {/* <button type="button" class="btn btn-icon btn-sm icons" title="Delete" data-type="confirm" fdprocessedid="f7knyq">
                                 <img src={require("assets/img/delete.png")} alt="..." className='delete-icon' />
-                              </button>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td class="w40">3.
-                              {/* <label class="custom-control custom-checkbox">
+                              </button> */}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>App Development</td>
+                              <td style={{ textAlign: 'center' }}>50</td>
+                              <td>
+                                <button type="button" class="btn btn-icon btn-sm icons" title="Edit" fdprocessedid="b0za8">
+                                  <GrEdit className='delete-icon' onClick={() => handleEditDeptClick()} />
+                                </button>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Marketing</td>
+                              <td style={{ textAlign: 'center' }}>200</td>
+                              <td>
+                                <button type="button" class="btn btn-icon btn-sm icons" title="Edit" fdprocessedid="2n2st">
+                                  <GrEdit className='delete-icon' onClick={() => handleEditDeptClick()} />
+                                </button>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Support</td>
+                              <td style={{ textAlign: 'center' }}>70</td>
+                              <td>
+                                <button type="button" class="btn btn-icon btn-sm icons" title="Edit" fdprocessedid="2n2st">
+                                  <GrEdit className='delete-icon' />
+                                </button>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>) : (
+                  <div class="card-header">
+                    <div className='card-body' style={{padding: "0px 15px 16px 15px"}}>
+                      <div className='user-table'>
+                        <table className='table table-hover table-vcenter text-nowrap mb-0'>
+                          <thead>
+                            <tr>
+                              <th>Department Name</th>
+                              <th>Total Employees</th>
+                              <th>View Details</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              {/* <td className='w40'>1.</td> */}
+                              {/* <td class="w40">
+                                                            <label class="custom-control custom-checkbox">
                                                                 <input type="checkbox" class="custom-control-input" name="example-checkbox1" value="option1" />
                                                                 <span class="custom-control-label">&nbsp;</span>
-                                                            </label> */}
-                            </td>
-                            <td>Marketing</td>
-                            <td>200</td>
-                            <td>
-                              <button type="button" class="btn btn-icon btn-sm icons" title="Edit" fdprocessedid="2n2st">
-                                <img src={require("assets/img/edit.png")} alt="..." className='delete-icon' />
-                              </button>
-                              <button type="button" class="btn btn-icon btn-sm js-sweetalert icons" title="Delete" data-type="confirm" fdprocessedid="y2m5v">
+                                                            </label>
+                                                        </td> */}
+                              <td>Web Development</td>
+                              <td style={{ textAlign: 'center' }}>102</td>
+                              <td>
+                                <button type="button" class="btn btn-icon btn-sm icons" title="View" data-type="confirm" fdprocessedid="f7knyq">
+                                  <img src={require("assets/img/view-icon.png")} alt="..." className='delete-icon' />
+                                </button>
+                                {/* <button type="button" class="btn btn-icon btn-sm icons" title="Delete" data-type="confirm" fdprocessedid="f7knyq">
                                 <img src={require("assets/img/delete.png")} alt="..." className='delete-icon' />
-                              </button>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td class="w40">4.
-                              {/* <label class="custom-control custom-checkbox">
-                                                                <input type="checkbox" class="custom-control-input" name="example-checkbox1" value="option1" />
-                                                                <span class="custom-control-label">&nbsp;</span>
-                                                            </label> */}
-                            </td>
-                            <td>Support</td>
-                            <td>70</td>
-                            <td>
-                              <button type="button" class="btn btn-icon btn-sm icons" title="Edit" fdprocessedid="2n2st">
-                                <img src={require("assets/img/edit.png")} alt="..." className='delete-icon' />
-                              </button>
-                              <button type="button" class="btn btn-icon btn-sm js-sweetalert icons" title="Delete" data-type="confirm" fdprocessedid="y2m5v">
-                                <img src={require("assets/img/delete.png")} alt="..." className='delete-icon' />
-                              </button>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
+                              </button> */}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>App Development</td>
+                              <td style={{ textAlign: 'center' }}>50</td>
+                              <td>
+                                <button type="button" class="btn btn-icon btn-sm icons" title="View" data-type="confirm" fdprocessedid="f7knyq">
+                                  <img src={require("assets/img/view-icon.png")} alt="..." className='delete-icon' />
+                                </button>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Marketing</td>
+                              <td style={{ textAlign: 'center' }}>200</td>
+                              <td>
+                                <button type="button" class="btn btn-icon btn-sm icons" title="View" data-type="confirm" fdprocessedid="f7knyq">
+                                  <img src={require("assets/img/view-icon.png")} alt="..." className='delete-icon' />
+                                </button>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Support</td>
+                              <td style={{ textAlign: 'center' }}>70</td>
+                              <td>
+                                <button type="button" class="btn btn-icon btn-sm icons" title="View" data-type="confirm" fdprocessedid="f7knyq">
+                                  <img src={require("assets/img/view-icon.png")} alt="..." className='delete-icon' />
+                                </button>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           </div>

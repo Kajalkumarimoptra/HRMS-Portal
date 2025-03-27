@@ -8,9 +8,16 @@ export default function PreviewForm() {
 
   const navigate = useNavigate();
   const {
-    register, handleSubmit, onSubmit, setValue, errors, watch
+    register, handleSubmit, onSubmit, setValue, errors, watch, clearErrors
   } = useFormContext();
+  const [PreviewDateColor, setPreviewDateColor] = useState("#d3d3d3"); // for giving diff color to date placeholder and option
 
+  // 🔥 Fix: Change color dynamically, but ensure placeholder remains gray
+  const handlePreviewDateColorChange = (e) => {
+    const selectedValue = e.target.value;
+    setPreviewDateColor(selectedValue ? "black" : "#d3d3d3");
+    clearErrors('dateAttach');
+};
   // for getting the current date
   const getCurrentDate = () => {
     const todayDate = new Date();
@@ -33,7 +40,7 @@ export default function PreviewForm() {
     <Navbar />
     <div className='declaration-form'>
       <div className='UniversalHeadlines'>
-        <h6 className='previewHeading'>ASSOCIATE INFORMATION AND BACKGROUND CHECK FORM- PREVIEW</h6>
+        <h6 className='previewHeading'>ASSOCIATE INFORMATION AND ONBOARDING FORM - PREVIEW</h6>
       </div>
       <div>
         <form onSubmit={handleSubmit(onSubmit)} className='signAttach'>
@@ -41,7 +48,8 @@ export default function PreviewForm() {
           <label className='signatureLabel'>Employee Signature</label>
           <div className='lastDate'>
             <label>Date<span className='finalDateSeperator' >:</span></label>
-            <input type='date' className='lastDateInput' {...register("dateAttach")} value={currentDate} onChange={handleDateChange} />
+            <input type='date' className='lastDateInput' {...register("dateAttach")} value={currentDate} onChange={(e) => {handlePreviewDateColorChange(e), handleDateChange(e)}}
+            style={{ color: PreviewDateColor }} />
           </div>
           <div>
             <label>Place<span className='required'>*</span> :</label>

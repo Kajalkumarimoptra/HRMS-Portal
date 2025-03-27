@@ -20,17 +20,28 @@
 
 // Core CSS
 @import "lbd/misc";
+@import "lbd/popup";
+@import "lbd/leaves";
+@import "lbd/applyleave";
+@import "lbd/attendance";
+@import "lbd/editattendance";
+@import "lbd/profile";
+@import "lbd/faq";
+@import "lbd/events";
+@import "lbd/misc";
 @import "lbd/header";
 @import "lbd/sidebar-and-main-panel";
 @import "lbd/login";
 @import "lbd/forgotpassword";
 @import "lbd/signup";
+@import "lbd/banner";
 @import "lbd/employeepage";
 @import "lbd/registerpage";
 @import "lbd/enterotp";
 @import "lbd/resetpassword";
 @import "lbd/dashboard";
 @import "lbd/user";
+@import "lbd/addnewuser";
 @import "lbd/department";
 @import "lbd/report";
 @import "lbd/personaldetailform";
@@ -45,15 +56,15 @@
 @import "lbd/previewform";
 @import "lbd/jobdashboard";
 @import "lbd/positions";
-@import "lbd/leave";
+@import "lbd/leaverequest";
 @import "lbd/applicant";
 @import "lbd/resumes";
 @import "lbd/report";
 @import "lbd/settings";
 @import "lbd/activities";
 @import "lbd/holidays";
-@import "lbd/payroll";
-@import "lbd/account";
+@import "lbd/policies";
+@import "lbd/offboard";
 @import "lbd/navbar";
 @import "lbd/buttons";
 @import "lbd/inputs";

@@ -8,12 +8,14 @@ export default function ProfessionalRefForm() {
 
   const navigate = useNavigate();
   const {
-    register, handleSubmit, errors, onSubmit, setValue, watch, showAddBtn, setShowAddBtn, showMinusBtn, setShowMinusBtn
+    register, handleSubmit, errors, onSubmit, setValue, watch, clearErrors, showAddBtn, setShowAddBtn, showMinusBtn, setShowMinusBtn
   } = useFormContext();
-  
   const [refNames, setRefNames] = useState([]); // initialize the state to track all the prof ref names invaid input in array
-  const [refDesg, setRefDesg] = useState([]); // initialize the state to track all the ref desg names invaid input in array
+  const [refDesg, setRefDesg] = useState([]);
   const [refNo, setRefNo] = useState([]); // initialize the state to track all the ref no. invaid input in array
+  const [passportIssueDateColor, setPassportIssueDateColor] = useState("#d3d3d3");
+  const [passportValidDateColor, setPassportValidDateColor] = useState("#d3d3d3");
+  const [passportWorkPermitDateColor, setPassporWorkPermitDateColor] = useState("#d3d3d3");
   const [patternForPassportPlace, setPatternForPassportPlace] = useState(''); // pattern for Passport Place
   const [customErrorForPassportPlace, setCustomErrorForPassportPlace] = useState(''); // error msg for its pattern failure
   const [patternForPassportCountry, setPatternForPassportCountry] = useState(''); // pattern for Passport country
@@ -24,90 +26,182 @@ export default function ProfessionalRefForm() {
   const [errorForPassportCopyFileSize, setErrorForPassportCopyFileSize] = useState(''); // error for wrong file size 
   const [showRelativeSection, setShowRelativeSection] = useState(null); // for showing table of moptra relative details
   const [profRows, setProfRows] = useState([{}, {}]); // 2 default rows in table
-  
+  const [firstMoptraRelativeName, setFirstMoptraRelativeName] = useState('');
+  const [secondMoptraRelativeName, setSecondMoptraRelativeName] = useState('');
+  const [firstMoptraRelativeEmpId, setFirstMoptraRelativeEmpId] = useState('');
+  const [secondMoptraRelativeEmpId, setSecondMoptraRelativeEmpId] = useState('');
+  const [firstMoptraRelativeRelationship, setFirstMoptraRelativeRelationship] = useState('');
+  const [secondMoptraRelativeRelationship, setSecondMoptraRelativeRelationship] = useState('');
+  const [firstMoptraRelativeDept, setFirstMoptraRelativeDept] = useState('');
+  const [secondMoptraRelativeDept, setSecondMoptraRelativeDept] = useState('');
+  const [patternForProfPassport, setPatternForProfPassport] = useState('');
+  const [customErrorForPassportNo, setcustomErrorForPassportNo] = useState('');
+  const [profPassportCopyDocUploadStatus, setProfPassportCopyDocUploadStatus] = useState(false);
+  const [successfulProfPassportCopyDocUploadMsg, setSuccessfulProfPassportCopyDocUploadMsg] = useState('');
+  const [customErrorForPassportCopyDocUpload, setCustomErrorForPassportCopyDocUpload] = useState('');
+
   // for pattern validation of professional references inputs
   const handlePatternChangeForProfRef = (index, pattern, field, e) => {
     const value = e.target.value;
-
     if (field.includes('RefName')) {
-        // Create a copy of the degree names array to update the specific index
-        const newRefNames = [...refNames]; // to ensure that the original state is not mutated
+      // Create a copy of the degree names array to update the specific index
+      const newRefNames = [...refNames]; // to ensure that the original state is not mutated
 
-        // Validate the input value
-        if (value && !pattern.test(value)) {
-            console.log(`${field} is invalid at index ${index}`); // Log if the value is invalid
-            alert('No numbers or special characters are allowed');
-            // Update only the part that is invalid
-            const validValue = value.slice(0, -1); // Removing the last entered invalid character
-            newRefNames[index] = validValue; // Set the value minus the invalid character
-            setRefNames(newRefNames);
-            return;
-        }
-        newRefNames[index] = value; // Updates the copied array at the specified index with the new value
+      // Validate the input value
+      if (value && !pattern.test(value)) {
+        console.log(`${field} is invalid at index ${index}`); // Log if the value is invalid
+        alert('No numbers or special characters are allowed');
+        // Update only the part that is invalid
+        const validValue = value.slice(0, -1); // Removing the last entered invalid character
+        newRefNames[index] = validValue; // Set the value minus the invalid character
         setRefNames(newRefNames);
+        return;
+      }
+      newRefNames[index] = value; // Updates the copied array at the specified index with the new value
+      setRefNames(newRefNames);
     }
     else if (field.includes('RefDesg')) {
-        const newRefDesg = [...refDesg];
+      const newRefDesg = [...refDesg];
 
-        if (value && !pattern.test(value)) {
-            alert('No numbers or special characters are allowed');
-            const validValue = value.slice(0, -1);
-            newRefDesg[index] = validValue;
-            setRefDesg(newRefDesg);
-            return;
-        }
-        newRefDesg[index] = value;
+      if (value && !pattern.test(value)) {
+        alert('No numbers or special characters are allowed');
+        const validValue = value.slice(0, -1);
+        newRefDesg[index] = validValue;
         setRefDesg(newRefDesg);
+        return;
+      }
+      newRefDesg[index] = value;
+      setRefDesg(newRefDesg);
     }
     else if (field.includes('RefNo')) {
-        const newRefNo = [...refNo];
-
-        if (value && !pattern.test(value)) {
-            alert('No numbers or special characters are allowed');
-            const validValue = value.slice(0, -1);
-            newRefNo[index] = validValue;
-            setRefNo(newRefNo);
-            return;
-        }
-        newRefNo[index] = value;
-        setRefNo(newRefNo);
-    }
-}
-
-const addTableForNextProfRef = () => {
-  if (profRows.length < 5) { 
-    const newRows = [...profRows, {}]; 
-    setProfRows(newRows);
-
-    // Manage button visibility
-    if (newRows.length === 3 ) {
-      setShowAddBtn(false);  
-      setShowMinusBtn(true); 
-    } else {
-      setShowAddBtn(true); 
-      setShowMinusBtn(false); 
+      const newRefNo = [...refNo];
+      let newValue = value;
+      if (newValue.length > 10) {
+        newValue = newValue.slice(0, 10); // Slice to 10 digits
+      }
+      if (newValue && !pattern.test(newValue)) {
+        alert('Only numbers are allowed');
+        newValue = newValue.slice(0, -1);
+      }
+      newRefNo[index] = newValue;
+      setRefNo(newRefNo);
     }
   }
-};
+
+  const addTableForNextProfRef = () => {
+    if (profRows.length < 5) {
+      const newRows = [...profRows, {}];
+      setProfRows(newRows);
+
+      // Manage button visibility
+      if (newRows.length === 3) {
+        setShowAddBtn(false);
+        setShowMinusBtn(true);
+      } else {
+        setShowAddBtn(true);
+        setShowMinusBtn(false);
+      }
+    }
+  };
 
   const removeTableForNextProfRef = () => {
-      if (profRows.length > 2) { 
-        const newRows = profRows.slice(0, -1); 
-        setProfRows(newRows);
-  
-        // Manage button visibility
-        if (newRows.length < 3) {
-          setShowAddBtn(true); 
-        }
-  
-        if (newRows.length === 2) {
-          setShowMinusBtn(false); 
-        } else {
-          setShowMinusBtn(true); 
-          setShowAddBtn(false);
-        }
+    if (profRows.length > 2) {
+      const newRows = profRows.slice(0, -1);
+      setProfRows(newRows);
+
+      // Manage button visibility
+      if (newRows.length < 3) {
+        setShowAddBtn(true);
       }
-    };
+
+      if (newRows.length === 2) {
+        setShowMinusBtn(false);
+      } else {
+        setShowMinusBtn(true);
+        setShowAddBtn(false);
+      }
+    }
+  };
+
+  const [pattern, setPattern] = useState({
+    firstMoptraRelativeName: '',
+    secondMoptraRelativeName: '',
+    firstMoptraRelativeEmpId: '',
+    secondMoptraRelativeEmpId: '',
+    firstMoptraRelativeRelationship: '',
+    secondMoptraRelativeRelationship: '',
+    firstMoptraRelativeDept: '',
+    secondMoptraRelativeDept: ''
+
+  }); // state for overall handling of pattern
+
+  // pattern failure validation 
+  const handlePatternForRelativeDetails = (e, pattern, field) => {
+    let value = e.target.value;
+    clearErrors(field);
+    setPattern(prev => ({ ...prev, [field]: value }))
+    if (field === 'firstMoptraRelativeName') setFirstMoptraRelativeDept(value);
+    if (field === 'secondMoptraRelativeName') setSecondMoptraRelativeName(value);
+    if (field === 'firstMoptraRelativeEmpId') setFirstMoptraRelativeEmpId(value);
+    if (field === 'secondMoptraRelativeEmpId') setSecondMoptraRelativeEmpId(value);
+    if (field === 'firstMoptraRelativeRelationship') setFirstMoptraRelativeRelationship(value);
+    if (field === 'secondMoptraRelativeRelationship') setSecondMoptraRelativeRelationship(value);
+    if (field === 'firstMoptraRelativeDept') setFirstMoptraRelativeDept(value);
+    if (field === 'secondMoptraRelativeDept') setSecondMoptraRelativeDept(value);
+
+    if ((field === 'firstMoptraRelativeName' || field === 'secondMoptraRelativeName' || field === 'firstMoptraRelativeRelationship'
+      || field === 'secondMoptraRelativeRelationship' || field === 'firstMoptraRelativeDept' || field === 'secondMoptraRelativeDept') && value && !pattern.test(value)) {
+      alert('No numbers or special characters are allowed');
+      value = value.slice(0, -1);
+    } else if (field === 'firstMoptraRelativeEmpId' || field === 'secondMoptraRelativeEmpId') {
+      // If emp id exceeds 6 digits, slice it to 6 digits
+      if (value.length > 6) {
+        value = value.slice(0, 6);
+      }
+      // perform validation
+      if (value && !pattern.test(value)) {
+        alert('Only numbers are allowed');
+        value = value.slice(0, -1);
+      }
+      if (field === 'firstMoptraRelativeEmpId') setFirstMoptraRelativeEmpId(value);
+      if (field === 'secondMoptraRelativeEmpId') setSecondMoptraRelativeEmpId(value);
+    }
+  };
+
+  const handlePatternForProfPassport = (e) => {
+    const value = e.target.value;
+    setPatternForProfPassport(value);
+
+    // Regular expression to check if the value contains more than one space
+    const moreThanOneSpaceRegex = /\s{2,}/;
+
+    if (value && moreThanOneSpaceRegex.test(value)) {
+      setcustomErrorForPassportNo('Please fill the blank as per the right format of Passport No.');
+    } else if (value && !/^[A-Z0-9\s]+$/.test(value)) {
+      setcustomErrorForPassportNo('Please fill the blank as per the right format of Passport No.');
+    } else {
+      setcustomErrorForPassportNo('');
+    }
+  };
+
+  // 🔥 Fix: Change color dynamically, but ensure placeholder remains gray
+  const handlePassportIssueDateColorChange = (e) => {
+    const selectedValue = e.target.value;
+    setPassportIssueDateColor(selectedValue ? "black" : "#d3d3d3");
+    clearErrors('passportDate');
+  };
+
+  const handlePassportWorkPermitDateColorChange = (e) => {
+    const selectedValue = e.target.value;
+    setPassporWorkPermitDateColor(selectedValue ? "black" : "#d3d3d3");
+    clearErrors('workPermit');
+  };
+
+  const handlePassportValidDateColorChange = (e) => {
+    const selectedValue = e.target.value;
+    setPassportValidDateColor(selectedValue ? "black" : "#d3d3d3");
+    clearErrors('passportValidUpto');
+  };
 
   // pattern failure validation 
   // for Passport Place
@@ -143,19 +237,24 @@ const addTableForNextProfRef = () => {
 
   // file type for passport copy upload
   const handleFileForPassportCopy = (e) => {
-    const file = e.target.files[0]; // Get the first file from the input
+    const file = e.target.files[0]; 
+    setCustomErrorForPassportCopyDocUpload('');
+    setSuccessfulProfPassportCopyDocUploadMsg('');
+    setProfPassportCopyDocUploadStatus(false);
+    setErrorForPassportCopyFileSize('');
     if (file) {
       const fileType = file.type;
-      const allowedFileTypes = ["application/pdf"];  // file type allowed
+      const allowedFileTypes = ["application/pdf"];  
       if (!allowedFileTypes.includes(fileType)) {
         window.alert("Only PDF files are supported");
-        e.target.value = ''; // Reset the input field
+        e.target.value = ''; 
         return;
       }
       setPassportCopyDoc(file);
+      clearErrors("passportCopyFile");
       const fileSize = file.size;
       if (fileSize / 1024 > 20) {
-        setErrorForPassportCopyFileSize("file should be less than or upto 20kb");  // file size validation
+        setErrorForPassportCopyFileSize("file should be less than or upto 20kb");  
         e.target.value = '';
         return;
       }
@@ -164,6 +263,75 @@ const addTableForNextProfRef = () => {
       }
     }
   }
+
+  // handle file upload
+  const handleFileUpload = async () => {
+    if (!passportCopyDoc) {
+      console.log(`No file found for passportCopyFile, setting error`);
+      setCustomErrorForPassportCopyDocUpload("Please select a file to upload");
+      return;
+  }
+
+    const formData = new FormData();
+    formData.append('file',passportCopyDoc);
+    console.log('FormData being sent:', formData);
+
+    try {
+      // Retrieve the token from localStorage
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setServerError('Authentication issue');
+        return; // Exit if token is not found
+      }
+      const response = await axios.post('http://localhost:8081/api/files/uploadFile', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${token}`
+        },
+      });
+      console.log('file upload response:', response.data); // Check the response
+
+      if (response.data.data && response.data.data.url) {
+        const fileUrl = response.data.data.url; // Extract the file URL from the respons
+        console.log('File uploaded successfully for passport copy:', fileUrl);
+        clearErrors("passportCopyFile");
+        setProfPassportCopyDocUploadStatus(true);
+        setSuccessfulProfPassportCopyDocUploadMsg('Uploaded successfully');
+        return fileUrl;
+      } else {
+        throw new Error('No file URL returned in the response');
+      }
+    } catch (error) {
+      console.error('File upload failed with error: ', error); // Log the entire error object
+      console.error('Error response:', error.response); // Log the response object if available
+      console.error('Error message:', error.message); // Log the specific error message
+
+      if (error.response && error.response.data) {
+        const errorMessage = error.response.data.message;
+        if (errorMessage.includes('File already exists')) {
+          console.log('file already exist error:', errorMessage);
+          // setCustomErrorForEmpHistoryDocUpload(prev => ({ ...prev, [field]: 'This file is already uploaded' }));
+          setCustomErrorForPassportCopyDocUpload("This file is already uploaded");
+          setPassportCopyDoc('');
+          setProfPassportCopyDocUploadStatus(false);
+          setSuccessfulProfPassportCopyDocUploadMsg('');
+          return;
+        } else {
+          console.log('common error:', errorMessage);
+          setCustomErrorForPassportCopyDocUpload("Upload failed, Please try again");
+          setPassportCopyDoc('');
+          setProfPassportCopyDocUploadStatus(false);
+          setSuccessfulProfPassportCopyDocUploadMsg('');
+        }
+      }
+      else {
+        setCustomErrorForPassportCopyDocUpload("Upload failed, Please try again");
+        setPassportCopyDoc('');
+        setProfPassportCopyDocUploadStatus(false);
+        setSuccessfulProfPassportCopyDocUploadMsg('');
+      }
+    }
+  };
 
   //for radio
   const handleRadioChange = (e) => {
@@ -179,11 +347,96 @@ const addTableForNextProfRef = () => {
     navigate("/educationaldetailsform");
   }
 
-  const handleFormSubmit = (data) => {
-    console.log('Form data:', data); // Verify form data
-    onSubmit(data); // Calling the onSubmit prop passed from the parent
-    navigate("/declarationform");
-    reset();
+  // for handle submit
+  const handleFormSubmit = async (data) => {
+    console.log('Form data:', data);
+
+    const retrievedPayload = JSON.parse(sessionStorage.getItem('newPayload'));
+
+    // Extracting professional references from the form data
+    const professionalReferences = profRows.map((_, index) => ({
+      name: data[`ProfRefName_${index}`] || '',
+      designation: data[`ProfRefDesg_${index}`] || '',
+      email: data[`ProfRefEmail_${index}`] || '',
+      contactNumber: data[`ProfRefNo_${index}`] || '',
+    }));
+
+    const professionalPayload = {
+      ...retrievedPayload,  // Include the previously stored payload
+      "professionalReferences": professionalReferences,
+      "relativeInfos": [
+        {
+          "name": data.firstMoptraRelativeName,
+          "employeeId": data.firstMoptraRelativeEmpId,
+          "relationship": data.firstMoptraRelativeRelationship,
+          "department": data.firstMoptraRelativeDept,
+          "location": data.firstMoptraRelativeLocation,
+          "remarks": data.firstMoptraRelativeRemarks
+        },
+        {
+          "name": data.secondMoptraRelativeName,
+          "employeeId": data.secondMoptraRelativeEmpId,
+          "relationship": data.secondMoptraRelativeRelationship,
+          "department": data.secondMoptraRelativeDept,
+          "location": data.secondMoptraRelativeLocation,
+          "remarks": data.secondMoptraRelativeRemarks
+        }
+      ],
+      "passportDetails": {
+        "passportNumber": data.passportNo,
+        "issueDate": data.passportDate,
+        "placeOfIssue": data.passportPlace,
+        "expiryDate": data.passportValidUpto,
+        "countryOfIssue": data.passportCountry,
+        "nationality": data.nationality,
+        "citizenship": "",
+        "expatOnGreenCard": false,
+        "expatOnWorkPermit": false,
+        "expatOnPermanentResidencyPermit": false,
+        "anyOtherStatus": "",
+        "legalRightToWorkInCountry": data.legalRight,
+        "workPermitExpiryDate": data.workPermit,
+        "workPermitDetails": data.workPermitDetails,
+        "passportCopy": data.passportCopy,
+        "passportUrl": data.passportCopyFile
+      }
+    };
+
+    try {
+      // Retrieve the token from localStorage
+      const token = localStorage.getItem('token');
+      console.log('token needed:', token);
+      if (!token) {
+        setServerError('Authentication issue');
+        return; // Exit if token is not found
+      }
+
+      const response = await axios.post('http://localhost:8081/primaryDetails/save', professionalPayload, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response && response.data) {
+        console.log("Form submitted successfully:", response.data);
+        sessionStorage.setItem('professionalReferenceDetails', JSON.stringify(response.data))
+        navigate("/declarationform");
+        reset();
+      } else {
+        console.error("Error submitting form:", response);
+        console.error("Error submitting form. Status:", response.status);
+        console.error("Error details:", response.data);
+      }
+    } catch (error) {
+      if (error.response) {
+        console.error("Error response:", error.response);
+        console.error("Response status:", error.response.status);
+        console.error("Response data:", error.response.data);
+      } else if (error.request) {
+        console.error("Error request:", error.request);
+      } else {
+        console.error("General error:", error.message);
+      }
+    }
   };
 
   // for saving filled data in local storage
@@ -195,262 +448,249 @@ const addTableForNextProfRef = () => {
 
   return (
     <div className='container-fluid form-navbar'>
-        <Navbar />
-    <div className='prof-form'>
-      <div className='UniversalHeadline'>
-        <h6 className='mainHeading'>ASSOCIATE INFORMATION AND BACKGROUND CHECK FORM</h6>
-      </div>
-      <div className='noteHeading'>
-        <h5 className='noteContent'>Note:<span className='noteDescription'>Please update all cells with correct and relevant data. The information provided in this document
-          will form part of your official records in the Company<br /> and is subjected to verification.</span></h5>
-      </div>
-      <hr />
-      <div>
-        <div className='profDetailHeading'> <h6 className='personalDetailHeadline'>PROFESSIONAL REFERENCES-</h6></div>
-      </div>
+      <Navbar />
+      <div className='prof-form'>
+        <div className='UniversalHeadline'>
+          <h6 className='mainHeading'>ASSOCIATE INFORMATION AND ONBOARDING FORM</h6>
+        </div>
+        <div className='noteHeading'>
+          <h5 className='noteContent'>Note:<span className='noteDescription'>Please update all cells with correct and relevant data. The information provided in this document
+            will form part of your official records in the Company<br /> and is subjected to verification.</span></h5>
+        </div>
+        <hr />
+        <div>
+          <div className='profDetailHeading'> <h6 className='personalDetailHeadline' style={{textAlign: 'center'}}>PROFESSIONAL REFERENCES</h6></div>
+        </div>
 
-      {/* table content */}
-      <form onSubmit={handleSubmit(handleFormSubmit)}>
-        <table className=' table profTableWidth table-bordered'>
-          <thead>
-            <tr>
-              <th scope="col" className='tableHead' >S.No.</th>
-              <th scope="col" className='tableHead'>Name</th>
-              <th scope="col" className='tableHead'>Designation</th>
-              <th scope="col" className='tableHead'>Email Address</th>
-              <th scope="col" className='tableHead'>Contact No.</th>
-            </tr>
-          </thead>
-          <tbody>
-            {profRows.map((_, index) => (
-              <tr key={index}>
-                <th className={index % 2 === 0 ? 'tableBody' : 'tableBodyLight'}>{index + 1}</th>
-                <td className={`${index % 2 === 0 ? 'tableBody' : 'tableBodyLight'} ${errors[`ProfRefName_${index}`] ? 'invalid' : ''}`}>
-                  <input type='text area' className='addressTableInput' {...register(`ProfRefName_${index}`)} 
-                  onChange={(e) => handlePatternChangeForProfRef(index, /^[A-Za-z\s]+$/, `ProfRefName_${index}`, e)} value={refNames[index] || ''}/></td>
-                <td className={`${index % 2 === 0 ? 'tableBody' : 'tableBodyLight'} ${errors[`ProfRefDesg_${index}`] ? 'invalid' : ''}`}>
-                  <input type='text area' className='addressTableInput' {...register(`ProfRefDesg_${index}`)} 
-                  onChange={(e) => handlePatternChangeForProfRef(index, /^[A-Za-z\s]+$/, `ProfRefDesg_${index}`, e)} value={refDesg[index] || ''}/></td>
-                <td className={`${index % 2 === 0 ? 'tableBody' : 'tableBodyLight'} ${errors[`ProfRefEmail_${index}`] ? 'invalid' : ''}`}>
-                  <input type='email' className='addressTableInput' {...register(`ProfRefEmail_${index}`)} 
-                 /></td>
-                <td className={`${index % 2 === 0 ? 'tableBody' : 'tableBodyLight'} ${errors[`ProfRefNo_${index}`] ? 'invalid' : ''}`}>
-                  <input type='text' className='addressTableInput' {...register(`ProfRefNo_${index}`, { minLength: 10, maxLength: 10 })} 
-                  onChange={(e) => handlePatternChangeForProfRef(index, /^[0-9]+$/, `ProfRefNo_${index}`, e)} value={refNo[index] || ''}/></td>
+        {/* table content */}
+        <form onSubmit={handleSubmit(handleFormSubmit)}>
+          <table className=' table profTableWidth table-bordered'>
+            <thead>
+              <tr>
+                <th scope="col" className='tableHead' >S.No.</th>
+                <th scope="col" className='tableHead'>Name</th>
+                <th scope="col" className='tableHead'>Designation</th>
+                <th scope="col" className='tableHead'>Email Address</th>
+                <th scope="col" className='tableHead'>Contact No.</th>
               </tr>
-            ))}
-            {/* <tr>
-              <th className='tableBody'>1</th>
-              <td className='tableBody'><input type='text area' className='tableInput' {...register("firstProfRefName", { pattern: /^[A-Za-z\s]+$/ })} /></td>
-              <td className='tableBody'><input type='text area' className='tableInput' {...register("firstProfRefDesg", { pattern: /^[A-Za-z\s]+$/ })} /></td>
-              <td className='tableBody'><input type='email' className='tableInput' {...register("firstProfRefEmail")} /></td>
-              <td className='tableBody'><input type='text' className='tableInput' {...register("firstProfRefNo", { pattern: /^[0-9]+$/, minLength: 10, maxLength: 10 })} /></td>
-            </tr>
-            <tr>
-              <th className='tableBodyLight'>2</th>
-              <td className='tableBodyLight'><input type='text area' className='tableInput' {...register("secondProfRefName", { pattern: /^[A-Za-z\s]+$/ })} /></td>
-              <td className='tableBodyLight'><input type='text area' className='tableInput' {...register("secondProfRefDesg", { pattern: /^[A-Za-z\s]+$/ })} /></td>
-              <td className='tableBodyLight'><input type='email' className='tableInput' {...register("secondProfRefEmail")} /></td>
-              <td className='tableBodyLight'><input type='text' className='tableInput' {...register("secondProfRefNo", { pattern: /^[0-9]+$/, minLength: 10, maxLength: 10 })} /></td>
-            </tr>
-            {rows.map((_, index) => (
-              <tr key={index}>
-                <th className={index % 2 === 0 ? 'tableBody' : 'tableBodyLight'}>{index + 3}</th>
-                <td className={`${index % 2 === 0 ? 'tableBody' : 'tableBodyLight'} ${errors[`anotherProfRefName_${index}`] ? 'invalid' : ''}`}>
-                  <input type='text area' className='tableInput' {...register(`anotherProfRefName_${index}`, { pattern: /^[A-Za-z\s]+$/ })} /></td>
-                <td className={`${index % 2 === 0 ? 'tableBody' : 'tableBodyLight'} ${errors[`anotherProfRefDesg_${index}`] ? 'invalid' : ''}`}>
-                  <input type='text area' className='tableInput' {...register(`anotherProfRefDesg_${index}`, { pattern: /^[A-Za-z\s]+$/ })} /></td>
-                <td className={`${index % 2 === 0 ? 'tableBody' : 'tableBodyLight'} ${errors[`anotherProfRefEmail_${index}`] ? 'invalid' : ''}`}>
-                  <input type='email' className='tableInput' {...register(`anotherProfRefEmail_${index}`)} /></td>
-                <td className={`${index % 2 === 0 ? 'tableBody' : 'tableBodyLight'} ${errors[`anotherProfRefNo_${index}`] ? 'invalid' : ''}`}>
-                  <input type='text' className='tableInput' {...register(`anotherProfRefNo_${index}`, { pattern: /^[0-9]+$/, minLength: 10, maxLength: 10 })} /></td>
-              </tr>
-            ))} */}
+            </thead>
+            <tbody>
+              {profRows.map((_, index) => (
+                <tr key={index}>
+                  <th className={index % 2 === 0 ? 'tableBody' : 'tableBodyLight'}>{index + 1}</th>
+                  <td className={`${index % 2 === 0 ? 'tableBody' : 'tableBodyLight'} ${errors[`ProfRefName_${index}`] ? 'invalid' : ''}`}>
+                    <input type='text area' className='addressTableInput' {...register(`ProfRefName_${index}`)}
+                      onChange={(e) => handlePatternChangeForProfRef(index, /^[A-Za-z\s]+$/, `ProfRefName_${index}`, e)} value={refNames[index] || ''} /></td>
+                  <td className={`${index % 2 === 0 ? 'tableBody' : 'tableBodyLight'} ${errors[`ProfRefDesg_${index}`] ? 'invalid' : ''}`}>
+                    <input type='text area' className='addressTableInput' {...register(`ProfRefDesg_${index}`)}
+                      onChange={(e) => handlePatternChangeForProfRef(index, /^[A-Za-z0-9-\s]+$/, `ProfRefDesg_${index}`, e)} value={refDesg[index] || ''} /></td>
+                  <td className={`${index % 2 === 0 ? 'tableBody' : 'tableBodyLight'} ${errors[`ProfRefEmail_${index}`] ? 'invalid' : ''}`}>
+                    <input type='email' className='addressTableInput' {...register(`ProfRefEmail_${index}`)}
+                    /></td>
+                  <td className={`${index % 2 === 0 ? 'tableBody' : 'tableBodyLight'} ${errors[`ProfRefNo_${index}`] ? 'invalid' : ''}`}>
+                    <input type='text' className='addressTableInput' {...register(`ProfRefNo_${index}`, { minLength: 10, maxLength: 10 })}
+                      onChange={(e) => handlePatternChangeForProfRef(index, /^[0-9]+$/, `ProfRefNo_${index}`, e)} value={refNo[index] || ''} /></td>
+                </tr>
+              ))}
 
-          </tbody>
-        </table>
-        <div className='btns'>
-                <div className='eduAddRowButtonContainer'>
-                    {showAddBtn &&
-                        (<input type='button' className='profAddRowButton' value='+Add Row' onClick={addTableForNextProfRef} />
-                        )}
-                </div>
-                <div className='eduAddRowButtonContainer'>
-                    {showMinusBtn &&
-                        (<input type='button' className='profAddRowButton' value='-Add Row' onClick={removeTableForNextProfRef} />
-                        )}
-                </div>
+            </tbody>
+          </table>
+          <div className='btns'>
+            <div className='eduAddRowButtonContainer'>
+              {showAddBtn &&
+                (<input type='button' className='profAddRowButton' value='+ Add Row' onClick={addTableForNextProfRef} />
+                )}
             </div>
-        {/* <div>
-          <input type='button' className='profAddRowButton' value='+Add Row' onClick={addRowForProfRef} disabled={rows.length >= 1} />
-        </div> */}
-        <div className='relativeWorking'>
-          <div className='profDetailHeading'> <h6 className='relativeWorkingHeadline'>Do you have any relative's working with Moptra Infotech?
-            If Yes, Please tick it and fill the details, otherwise tick No and proceed further.</h6></div>
-        </div>
-        <div className='relativeButtons'>
-          <label>
-            <input
-              type='radio' className='radioYes' name='moptraRelative' onChange={handleRadioChange} value='yes'
-              {...register("moptraRelative", { required: true })}
-            />
-            Yes
-          </label>
-          <label>
-            <input
-              type='radio' className='radioYes' name='moptraRelative' onChange={handleRadioChange} value='no'
-              {...register("moptraRelative", { required: true })}
-            />
-            No
-          </label>
-          {errors.moptraRelative && <div className='moptraRelativeErrorMessage'>Please select atleast any one alternative</div>}
-        </div>
+            <div className='eduAddRowButtonContainer'>
+              {showMinusBtn &&
+                (<input type='button' className='profAddRowButton' value='- Add Row' onClick={removeTableForNextProfRef} />
+                )}
+            </div>
+          </div>
 
-        {/* table content */}
-        {moptraRelative === 'yes' && <table className='table profTableWidth table-bordered'>
-          <thead>
-            <tr>
-              <th scope="col" className='tableHead'>Name</th>
-              <th scope="col" className='tableHead'>Employee ID</th>
-              <th scope="col" className='tableHead'>Relationship</th>
-              <th scope="col" className='tableHead'>Department</th>
-              <th scope="col" className='tableHead'>Location</th>
-              <th scope="col" className='tableHead'>Remarks</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td className='tableBody'><input type='text area' className='tableInput' /></td>
-              <td className='tableBody'><input type='text area' className='tableInput' /></td>
-              <td className='tableBody'><input type='text area' className='tableInput' /></td>
-              <td className='tableBody'><input type='text area' className='tableInput' /></td>
-              <td className='tableBody'><input type='text area' className='tableInput' /></td>
-              <td className='tableBody'><input type='text area' className='tableInput' /></td>
-            </tr>
-            <tr>
-              <td className='tableBodyLight'><input type='text area' className='tableInput' /></td>
-              <td className='tableBodyLight'><input type='text area' className='tableInput' /></td>
-              <td className='tableBodyLight'><input type='text area' className='tableInput' /></td>
-              <td className='tableBodyLight'><input type='text area' className='tableInput' /></td>
-              <td className='tableBodyLight'><input type='text area' className='tableInput' /></td>
-              <td className='tableBodyLight'><input type='text area' className='tableInput' /></td>
-            </tr>
-          </tbody>
-        </table>}
-
-        {/* passport details form */}
-        <div className='passportContainer'>
-          <div className='profDetailHeading'> <h6 className='personalDetailHeadline'>PASSPORT DETAILS-</h6></div>
-        </div>
-        <div className='passportDetailsContainer'>
-          <div className='passportNoContainer'>
-            <label>Passport Number<span className='separatorForPrevEmpName'>:</span></label>
-            <input type='text' placeholder='Passport Number' className='passportNoInput' {...register("passportNo")} />
+          <div className='relativeWorking'>
+            <div className='profDetailHeading'> <h6 className='personalDetailHeadline' style={{ textTransform: 'capitalize' }}>Do you have any relative's working with Moptra Infotech?
+              If Yes, Please tick it and fill the details, otherwise tick No and proceed further.</h6></div>
           </div>
-          <div className='passportDateContainer'>
-            <label>Date of Issue<span className='separatorForPrevEmpName'>:</span></label>
-            <input type='date' placeholder='date' className='passportDateInput'  {...register("passportDate")} />
-          </div>
-          <div className='passportPlaceContainer'>
-            <label>Place of Issue<span className='separatorForPrevEmpName'>:</span></label>
-            <input type='text' placeholder='place' className='passportPlaceInput'  {...register("passportPlace", { pattern: /^[A-Za-z\s]+$/ })}
-              value={patternForPassportPlace} onChange={handlePatternForPassportPlace} />
-            {customErrorForPassportPlace ? <div className='errorMessage'>{customErrorForPassportPlace}</div> : ''}
-          </div>
-        </div>
-        <div className='passportValidDetailsContainer'>
-          <div className='passportValidContainer'>
-            <label>Valid Upto<span className='separatorForPrevEmpName'>:</span></label>
-            <input type='date' placeholder='Enter Valid Date' className='passportValidInput'  {...register("passportValidUpto")} />
-          </div>
-          <div className='passportCountryContainer'>
-            <label>Country of Issue<span className='separatorForPassport'>:</span></label>
-            <input type='text' placeholder='Country Name' className='passportCountryInput'  {...register("passportCountry", { pattern: /^[A-Za-z\s]+$/ })}
-              value={patternForPassportCountry} onChange={handlePatternForPassportCountry} />
-            {customErrorForPassportCountry ? <div className='errorMessage'>{customErrorForPassportCountry}</div> : ''}
-          </div>
-          <div className='passportNationalityContainer'>
-            <label>Nationality<span className='separatorForNationality'>:</span></label>
-            <input type='text' placeholder='Nationality' className='passportValidInput'  {...register("nationality", { pattern: /^[A-Za-z\s]+$/ })}
-              value={patternForPassportNationality} onChange={handlePatternForPassportNationality} />
-            {customErrorForPassportNationality ? <div className='errorMessage'>{customErrorForPassportNationality}</div> : ''}
-          </div>
-        </div>
-        <div className='visaStatusContainer'>
-          <div className='profDetailHeading'> <h6 className='relativeWorkingHeadline'>Please tick an appropriate option
-            related to your Visa status.</h6></div>
-        </div>
-        {/* table content */}
-        <table className='table profTableWidth table-bordered'>
-          <thead>
-            <tr>
-              <th scope="col" className='tableHead'>Citizen</th>
-              <th scope="col" className='tableHead'>Expat on Green Card</th>
-              <th scope="col" className='tableHead'>Expat on Work Permit</th>
-              <th scope="col" className='tableHead'>Expat on Permanent Residency Permit</th>
-              <th scope="col" className='tableHead'>Any Other Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td className='tableBody'><input type="radio" name="visa status" value="citizen" className='radioCheckForVisa' {...register("visaStatus")} /></td>
-              <td className='tableBody'><input type="radio" name="visa status" value="expat_green_card" className='radioCheckForVisa' {...register("visaStatus")} /></td>
-              <td className='tableBody'><input type="radio" name="visa status" value="expat_work_permit" className='radioCheckForVisa' {...register("visaStatus")} /></td>
-              <td className='tableBody'><input type="radio" name="visa status" value="expat_permanent_residency" className='radioCheckForVisa' {...register("visaStatus")} /></td>
-              <td className='tableBody'><input type="radio" name="visa status" value="any_other_status" className='radioCheckForVisa' {...register("visaStatus")} /></td>
-            </tr>
-          </tbody>
-        </table>
-        <div className='permitContainer'>
-          <div className='passportValidContainer'>
-            <label>Legal Right to work in country<span className='separatorForPrevEmpName'>:</span></label>
-            {/* <input type='text' placeholder='Yes or No' className='legalRightInput' {...register("legalRight")} /> */}
+          <div className='relativeButtons'>
             <label>
-            <input
-              type='radio' className='radioYes' name='legalRight' value='yes'
-              {...register("legalRight", { required: true })}
-            />
-            Yes
-          </label>
-          <label>
-            <input
-              type='radio' className='radioYes' name='legalRight' value='no'
-              {...register("legalRight", { required: true })}
-            />
-            No
-          </label>
-          {errors.legalRight && <div className='moptraRelativeErrorMessage'>Please select atleast any one alternative</div>}
+              <input
+                type='radio' className='radioYes' name='moptraRelative' onChange={handleRadioChange} value='yes'
+                {...register("moptraRelative", { required: true })}
+              />
+              Yes
+            </label>
+            <label>
+              <input
+                type='radio' className='radioYes' name='moptraRelative' onChange={handleRadioChange} value='no'
+                {...register("moptraRelative", { required: true })}
+              />
+              No
+            </label>
+            {errors.moptraRelative && <div className='moptraRelativeErrorMessage'>Please select atleast any one alternative</div>}
           </div>
-          <div className='workPermitContainer'>
-            <label>Work permit valid till<span className='separatorForPassport'>:</span></label>
-            <input type='date' placeholder='select date' className='workPermitInput' {...register("workPermit")} />
+
+          {/* table content */}
+          {moptraRelative === 'yes' && <table className='table profTableWidth table-bordered'>
+            <thead>
+              <tr>
+                <th scope="col" className='tableHead'>Name</th>
+                <th scope="col" className='tableHead'>Employee ID</th>
+                <th scope="col" className='tableHead'>Relationship</th>
+                <th scope="col" className='tableHead'>Department</th>
+                <th scope="col" className='tableHead'>Location</th>
+                <th scope="col" className='tableHead'>Remarks</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className='tableBody'><input type='text area' className='tableInput' {...register("firstMoptraRelativeName")} value={pattern.firstMoptraRelativeName}
+                  onChange={(e) => handlePatternForRelativeDetails(e, /^[A-Za-z\s]+$/, 'firstMoptraRelativeName')} /></td>
+                <td className='tableBody'><input type='text area' className='tableInput' {...register("firstMoptraRelativeEmpId")} value={pattern.firstMoptraRelativeEmpId}
+                  onChange={(e) => handlePatternForRelativeDetails(e, /^[0-9]+$/, 'firstMoptraRelativeEmpId')} /></td>
+                <td className='tableBody'><input type='text area' className='tableInput' {...register("firstMoptraRelativeRelationship")} value={pattern.firstMoptraRelativeRelationship}
+                  onChange={(e) => handlePatternForRelativeDetails(e, /^[A-Za-z\s]+$/, 'firstMoptraRelativeRelationship')} /></td>
+                <td className='tableBody'><input type='text area' className='tableInput' {...register("firstMoptraRelativeDept")} value={pattern.firstMoptraRelativeDept}
+                  onChange={(e) => handlePatternForRelativeDetails(e, /^[A-Za-z\s]+$/, 'firstMoptraRelativeDept')} /></td>
+                <td className='tableBody'><input type='text area' className='tableInput' {...register("firstMoptraRelativeLocation")} /></td>
+                <td className='tableBody'><input type='text area' className='tableInput' {...register("firstMoptraRelativeRemarks")} /></td>
+              </tr>
+              <tr>
+                <td className='tableBodyLight'><input type='text area' className='tableInput' {...register("secondMoptraRelativeName")} value={pattern.secondMoptraRelativeName}
+                  onChange={(e) => handlePatternForRelativeDetails(e, /^[A-Za-z\s]+$/, 'secondMoptraRelativeName')} /></td>
+                <td className='tableBodyLight'><input type='text area' className='tableInput' {...register("secondMoptraRelativeEmpId")} value={pattern.secondMoptraRelativeEmpId}
+                  onChange={(e) => handlePatternForRelativeDetails(e, /^[0-9]+$/, 'secondMoptraRelativeEmpId')} /></td>
+                <td className='tableBodyLight'><input type='text area' className='tableInput' {...register("secondMoptraRelativeRelationship")} value={pattern.secondMoptraRelativeRelationship}
+                  onChange={(e) => handlePatternForRelativeDetails(e, /^[A-Za-z\s]+$/, 'secondMoptraRelativeRelationship')} /></td>
+                <td className='tableBodyLight'><input type='text area' className='tableInput' {...register("secondMoptraRelativeDept")} value={pattern.secondMoptraRelativeDept}
+                  onChange={(e) => handlePatternForRelativeDetails(e, /^[A-Za-z\s]+$/, 'secondMoptraRelativeDept')} /></td>
+                <td className='tableBodyLight'><input type='text area' className='tableInput' {...register("secondMoptraRelativeLocation")} /></td>
+                <td className='tableBodyLight'><input type='text area' className='tableInput' {...register("secondMoptraRelativeRemarks")} /></td>
+              </tr>
+            </tbody>
+          </table>}
+
+          {/* passport details form */}
+          <div className='passportContainer'>
+            <div className='profDetailHeading'> <h6 className='personalDetailHeadline' style={{textAlign: 'center'}}>PASSPORT DETAILS</h6></div>
           </div>
-        </div>
-        <div className='permitContainer'>
-          <div className='workPermitDetailContainer'>
-            <label>Mention the details of work permit<span className='separatorForWorkPermit'>:</span></label>
-            <input type='text' className='workPermitDetailInput' {...register("workPermitDetails")} />
+          <div className='passportDetailsContainer'>
+            <div className='passportNoContainer'>
+              <label>Passport Number<span className='separatorForPrevEmpName'>:</span></label>
+              <input type='text' placeholder='Passport Number' className='passportNoInput' {...register("passportNo")}
+                value={patternForProfPassport} onChange={handlePatternForProfPassport} />
+              {customErrorForPassportNo ? <div className="errorMessage">{customErrorForPassportNo}</div> : ''}
+            </div>
+            <div className='passportDateContainer'>
+              <label>Date of Issue<span className='separatorForPrevEmpName'>:</span></label>
+              <input type='date' placeholder='date' className='passportDateInput'  {...register("passportDate")}
+                onChange={handlePassportIssueDateColorChange} style={{ color: passportIssueDateColor }} />
+            </div>
+            <div className='passportPlaceContainer'>
+              <label>Place of Issue<span className='separatorForPrevEmpName'>:</span></label>
+              <input type='text' placeholder='place' className='passportPlaceInput'  {...register("passportPlace", { pattern: /^[A-Za-z\s]+$/ })}
+                value={patternForPassportPlace} onChange={handlePatternForPassportPlace} />
+              {customErrorForPassportPlace ? <div className='errorMessage' style={{ marginLeft: '-40px' }}>{customErrorForPassportPlace}</div> : ''}
+            </div>
           </div>
-        </div>
-        <div className='passportCopyContainer'>
-          <div>
-            <label>Passport Copy<span className='separatorForPassportCopy'> : </span></label>
-            <input type='text' placeholder='Passport Copy' className="passportInput" {...register("passportCopy")} />
+          <div className='passportValidDetailsContainer'>
+            <div className='passportValidContainer'>
+              <label>Valid Upto<span className='separatorForPrevEmpName'>:</span></label>
+              <input type='date' placeholder='Enter Valid Date' className='passportValidInput'  {...register("passportValidUpto")}
+                onChange={handlePassportValidDateColorChange} style={{ color: passportValidDateColor }} />
+            </div>
+            <div className='passportCountryContainer'>
+              <label>Country of Issue<span className='separatorForPassport'>:</span></label>
+              <input type='text' placeholder='Country Name' className='passportCountryInput'  {...register("passportCountry", { pattern: /^[A-Za-z\s]+$/ })}
+                value={patternForPassportCountry} onChange={handlePatternForPassportCountry} />
+              {customErrorForPassportCountry ? <div className='errorMessage'>{customErrorForPassportCountry}</div> : ''}
+            </div>
+            <div className='passportNationalityContainer'>
+              <label>Nationality<span className='separatorForNationality'>:</span></label>
+              <input type='text' placeholder='Nationality' className='passportValidInput'  {...register("nationality", { pattern: /^[A-Za-z\s]+$/ })}
+                value={patternForPassportNationality} onChange={handlePatternForPassportNationality} />
+              {customErrorForPassportNationality ? <div className='errorMessage'>{customErrorForPassportNationality}</div> : ''}
+            </div>
           </div>
-          <div>
-            <input type='file' className="profUploadFileInput" {...register("passportCopyFile")}
-              onChange={handleFileForPassportCopy} />
-            <button type="submit" className="passportCopyUpload">upload</button>
+          <div className='visaStatusContainer'>
+            <div className='profDetailHeading'> <h6 className='relativeWorkingHeadline'>Please tick an appropriate option
+              related to your Visa status.</h6></div>
           </div>
-        </div>
-        {/* save buttons */}
-        <div className='educationSaveButtons'>
-          <button type="button" className="profBackBtn" onClick={backToEducationalPage}>Back</button>
-          <button type="button" className="saveBtn" onClick={saveInLocalStorage}>Save Draft</button>
-          <button type="submit" className="saveNextBtn">Save And Next </button>
-        </div>
-      </form>
-    </div>
+          {/* table content */}
+          <table className='table profTableWidth table-bordered'>
+            <thead>
+              <tr>
+                <th scope="col" className='tableHead'>Citizen</th>
+                <th scope="col" className='tableHead'>Expat on Green Card</th>
+                <th scope="col" className='tableHead'>Expat on Work Permit</th>
+                <th scope="col" className='tableHead'>Expat on Permanent Residency Permit</th>
+                <th scope="col" className='tableHead'>Any Other Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className='tableBody'><input type="radio" name="visa status" value="citizen" className='radioCheckForVisa' {...register("visaStatus")} /></td>
+                <td className='tableBody'><input type="radio" name="visa status" value="expat_green_card" className='radioCheckForVisa' {...register("visaStatus")} /></td>
+                <td className='tableBody'><input type="radio" name="visa status" value="expat_work_permit" className='radioCheckForVisa' {...register("visaStatus")} /></td>
+                <td className='tableBody'><input type="radio" name="visa status" value="expat_permanent_residency" className='radioCheckForVisa' {...register("visaStatus")} /></td>
+                <td className='tableBody'><input type="radio" name="visa status" value="any_other_status" className='radioCheckForVisa' {...register("visaStatus")} /></td>
+              </tr>
+            </tbody>
+          </table>
+          <div className='permitContainer'>
+            <div className='passportValidContainer'>
+              <label>Legal Right to work in country<span className='separatorForPrevEmpName'>:</span></label>
+              {/* <input type='text' placeholder='Yes or No' className='legalRightInput' {...register("legalRight")} /> */}
+              <label>
+                <input
+                  type='radio' className='radioYes' name='legalRight' value='yes'
+                  {...register("legalRight", { required: true })}
+                />
+                Yes
+              </label>
+              <label>
+                <input
+                  type='radio' className='radioYes' name='legalRight' value='no'
+                  {...register("legalRight", { required: true })}
+                />
+                No
+              </label>
+              {errors.legalRight && <div className='moptraRelativeErrorMessage'>Please select atleast any one alternative</div>}
+            </div>
+            <div className='workPermitContainer'>
+              <label>Work permit valid till<span className='separatorForPassport'>:</span></label>
+              <input type='date' placeholder='select date' className='workPermitInput' {...register("workPermit")}
+                onChange={handlePassportWorkPermitDateColorChange} style={{ color: passportWorkPermitDateColor }} />
+            </div>
+          </div>
+          <div className='permitContainer'>
+            <div className='workPermitDetailContainer'>
+              <label>Mention the details of work permit<span className='separatorForWorkPermit'>:</span></label>
+              <input type='text' className='workPermitDetailInput' {...register("workPermitDetails")} />
+            </div>
+          </div>
+          <div className='passportCopyContainer'>
+            <div>
+              <label>Passport Copy<span className='separatorForPassportCopy'> : </span></label>
+              <input type='text' placeholder='Passport Copy' className="passportInput" {...register("passportCopy")} />
+            </div>
+            <div style={{ marginTop: '-3px', marginLeft: '-572px' }}>
+              <input type='file' className="profUploadFileInput" {...register("passportCopyFile")}
+                onChange={handleFileForPassportCopy} />
+              <button type="button" className="passportCopyUpload" onClick={handleFileUpload}>upload</button>
+            </div>
+            {errorForPassportCopyFileSize && <div className='passportCopyErrorMessage'>{errorForPassportCopyFileSize}</div>}
+            {customErrorForPassportCopyDocUpload && <div className='passportCopyErrorMessage'>{customErrorForPassportCopyDocUpload}</div>}
+            {successfulProfPassportCopyDocUploadMsg && <div className='passportCopyErrorMessage' style={{color: 'green', fontSize: '14px', fontWeight: 'bold'}}>{successfulProfPassportCopyDocUploadMsg}</div>}
+          </div>
+          {/* save buttons */}
+          <div className='educationSaveButtons'>
+            <button type="button" className="profBackBtn" onClick={backToEducationalPage}>Back</button>
+            <button type="button" className="saveBtn" onClick={saveInLocalStorage}>Save Draft</button>
+            <button type="submit" className="saveNextBtn">Save And Next </button>
+          </div>
+        </form>
+      </div>
     </div>
   )
 }

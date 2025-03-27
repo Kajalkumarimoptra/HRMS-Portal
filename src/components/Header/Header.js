@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { ImSearch } from "react-icons/im";
+import axios from 'axios';
 
 export default function Header() {
+  const navigate = useNavigate();
   const [dropdownVisible, setDropdownVisible] = useState(false); // State for dropdown visibility
-
 
   // Toggle the dropdown visibility
   const toggleDropdown = () => {
@@ -13,22 +14,81 @@ export default function Header() {
     console.log('Dropdown visibility after toggle:', !dropdownVisible);
   };
 
+  // Close dropdown when route changes
+  useEffect(() => {
+    setDropdownVisible(false); 
+  }, [location.pathname]);
+
+  // handle faq section 
+  const handleProfile = () => {
+    navigate('/admin/Profile')
+  }
+
+  // handle faq section 
+  const handleFaq = () => {
+    navigate('/admin/FAQ')
+  }
+
+  // to handle logout
+  const handleLogout = async () => {
+
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.log('token authentication issue');
+        return; // Exit if token is not found
+      }
+
+      const response = await axios.post('http://localhost:8081/api/public/logout', 
+        {}, // Empty body, since logout might not require any payload
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+        }
+      );
+
+      if(response.status === 200){
+        console.log(response);
+        console.log('log out done successfully');
+        navigate('/');
+        setTimeout(() => {
+          localStorage.clear();
+          sessionStorage.clear();
+          localStorage.removeItem("elapsedTime");
+          window.location.reload(); // Force a refresh to reset the timer
+        },1000); // clear all cookies in set timeout as before authenticating token, it was cleared,so did it after it.
+      }
+    } catch (error) {
+      if (error.response) {
+        console.error("Error response:", error.response);
+        console.error("Response status:", error.response.status);
+        console.error("Response data:", error.response.data);
+      } else if (error.request) {
+        console.error("Error request:", error.request);
+      } else {
+        console.error("General error:", error.message);
+      }
+    }
+  }
+
   return (
     <div className='container-fluid header-base'>
       <div className='header-logo'>
         <div className="header-logo-image">
-          <img src={require("assets/img/company_logo.png")} alt="..." />
+          <img src={require("assets/img/Logo.png")} alt="..." />
         </div>
+        {/* search bar */}
         <form className="navbar-searchForm">
           <input class="form-control me-2 search" type="search" placeholder="Search" aria-label="Search" />
           <i> <ImSearch className='searchIcon' /></i>
         </form>
         {/* notification-icons */}
-        <div className='d-flex mr-4'>
-          <div class="dropdown d-flex">
+        <div className='d-flex' style={{ marginRight: '25px'}}>
+          <div class="dropdown d-flex" style={{ marginRight: '-5px'}}>
             <a class="nav-link icon d-none d-md-flex btn btn-default btn-icon ml-1" data-toggle="dropdown" aria-expanded="false">
               {/* bell-icon */}
-              <i class="fa fa-bell" style={{ fontSize: '18px' }}></i>
+              <i class="fa fa-bell" style={{ fontSize: '18px', color: 'white' }}></i>
               <span class="badge badge-primary nav-unread"></span></a>
             <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow" x-placement="bottom-end"
               style={{ position: 'absolute', willChange: 'transform', top: '0px', left: '0px' }}>
@@ -43,13 +103,6 @@ export default function Header() {
               </ul>
               <div class="dropdown-divider"></div><a href="fake_url" class="dropdown-item text-center text-muted-dark readall">Mark all as read</a></div>
           </div>
-          {/* search bar */}
-          {/* <div className='dropdown d-flex' style={{ marginRight: '-41px'}}>
-           <form className="navbar-searchForm">
-          <input class="form-control me-2 search" type="search" placeholder="Search" aria-label="Search" />
-          <i> <ImSearch className='searchIcon' /></i>
-        </form>
-        </div> */}
           <div class="dropdown d-flex" style={{ display: 'flex', alignItems: 'center', position: 'relative', overflow: 'visible', visibility: 'visible', opacity: '1' }}>
             <button href="/#" class="nav-link icon d-none d-md-flex btn btn-default btn-icon ml-1 dropdown-toggle" type="button"
               onClick={toggleDropdown} style={{ display: 'flex', alignItems: 'center' }}>
@@ -60,7 +113,7 @@ export default function Header() {
                 class="profile-img"
               />
               <span style={{ display: 'flex', alignItems: 'center' }}>
-                <h5 style={{ margin: 0, marginLeft: '9px' }}>Avinash Gautam</h5>
+                <h5 style={{ margin: 0, marginLeft: '9px', color: 'white' }}>Me</h5>
               </span>
             </button>
             <ul
@@ -68,6 +121,7 @@ export default function Header() {
               style={{
                 position: 'absolute',
                 top: '100%',
+                left:'-23%',
                 zIndex: 9999,
                 backgroundColor: '#fff',
                 boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
@@ -77,12 +131,10 @@ export default function Header() {
                 opacity: dropdownVisible ? 1 : 0,
                 transition: 'opacity 0.2s ease-in-out, visibility 0.2s ease-in-out',
                 listStyleType: 'none'
-              }}
-            >
-              {/* // style={{ position: 'absolute', willChange: 'transform', top: '0px', left: '0px' }}
-             */}
-              <li><a class="dropdown-item" style={{ textDecoration: 'none', cursor: "pointer" }}>Change Password</a></li>
-              <li><a class="dropdown-item">Logout</a></li>
+              }}>
+              <li><a class="dropdown-item" style={{ textDecoration: 'none', cursor: "pointer" }} onClick={() => handleProfile()}>Profile</a></li>
+              <li><a class="dropdown-item" style={{ textDecoration: 'none', cursor: "pointer" }} onClick={() => handleFaq()}>FAQ</a></li>
+              <li><a class="dropdown-item" style={{ textDecoration: 'none', cursor: "pointer" }} onClick={() => handleLogout()}>Logout</a></li>
             </ul>
             {/* <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow" 
               style={{ position: 'absolute', willChange: 'transform', top: '0px', left: '0px' }}>
@@ -95,6 +147,5 @@ export default function Header() {
         </div>
       </div>
     </div>
-
   )
 }

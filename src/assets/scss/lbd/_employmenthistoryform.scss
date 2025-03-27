@@ -12,22 +12,43 @@
     padding: 10px;
 
     .empHistoryDetailHeading {
-        margin: 46px 12px 0; // Combine margin values
+        margin: 46px -13px 0;
         background-color: var(--main-background);
-        width: 93.7%;
+        width: 96.2%;
     }
 
     .empHeadline {
         background-color: var(--main-background);
-        text-align: left;
+        margin-left: 16px !important;
     }
 
     .empHistoryForm {
         text-align: left;
-        margin: 15px 0 0 25px;
+        margin: 15px 0 0 4px;
 
         .PrevEmpNameContainer {
             margin-top: 10px;
+
+            .separatorForPrevEmpName {
+                margin: 15px;
+            }
+
+            .separatorForPrevEmpAdd {
+                margin: 137px;
+            }
+
+            .separatorForManagerEmail {
+                margin: 59px;
+            }
+
+            .separatorForLeaveReason {
+                margin: 56px;
+            }
+
+            .separatorForPosition {
+                margin: 69px;
+                margin-right: 55px;
+            }
 
             div {
                 flex: 1;
@@ -35,9 +56,22 @@
         }
 
         .PrevEmpNameInput,
-        .PrevEmpAddressInput {
+        .PrevEmpAddressInput,
+        .managerEmailInput,
+        .leaveReasonInput {
             width: var(--primary-width);
-            margin-right: -32px; // Consider adjusting layout with flexbox
+        }
+
+        .PrevEmpAddressInput {
+            margin-left: -122.5px;
+        }
+
+        .managerEmailInput {
+            margin-left: -42px;
+        }
+
+        .leaveReasonInput {
+            margin-left: -39px;
         }
 
         .PrevEmpFromToContainer,
@@ -48,6 +82,46 @@
             div {
                 flex: 1;
             }
+
+            .separationForTelephone {
+                margin: 93px;
+            }
+
+            .separationForEmpCode {
+                margin: 103px;
+            }
+
+            .separationForDesg {
+                margin: 112px;
+            }
+
+            .separationForDept {
+                margin: 126px;
+            }
+
+            .separationForManagerName {
+                margin: 75px;
+            }
+
+            .separationForManagerNo {
+                margin: 57px;
+            }
+
+            .separatorForStayEmpFrom {
+                margin: 55px;
+            }
+        }
+
+        .PrevEmpFromToContainer {
+
+            .empFromInput,
+            .empToInput {
+                margin-left: 14px;
+            }
+
+            .empToContainer {
+                margin-left: -336px;
+            }
         }
 
         .teleInput,
@@ -55,10 +129,32 @@
         .desgInput,
         .deptInput,
         .managerNameInput,
-        .managerContactInput,
-        .managerEmailInput,
-        .leaveReasonInput {
+        .managerContactInput {
             width: var(--secondary-width);
+        }
+
+        .teleInput {
+            margin-left: -78px;
+        }
+
+        .empCodeInput {
+            margin-left: -63px;
+        }
+
+        .desgInput {
+            margin-left: -96px;
+        }
+
+        .deptInput {
+            margin-left: -85px;
+        }
+
+        .managerNameInput {
+            margin-left: -59px;
+        }
+
+        .managerContactInput {
+            margin-left: -16px;
         }
 
         .eduAddRowButton {
@@ -76,19 +172,24 @@
             appearance: none;
             -webkit-appearance: none;
             background-color: white;
-            outline: 2px solid #333;
-            border: 3px solid white;
-            width: 16px;
-            height: 16px;
+            border: 2px solid #333;
+            width: 20px;
+            height: 20px;
             cursor: pointer;
             position: relative;
-            margin: 4px 89px 0 23px;
+            margin: -2px 89px 0 26px;
+            vertical-align: middle;
 
-            &::after {
+            &:checked{
+                background-color: white;
+                border: 2px solid #333;
+            }
+
+            &:checked::after {
                 content: '';
                 position: absolute;
-                top: -2px;
-                left: 3px;
+                top: 0px;
+                left: 5px;
                 width: 6px;
                 height: 12px;
                 border: solid blue;
@@ -102,21 +203,54 @@
             font-weight: 700;
         }
 
-        .docGrpContainer {
+        .docGrpContainer,
+        .lastDocGrpContainer {
             display: flex;
             flex-direction: row;
             gap: 3px;
-            margin-top: 20px;
+            margin-top: -21px;
+            justify-content: space-between;
+            align-items: baseline;
 
-            > div {
+            >div {
                 flex: 1;
+            }
+
+            .separatorForExpCert {
+                margin: 52px;
+            }
+
+            .emp-file-container,
+            .emp-relieving-file-container {
+                position: relative;
+                display: flex;
+                align-items: center;
+                right: 8px;
+                gap: 5px;
+                top: -1px;
+
+                .uploadFileOfExpCert {
+                    position: relative;
+                    border: 1px solid black;
+                    width: 205px;
+                    margin-left: -33px;
+                }
+
+                .uploadEmp {
+                    width: 93px;
+                    background-color: rgba(253, 216, 53, 0.568627451);
+                    border: none;
+                }
+            }
+
+            .emp-relieving-file-container {
+                top: -32px;
+                right: -221px;
             }
         }
 
-        .uploadFileOfExpCert,
-        .uploadFileOfRelievingLetter {
-            border: 1px solid black;
-            width: 205px;
+        .lastDocGrpContainer {
+            margin-top: -79px;
         }
 
         .empErrorMessage,
@@ -128,5 +262,6 @@
             color: var(--error-color);
             font-size: 12px;
         }
+
     }
 }
