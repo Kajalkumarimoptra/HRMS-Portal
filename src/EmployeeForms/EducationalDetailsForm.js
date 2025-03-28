@@ -644,19 +644,30 @@ export default function EducationalDetailsForm() {
                                             {/* <td className={`${index % 2 === 0 ? 'tableBody' : 'tableBodyLight'} ${errors[`higherDegreeName_${index}`] ? 'invalid' : ''}`}> */}
                                             <input type='text' className='addressTableInput'
                                                 {...register(`higherDegreeName_${index}`, { required: true })}
-                                                onChange={(e) => handlePatternChangeForEduDoc(index, /^[A-Za-z.-\s]+$/, `higherDegreeName_${index}`, e)} value={degreeNames[index] || ''}
+                                                onChange={(e) => handlePatternChangeForEduDoc(index,/^[A-Za-z.\-\s()]+$/, `higherDegreeName_${index}`, e)} value={degreeNames[index] || ''}
                                             />
                                         </td>
                                         <td className={`${index % 2 === 0 ? 'tableBody' : 'tableBodyLight'} `}>
                                             <input type='text' className='addressTableInput'
                                                 {...register(`higherDegreeSubject_${index}`, { required: true })}
-                                                onChange={(e) => handlePatternChangeForEduDoc(index, /^[A-Za-z0-9,.\-&\s]+$/, `higherDegreeSubject_${index}`, e)} value={subjects[index] || ''}
+                                                onChange={(e) => handlePatternChangeForEduDoc(index, /^[A-Za-z0-9,.()\-&\s]+$/, `higherDegreeSubject_${index}`, e)} value={subjects[index] || ''}
                                             />
                                         </td>
                                         <td className={`${index % 2 === 0 ? 'tableBody' : 'tableBodyLight'} `}>
                                             <input type='text' className='addressTableInput'
                                                 {...register(`higherDegreePassingYr_${index}`, { required: true, minLength: 4 })}
-                                                onChange={(e) => handlePatternChangeForEduDoc(index, /^[0-9]+$/, `higherDegreePassingYr_${index}`, e)} value={passingYr[index] || ''}
+                                                onChange={(e) => {
+                                                    const currentYear = new Date().getFullYear(); // Get current year
+                                                    const enteredYear = parseInt(e.target.value, 10); // Convert input to number
+                                        
+                                                    if (enteredYear > currentYear) {
+                                                        alert("Future years are not allowed!");
+                                                        e.target.value = ''; // Clear input
+                                                        return;
+                                                    }
+                                        
+                                                    handlePatternChangeForEduDoc(index, /^[0-9]+$/, `higherDegreePassingYr_${index}`, e);
+                                                }}  value={passingYr[index] || ''}
                                             />
                                         </td>
                                         <td className={`${index % 2 === 0 ? 'tableBody' : 'tableBodyLight'} `}>
