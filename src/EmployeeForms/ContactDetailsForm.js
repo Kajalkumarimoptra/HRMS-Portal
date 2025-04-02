@@ -388,7 +388,7 @@ export default function ContactDetailsForm() {
   const backToPersonalPage = () => {
     navigate("/personaldetailsform");
   }
-  
+
   const handleFormSubmit = async (data) => {
     if (rowsOfAddressHistory.length < 2) {
       setCustomErrorForAddRows('please fill the address history details for whole three years by clicking on add row button'); // error msg display on not filling all three yrs address history details
@@ -468,8 +468,8 @@ export default function ContactDetailsForm() {
         "pincode": data.pincode,
         "state": data.state,
         "city": data.city,
-        "stayFrom":data.fromStay,
-        "stayTo":data.toStay,
+        "stayFrom": data.fromStay,
+        "stayTo": data.toStay,
         "emergencyContactNumber": data.emergencyContactNo,
         "emergencyContactNameAndRelationship": data.emergencyRtnName
       },
@@ -504,7 +504,7 @@ export default function ContactDetailsForm() {
         }
       ],
       "documents": [
-       
+
       ],
       "employmentHistories": [
         {
@@ -602,11 +602,11 @@ export default function ContactDetailsForm() {
         "workPermitDetails": "",
         "workPermitValidTill": "",
         "passportCopyPath": ""
-    },
+      },
       "otherDetails": {
-      "illness": "",
-      "selfIntroduction": ""
-  }
+        "illness": "",
+        "selfIntroduction": ""
+      }
     }
     console.log("Payload of contact page :", newPayload);
 
@@ -712,7 +712,7 @@ export default function ContactDetailsForm() {
               <input type='text' placeholder='Flat/House Number' className={`flatNoInput ${errors.flatNo ? 'invalid' : ''}`} {...register("flatNo", { required: true, maxLength: 100 })}
                 value={permanentAddress.flatNo} onChange={(e) => handleAddressChange('permanent', 'flatNo', e.target.value)} />
               <input type='text' placeholder='Street Name' className={`streetInput ${errors.street ? 'invalid' : ''}`} {...register("street", { required: true, maxLength: 100 })}
-                value={permanentAddress.street} onChange={(e) => { handlePatternForAddressInputs(e, /^[A-Za-z\s]+$/, 'street'); handleAddressChange('permanent', 'street', e.target.value) }} />
+                value={permanentAddress.street} onChange={(e) => { handlePatternForAddressInputs(e, /^[A-Za-z0-9\s.,'-]+$/, 'street'); handleAddressChange('permanent', 'street', e.target.value) }} />
               {customErrorForPattern.street ? <div className="contactErrorMessage">{customErrorForPattern.street}</div> : ''}
             </div>
             <div className='townPinCodeBox'>
@@ -770,25 +770,26 @@ export default function ContactDetailsForm() {
               <div className='fromContainer'>
                 <label>Period Of Stay <span className='separatorForStayFrom'>:</span></label>  <label className='fromLabel'>From</label>
                 <input type='date' placeholder='Select Date' className={`fromInput ${errors.fromStay ? 'invalid' : ''}`} {...register("fromStay", { required: true })}
-                  value={permanentAddress.fromStay} onChange={(e) => { 
+                  value={permanentAddress.fromStay} onChange={(e) => {
                     const newFromDate = e.target.value;
                     handleAddressChange('permanent', 'fromStay', newFromDate);
                     handlePermanentContactDetailsFromDateColorChange(e);
-              
+
                     // Reset "To Date" when "From Date" changes
-                    handleAddressChange('permanent', 'toStay', ""); 
+                    setValue("toStay", "");
+                    handleAddressChange('permanent', 'toStay', "");
                   }}
-                  style={{ color: selectPermanentContactDetailFromDateColor }} 
+                  style={{ color: selectPermanentContactDetailFromDateColor }}
                   max={new Date().toISOString().split("T")[0]} // Cannot be future date
-                  />
+                />
               </div>
               <div className='toContainer'>
                 <label className='toLabel'>To</label>
                 <input type='date' placeholder='Select Date' className={`toInput ${errors.toStay ? 'invalid' : ''}`} {...register("toStay", { required: true })}
                   {...(permanentAddress.toStay ? { value: permanentAddress.toStay } : {})}
-                   onChange={(e) => { handleAddressChange('permanent', 'toStay', e.target.value); handlePermanentContactDetailsToDateColorChange(e) }}
+                  onChange={(e) => { handleAddressChange('permanent', 'toStay', e.target.value); handlePermanentContactDetailsToDateColorChange(e) }}
                   style={{ color: selectPermanentContactDetailToDateColor }}
-                  min={permanentAddress.fromStay ? new Date(new Date(permanentAddress.fromStay).setDate(new Date(permanentAddress.fromStay).getDate() + 1)).toISOString().split("T")[0] : undefined}/>
+                  min={permanentAddress.fromStay ? new Date(new Date(permanentAddress.fromStay).setDate(new Date(permanentAddress.fromStay).getDate() + 1)).toISOString().split("T")[0] : undefined} />
               </div>
             </div>
             <div className='emergencyContainer'>
@@ -828,10 +829,10 @@ export default function ContactDetailsForm() {
                     value={currentAddress.anotherFlatNo} onChange={(e) => handleAddressChange('current', 'anotherFlatNo', e.target.value)}
                     disabled={checked ? true : false} />
                   <input type='text' placeholder='Street Name' className={`streetInput  ${errors.anotherStreet ? 'invalid' : ''}`} {...register("anotherStreet", { required: true, maxLength: 100 })}
-                    value={currentAddress.anotherStreet} onChange={(e) => { handlePatternForAddressInputs(e, /^[A-Za-z\s]+$/, 'anotherStreet'); handleAddressChange('current', 'anotherStreet', e.target.value) }} disabled={checked ? true : false} />
+                    value={currentAddress.anotherStreet} onChange={(e) => { handlePatternForAddressInputs(e, /^[A-Za-z0-9\s.,'#-]+$/, 'anotherStreet'); handleAddressChange('current', 'anotherStreet', e.target.value) }} disabled={checked ? true : false} />
                   {customErrorForPattern.anotherStreet ? <div className="contactErrorMessage">{customErrorForPattern.anotherStreet}</div> : ''}
                 </div>
-                <div className='townPinCodeBox' style={{marginTop: '9px'}}>
+                <div className='townPinCodeBox' style={{ marginTop: '9px' }}>
                   <div>
                     <input type='text' placeholder='Town' className={`townInput  ${errors.anotherTown ? 'invalid' : ''}`} {...register("anotherTown", { required: true, maxLength: 50 })}
                       value={currentAddress.anotherTown} onChange={(e) => { handlePatternForAddressInputs(e, /^[A-Za-z\s]+$/, 'anotherTown'); handleAddressChange('current', 'anotherTown', e.target.value) }} disabled={checked ? true : false} />
@@ -885,19 +886,22 @@ export default function ContactDetailsForm() {
                   <div className='fromContainer'>
                     <label>Period Of Stay <span className='separatorForStayFrom'>:</span></label>  <label className='fromLabel'>From</label>
                     <input type='date' placeholder='Select Date' className={`fromInput ${errors.anotherFromStay ? 'invalid' : ''} ${checked ? 'disabledDropdown' : ''}`} {...register("anotherFromStay", { required: true })}
-                      value={currentAddress.anotherFromStay} onChange={(e) => { handleAddressChange('current', 'anotherFromStay', e.target.value); handleCurrentContactDetailsFromDateColorChange(e) 
-                        handleAddressChange('current', 'anotherToStay', ""); 
+                      value={currentAddress.anotherFromStay} onChange={(e) => {
+                        handleAddressChange('current', 'anotherFromStay', e.target.value); 
+                        handleCurrentContactDetailsFromDateColorChange(e);
+                        setValue("anotherToStay", "");
+                        handleAddressChange('current', 'anotherToStay', "");
                       }}
-                      style={{ color: selectCurrentContactDetailStateColor}}
-                       disabled={checked ? true : false} 
-                      max={new Date().toISOString().split("T")[0]}/>
+                      style={{ color: selectCurrentContactDetailFromDateColor }}
+                      disabled={checked ? true : false}
+                      max={new Date().toISOString().split("T")[0]} />
                   </div>
                   <div className='toContainer'>
                     <label className='toLabel'>To</label>
                     <input type='date' placeholder='Select Date' className={`toInput  ${errors.anotherToStay ? 'invalid' : ''}`} {...register("anotherToStay", { required: true })}
                       value={currentAddress.anotherToStay} onChange={(e) => { handleAddressChange('current', 'anotherToStay', e.target.value); handleCurrentContactDetailsToDateColorChange(e) }}
-                      style={{ color: selectCurrentContactDetailToDateColor }} disabled={checked ? true : false}  
-                      min={currentAddress.anotherFromStay ? new Date(new Date(currentAddress.anotherFromStay).setDate(new Date(currentAddress.anotherFromStay).getDate() + 1)).toISOString().split("T")[0] : undefined}/>
+                      style={{ color: selectCurrentContactDetailToDateColor }} disabled={checked ? true : false}
+                      min={currentAddress.anotherFromStay ? new Date(new Date(currentAddress.anotherFromStay).setDate(new Date(currentAddress.anotherFromStay).getDate() + 1)).toISOString().split("T")[0] : undefined} />
                   </div>
                 </div>
                 <div className='emergencyContainer'>
@@ -923,11 +927,11 @@ export default function ContactDetailsForm() {
                 </div>
               </div>
             </div>
-            <hr style={{width: '95.6%', marginTop:'30px', height:'3px', backgroundColor: 'lightgray', border: 'none'}}/>
+            <hr style={{ width: '95.6%', marginTop: '30px', height: '3px', backgroundColor: 'lightgray', border: 'none' }} />
             {/* address history form */}
             <div>
               <AddressHistory />
-             </div>
+            </div>
             {customErrorForAddRows ? <div className='addressErrorMessage'>{customErrorForAddRows}</div> : ''}
 
             {/* save buttons */}

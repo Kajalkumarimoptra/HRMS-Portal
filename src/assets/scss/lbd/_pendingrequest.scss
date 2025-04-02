@@ -1,0 +1,25 @@
+.pending-request-card{
+    border-radius: 0.55rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.5sease -in-out;
+    background-color: #E6E6F8;
+    text-align: center;
+    padding: 20px;
+
+    .clearance-btn{
+        margin-top: -12px;
+    }
+    img{
+        width: 10px;
+        height: 10px;
+        cursor: pointer;
+    }
+    ul{
+        padding-right: 22px;
+    }
+    .edit-delete-btn-container {
+        display: flex;
+        justify-content: center;
+        gap: 14px;
+    }
+}

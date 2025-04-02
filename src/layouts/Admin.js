@@ -70,6 +70,8 @@ import Events from "views/Events";
 import EmpAttendance from "views/EmpAttendance";
 import EmpReport from "views/EmpReport";
 import Post from "views/Post";
+import AssetRequestForm from "views/AssetRequestForm";
+import Pendingrequest from "views/Pendingrequest";
 
 function Admin() {
 
@@ -134,6 +136,8 @@ function Admin() {
               <Route path="Profile" element={<Profile/>} />
               <Route path="FAQ" element={<Faq/>} />
               <Route path="Post" element={<Post/>} />
+              <Route path="AssetRequest" element={<AssetRequestForm/>} />
+              <Route path="Pendingrequest" element={<Pendingrequest/>} />
               <Route path="Users" element={<Users />} />
               <Route path="Users/Addnewuser" element={<AddNewUser />} />
               <Route path="Users/:name" element={<EditUser />} />

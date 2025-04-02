@@ -5,14 +5,12 @@ import { useFormContext } from "../components/ContextProvider/Context";
 import Breadcrumb from './Breadcrumb';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useHolidayListContext } from 'components/ContextProvider/HolidayListContext';
 
-export default function ApplyLeave() {
+export default function AssetRequestForm() {
     const {
         register, handleSubmit, onSubmit, reset, errors, serverError, setServerError, clearErrors, role, setRole, setValue, watch, getValues, control
     } = useFormContext();
     const navigate = useNavigate();
-    const holidays = useHolidayListContext();
     const [selectApplyLeaveFromDateColor, setApplyLeaveFromDateColor] = useState("#d3d3d3"); // for giving diff color to date placeholder and option
     const [selectApplyLeaveToDateColor, setApplyLeaveToDateColor] = useState("#d3d3d3");
     const [selectApplyLeaveDateColor, setApplyLeaveDateColor] = useState("#d3d3d3");
@@ -27,6 +25,10 @@ export default function ApplyLeave() {
     const [minToDate, setMinToDate] = useState("");
     const [isApplyLeaveDisabled, setIsApplyLeaveDisabled] = useState(true);
     const [isCancelLeaveDisabled, setIsCancelLeaveDisabled] = useState(true);
+
+    const typeOfAsset =
+        ["Laptop", "Desktop Computer", "Monitor", "Keyboard", "Mouse", "Printer", "Scanner", "External Hard Drive",
+            "Headphone" ] ;
 
     // Get the current date in the required format (YYYY-MM-DD)
     const today = new Date().toISOString().split("T")[0];
@@ -65,17 +67,6 @@ export default function ApplyLeave() {
         setIsCancelLeaveDisabled(isCancelDisabled);
 
     }, [watchedValues, leaveDuration]);
-
-    // Convert holiday dates to YYYY-MM-DD format
-    const formattedHolidays = holidays.map((holiday) => {
-        const [month, day] = holiday.date.split(" ");
-        const monthMap = {
-            Jan: "01", Feb: "02", Mar: "03", Apr: "04", May: "05", Jun: "06",
-            Jul: "07", Aug: "08", Sep: "09", Oct: "10", Nov: "11", Dec: "12",
-        };
-        const year = new Date().getFullYear(); // Get current year
-        return `${year}-${monthMap[month]}-${day.padStart(2, "0")}`;
-    });
 
     // Function to check if a date is a holiday or weekend
     const isDisabledFromDate = (date) => {
@@ -142,50 +133,6 @@ export default function ApplyLeave() {
         clearErrors('applyLeaveReportingManager');
     };
 
-    // for changing the leave duration mode
-    const handleLeaveDurationChange = (type) => {
-        if (type === "half") {
-            // Preserve current full day data before switching
-            const currentFullDayData = {
-                applyLeaveType: getValues("applyLeaveType"),
-                applyLeaveReason: getValues("applyLeaveReason"),
-                applyLeaveReportingManager: getValues("applyLeaveReportingManager"),
-                applyLeaveNotifyManager: getValues("applyLeaveNotifyManager"),
-            };
-            setFullDayLeaveData(currentFullDayData);
-
-            // Restore previously saved half day data
-            setValue("applyLeaveDate", halfDayLeaveData.applyLeaveDate || "");
-            setValue("applyLeaveType", halfDayLeaveData.applyLeaveType || "");
-            setValue("applyLeaveReason", halfDayLeaveData.applyLeaveReason || "");
-            setValue("applyLeaveReportingManager", halfDayLeaveData.applyLeaveReportingManager || "");
-            setValue("applyLeaveNotifyManager", halfDayLeaveData.applyLeaveNotifyManager || "");
-            setLeaveTypeColor(halfDayLeaveData.applyLeaveType ? "black" : "#d3d3d3");
-            setApplyLeaveReportingManagerColor(halfDayLeaveData.applyLeaveReportingManager ? "black" : "#d3d3d3");
-        } else if (type === "full") {
-            // Preserve current half day data before switching
-            const currentHalfDayData = {
-                applyLeaveDate: getValues("applyLeaveDate"),
-                applyLeaveType: getValues("applyLeaveType"),
-                applyLeaveReason: getValues("applyLeaveReason"),
-                applyLeaveReportingManager: getValues("applyLeaveReportingManager"),
-                applyLeaveNotifyManager: getValues("applyLeaveNotifyManager"),
-            };
-            setHalfDayLeaveData(currentHalfDayData);
-
-            // Restore previously saved full day data
-            setValue("applyLeaveType", fullDayLeaveData.applyLeaveType || "");
-            setValue("applyLeaveReason", fullDayLeaveData.applyLeaveReason || "");
-            setValue("applyLeaveReportingManager", fullDayLeaveData.applyLeaveReportingManager || "");
-            setValue("applyLeaveNotifyManager", fullDayLeaveData.applyLeaveNotifyManager || "");
-            setLeaveTypeColor(fullDayLeaveData.applyLeaveType ? "black" : "#d3d3d3");
-            setApplyLeaveReportingManagerColor(fullDayLeaveData.applyLeaveReportingManager ? "black" : "#d3d3d3");
-        }
-
-        setLeaveDuration(type); // Update the leave duration state
-    };
-
-
     const handleLeaveCancel = () => {
         reset(); // Reset form fields
         setApplyLeaveFromDate(""); // Reset "From" date
@@ -196,11 +143,6 @@ export default function ApplyLeave() {
         setApplyLeaveFromDateColor("#d3d3d3");
         clearErrors(); // Clear any validation errors
     };
-
-    // for showing the options conditionally
-    const leaveTypeOptions =
-        leaveDuration === 'full' ? ["Earn Leave (5)", "Sick Leave (2)", "Loss Of Pay Leave (0)", "Maternity Leave (2)", "Marriage Leave (2)"] :
-            ["Earn Leave (5)", "Sick Leave (2)", "Loss Of Pay Leave (0)"];
 
     const handleFormSubmit = (data) => {
         // Force state update before form submission
@@ -226,14 +168,6 @@ export default function ApplyLeave() {
             setTimeout(() => {
                 navigate('/admin/Dashboard');
             }, 2000);
-
-            const toastMessage = (
-                <div>
-                    <strong>Leave applied successfully!</strong>
-                    <div>{data.applyLeaveNotifyManager ? "Your reporting manager has been notified" : ""}</div>
-                </div>
-            );
-
             setApplyLeaveFromDate("");
             setApplyLeaveToDate("");
             setServerError('');
@@ -255,69 +189,57 @@ export default function ApplyLeave() {
             <div className='row clearfix'>
                 <div className='col-md-12'>
                     <Breadcrumb />
-                    <div className='attendance-container' style={{ padding: '0', marginBottom: '45px' , marginTop:'35px' }}>
+                    <div className='attendance-container' style={{ padding: '0', marginBottom: '45px' , marginTop:'35px'}}>
                         <form onSubmit={handleSubmit(handleFormSubmit)}>
-                            <h4 className='apply-leave-heading'>Apply Leave</h4>
-                            <div className='leave-type'>
-                                <button className={`full-day-btn ${leaveDuration === 'full' ? "active" : ""}`}
-                                    style={{ background: leaveDuration === 'full' ? '#76157B' : 'darkgray', color: 'white' }} onClick={() => handleLeaveDurationChange("full")}
-                                    type='button' >Full Day</button>
-                                <button className={`half-day-btn ${leaveDuration === 'half' ? "active" : ""}`}
-                                    style={{ background: leaveDuration === 'half' ? '#76157B' : 'darkgray', color: 'white' }} onClick={() => handleLeaveDurationChange("half")} type='button'>Half Day</button>
-                            </div>
+                            <h4 className='apply-leave-heading'>Asset Request Form</h4>
                             <div className='apply-leave-section'>
-                                {leaveDuration === "full" ? (
-                                    <>
-                                        <div className="input-text">
-                                            <p className='applyLeaveLabel'>From <span style={{ color: "red" }}>*</span></p>
-                                            <div className="user-input-icons">
-                                                <input className="input-field" type="date"
-                                                    min={today}
-                                                    {...register("applyLeaveFromDate", {
-                                                        required: true,
-                                                    })} onChange={(e) => handleApplyLeaveFromDateColorChange(e)} style={{ color: selectApplyLeaveFromDateColor, padding: '5px' }} />
-                                                {errors.applyLeaveFromDate && (<div className="userErrorMessage">{errors.applyLeaveFromDate.message}</div>)}
-                                            </div>
-                                        </div>
-                                        <div className="input-text">
-                                            <p className='applyLeaveLabel'>To <span style={{ color: "red" }}>*</span></p>
-                                            <div className="user-input-icons">
-                                                <input className="input-field" type="date" min={minToDate}
-                                                    {...register("applyLeaveToDate", {
-                                                        required: true,
-                                                    })} onChange={(e) => handleApplyLeaveToDateColorChange(e)} style={{ color: selectApplyLeaveToDateColor, padding: '5px' }} />
-                                                {errors.applyLeaveToDate && (<div className="userErrorMessage">{errors.applyLeaveToDate.message}</div>)}
-                                            </div>
-                                        </div>
-                                    </>
-                                ) : (
-                                    <div className="input-text">
-                                        <p className='applyLeaveLabel'>Date<span style={{ color: "red" }}>*</span></p>
+                            <div className="input-text">
+                                        <p className='applyLeaveLabel'>Employee Name<span style={{ color: "red" }}>*</span></p>
                                         <div className="user-input-icons">
-                                            <input className="input-field" type="date" min={today}
+                                            <input className="input-field" type="text" 
                                                 {...register("applyLeaveDate", {
                                                     required: true,
-                                                })} onChange={(e) => handleApplyLeaveDateColorChange(e)} style={{ color: selectApplyLeaveDateColor, padding: '5px' }} />
+                                                })} 
+                                                 />
                                             {errors.applyLeaveDate && (<div className="userErrorMessage">{errors.applyLeaveDate.message}</div>)}
                                         </div>
                                     </div>
-                                )}
-
-                                <div className="input-text">
-                                    <p className='applyLeaveLabel'>Leave Type <span style={{ color: "red" }}>*</span></p>
+                                    <div className="input-text">
+                                    <p className='applyLeaveLabel'>Type Of Asset<span style={{ color: "red" }}>*</span></p>
                                     <div className="user-input-icons">
                                         <select className="input-field" {...register("applyLeaveType", { required: true })}
                                             onChange={(e) => handleLeaveTypeColorChange(e)} style={{ color: selectLeaveTypeColor }}>
-                                            <option value="" hidden style={{ color: "#d3d3d3" }}>Choose your leave type</option>
-                                            {leaveTypeOptions.map((option, index) => (
+                                            <option value="" hidden style={{ color: "#d3d3d3" }}>Choose the asset type</option>
+                                            {typeOfAsset.map((option, index) => (
                                                 <option key={index} style={{ color: 'black' }}>{option}</option>
                                             ))}
                                         </select>
                                         {errors.applyLeaveType && (<div className="userErrorMessage">{errors.applyLeaveType.message}</div>)}
                                     </div>
                                 </div>
+                                <div className="input-text">
+                                        <p className='applyLeaveLabel'>Asset Name<span style={{ color: "red" }}>*</span></p>
+                                        <div className="user-input-icons">
+                                            <input className="input-field" type="text" 
+                                                {...register("applyLeaveDate", {
+                                                    required: true,
+                                                })} 
+                                                 />
+                                            {errors.applyLeaveDate && (<div className="userErrorMessage">{errors.applyLeaveDate.message}</div>)}
+                                        </div>
+                                    </div>
+                                <div className="input-text">
+                                        <p className='applyLeaveLabel'>Request Date<span style={{ color: "red" }}>*</span></p>
+                                        <div className="user-input-icons">
+                                            <input className="input-field" type="date" 
+                                                {...register("applyLeaveDate", {
+                                                    required: true,
+                                                })} onChange={(e) => handleApplyLeaveDateColorChange(e)} style={{ color: selectApplyLeaveDateColor, padding: '5px' }} />
+                                            {errors.applyLeaveDate && (<div className="userErrorMessage">{errors.applyLeaveDate.message}</div>)}
+                                        </div>
+                                    </div>
                                 <div className="input-text" style={{ marginTop: '5px' }}>
-                                    <p className='applyLeaveLabel'>Reason For Leave <span style={{ color: "red" }}>*</span></p>
+                                    <p className='applyLeaveLabel'>Reason Of Request <span style={{ color: "red" }}>*</span></p>
                                     <div className="user-input-icons">
                                         <textarea rows="4" className="input-field" {...register("applyLeaveReason", { required: true })}>
                                         </textarea>
@@ -325,28 +247,16 @@ export default function ApplyLeave() {
                                     </div>
                                 </div>
                                 <div className="input-text" style={{ marginTop: '-6px' }}>
-                                    <p className='applyLeaveLabel'>Reporting Manager <span style={{ color: "red" }}>*</span></p>
-                                    <div className="user-input-icons">
-                                        <select className="input-field" {...register("applyLeaveReportingManager", { required: true })}
-                                            onChange={(e) => handleApplyLeaveReportingManagerColorChange(e)} style={{ color: selectApplyLeaveReportingManagerColor }}>
-                                            <option value="" hidden style={{ color: "#d3d3d3" }}>Choose Your Reporting Manager</option>
-                                            <option style={{ color: 'black' }}>Anup Mangla</option>
-                                            <option style={{ color: 'black' }}>Shaurya</option>
-                                        </select>
-                                        {errors.applyLeaveReportingManager && (<div className="userErrorMessage">{errors.applyLeaveReportingManager.message}</div>)}
+                                    <p className='applyLeaveLabel'>Attach doc(if any)</p>
+                                    <div>
+                                    <input className="input-field" type="file" 
+                                                {...register("applyLeaveDate", {
+                                                    required: true,
+                                                })}  />
+                                   {errors.applyLeaveReportingManager && (<div className="userErrorMessage">{errors.applyLeaveReportingManager.message}</div>)}
                                     </div>
                                 </div>
-                                <div className="input-text" style={{ marginTop: '-5px' }}>
-                                    {/* <p>Notify Your Manager</p> */}
-                                    <div className="user-input-checkbox-icons">
-                                        <label>
-                                            <input className="input-field" type="checkbox" {...register("applyLeaveNotifyManager")} />
-                                            <span>Notify Your Manager</span>
-                                        </label>
-                                        {errors.applyLeaveNotifyManager && (<div className="userErrorMessage">{errors.applyLeaveNotifyManager.message}</div>)}
-                                    </div>
-                                </div>
-                                <div className='edit-delete-btn-container'>
+                                <div className='edit-delete-btn-container' style={{ marginTop:'10px' }}>
                                     <button className="primary-btn" style={{ background: 'darkgray', width: '100px' }} disabled={isCancelLeaveDisabled} onClick={() => handleLeaveCancel()}>Cancel</button>
                                     <button className="primary-btn" type="submit" style={{ width: '100px' }} disabled={isApplyLeaveDisabled} >Apply</button>
                                 </div>
