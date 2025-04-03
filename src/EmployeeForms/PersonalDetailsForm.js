@@ -223,8 +223,8 @@ export default function PersonalDetailsForm() {
   //   }
   // };
 
-  const handleFileForDocs = (e, field, file, setImageSizeError, setPhoto, setLoading, uploadAllowed, setImgDirection, isCropping, setIsCropping) => {
-    if (!file) return;
+  const handleFileForDocs = (e, field, setImageSizeError, setPhoto, setLoading, uploadAllowed, setImgDirection, isCropping, setIsCropping) => {
+    const file = e.target.files[0];
     console.log(`Selected file for ${field}:`, file);
 
     // Clear error messages immediately upon file selection
@@ -286,12 +286,7 @@ export default function PersonalDetailsForm() {
       setFileUploaded(prev => ({ ...prev, [field]: false }));
       setSuccessfulUploadMsg(prev => ({ ...prev, [field]: '' }));
       setImageSizeError && setImageSizeError('');
-      if (field !== 'photo') {
-        // Immediately upload document files after validation
-        handleFileUpload(field, file);
-      }
-      // Handle image processing specifically for passport photo
-      else {
+      if(field === 'photo') {
         const tempURL = URL.createObjectURL(file); // Temporary URL for preview
         setLoading(true); // Start loading spinner
         console.log('Temporary URL:', tempURL); // Debugging line to ensure temp URL is created
@@ -305,6 +300,8 @@ export default function PersonalDetailsForm() {
           setFileUploaded((prev) => ({ ...prev, [field]: true })); // Mark the file as uploaded
           setImgDirection && setImgDirection(false);
           setIsCropping && setIsCropping(true);
+          console.log('Before calling handleFileUpload: ', { uploadAllowed, isCropping });
+
           // Call handleFileUpload after file validation is done
           handleFileUpload(field, setImageSizeError, setPhoto, setImgDirection, uploadAllowed, isCropping, setIsCropping); // Upload the file
         }, 1000); // Simulated delay for uploading
@@ -322,7 +319,7 @@ export default function PersonalDetailsForm() {
     console.log('Updated doc:', doc);
   }, [doc]);
 
-  const handleFileUpload = async (field, file, setImageSizeError, setPhoto, setImgDirection, uploadAllowed, isCropping, setIsCropping) => {
+  const handleFileUpload = async (field, setImageSizeError, setPhoto, setImgDirection, uploadAllowed, isCropping, setIsCropping) => {
     console.log('Upload allowed:', uploadAllowed);
     console.log('Is cropping:', isCropping);
     // Check if upload is allowed (uploadAllowed flag) and if cropping is completed (isCropping flag)
@@ -330,6 +327,7 @@ export default function PersonalDetailsForm() {
       console.log(`Upload blocked for ${field}, UploadAllowed: ${uploadAllowed}, IsCropping: ${isCropping}`);
       return;
     }
+    const file = field === 'photo' ? doc[field] : fileInputRefs.current[field]?.files[0];
     console.log(file);
     if (!file) {
       console.log(`No file found for ${field}, setting error`);
@@ -465,6 +463,8 @@ export default function PersonalDetailsForm() {
           console.error('Error: Image upload failed.');
           return; // Exit if image upload fails
         }
+        // Ensure the doc state is updated before proceeding
+        // setDoc(prev => ({ ...prev, photo: imageUrl }));
       } catch (error) {
         console.error("Error uploading image:", error);
         return; // Exit if the image upload fails
@@ -902,24 +902,13 @@ export default function PersonalDetailsForm() {
               </div>
               <div className='fileInputContainer'>
                 <input type='file' className={`uploadFileInput ${errors.fileForAadhar ? 'invalid' : ''}`}
-                  onChange={(e) => {
-                    if (e.target.files.length > 0) {
-                      const selectedFile = e.target.files[0];
-                      // Store file name separately so it remains visible
-                      setSelectedFiles(prev => ({ ...prev, fileForAadhar: selectedFile.name }));
-
-                      // Reset the input field to allow re-selecting the same file
-                      e.target.value = '';
-                      handleFileForDocs(e, 'fileForAadhar', selectedFile)
-                    }
-                  }}
+                  onChange={(e) => handleFileForDocs(e, 'fileForAadhar') }
                   ref={(el) => {
                     if (el) fileInputRefs.current["fileForAadhar"] = el;
                   }}
                 />
-                {selectedFiles.fileForAadhar && <div style={{fontSize: '14px'}}>{selectedFiles.fileForAadhar}</div>}
                 {customErrorForDoc.fileForAadhar ? <div className="docErrorMessage">{customErrorForDoc.fileForAadhar}</div> : ''}
-                {/* <button type="button" className="upload" onClick={() => handleFileUpload('fileForAadhar')} >upload</button> */}
+                <button type="button" className="upload" onClick={() => handleFileUpload('fileForAadhar')} >upload</button>
                 {customErrorForDocUpload.fileForAadhar ? <div className="docUploadErrorMessage">{customErrorForDocUpload.fileForAadhar}</div> : ''}
                 {successfulUploadMsg.fileForAadhar ? <div className="docUploadSuccessMessage">{successfulUploadMsg.fileForAadhar}</div> : ''}
                 {doc["fileForAadhar"] && (<img src={require("assets/img/file-cut-icon.png")} alt="..." className='cross-icon' onClick={() => handleRemoveFile("fileForAadhar")} />)}
