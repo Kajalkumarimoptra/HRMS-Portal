@@ -1,61 +1,85 @@
-.pending-request-card {
-    border-radius: 0.55rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: all 0.5sease -in-out;
-    background-color: #E6E6F8;
-    text-align: center;
-    padding: 20px;
+.pendingrequest-upper-container {
     display: flex;
-    flex-direction: column;
     align-items: center;
+    justify-content: center;
+    margin-top: 32px;
+    margin-bottom: 30px;
 
-    .header-container {
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
+    .pendingrequest-container {
         align-items: center;
-    }
+        border: 1px solid black;
+        border-radius: 0.55rem;
+        width: 35%;
 
-    .clearance-btn {
-        margin-top: -12px;
-        width: 20px;
-        /* Set a fixed size to prevent shifting */
-        height: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        .icon-collapsed {
-            width: 10px;
-            height: 10px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-
-        .icon-expanded {
-            width: 28px;
-            height: 28px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-    }
-
-    .content-box {
-        margin-top: 10px;
-        text-align: left;
-        width: 100%;
-
-        ul {
-            padding-right: 22px;
-        }
-
-        .edit-delete-btn-container {
+        .pending-request-card {
+            text-align: center;
+            padding: 20px;
             display: flex;
-            justify-content: center;
-            gap: 14px;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: -66px;
+
+            & > div:last-child{
+                padding-bottom: 35px;
+            }
+
+            .header-container {
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .clearance-btn {
+                margin-top: -12px;
+                width: 20px;
+                /* Set a fixed size to prevent shifting */
+                height: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                .icon-collapsed {
+                    width: 10px;
+                    height: 10px;
+                    transition: all 0.3s ease;
+                    cursor: pointer;
+                    transition: transform 0.3s ease;
+                }
+
+                .icon-expanded {
+                    width: 28px;
+                    height: 28px;
+                    transition: all 0.3s ease;
+                    cursor: pointer;
+                    transition: transform 0.3s ease;
+                }
+                .icon-redirect{
+                    width: 28px;
+                    height: 28px;
+                    transition: all 0.3s ease;
+                    cursor: pointer;
+                    transition: transform 0.3s ease;
+                    transform: rotate(90deg);
+                }
+            }
+
+            .content-box {
+                margin-top: 10px;
+                text-align: left;
+                width: 100%;
+
+                ul {
+                    padding-left: 15px;
+                }
+
+                .edit-delete-btn-container {
+                    display: flex;
+                    justify-content: center;
+                    gap: 14px;
+                }
+            }
+
         }
     }
-
 }

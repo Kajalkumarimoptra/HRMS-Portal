@@ -1,17 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import Breadcrumb from './Breadcrumb';
+import { useNavigate } from 'react-router-dom';
 
 export default function Pendingrequest() {
 
     const [expandedCards, setExpandedCards] = useState({});
+    const [redirectCards, setRedirectCards] = useState([2, 4, 5]);
+
+    const navigate = useNavigate();
 
     const pendingrequestlist = [
-        { id: 1, heading: 'Leave Request', details1: "Amit is requesting two days leave on 1st & 2nd of apr,2025 to attend family function.", details2: "Harsh is requesting for three days sick leave from 3rd of april to5th of april,2025" },
-        { id: 2, heading: 'Attendance Corrections', redirect: "see employee attendance correction request" },
-        { id: 3, heading: 'Document Request', docscontent: "Sonam has uploaded its final year marksheet document." },
-        { id: 4, heading: 'Resignation Request', exit: "see list of employees who have requested to resign." },
-        { id: 5, heading: 'Training Request', training: "see list of employees who are interested in training." },
-        { id: 6, heading: 'Asset Request', asset1: "Amit is requesting for monitor for smooth working.", asset2: "Harsh is requesting for headphones to attend meetings without disruption." },
+        {
+            id: 1, heading: 'Leave Request (2)', details: [
+                { name: "Amit Raj", date: "20-02-2025" },
+                { name: "Sonam Kumari", date: "22-02-2025" }
+            ]
+        },
+        { id: 2, heading: 'Attendance Correction (1)' },
+        {
+            id: 3, heading: 'Document Request (2)', docscontent: [
+                { name: "Amit Raj", doc: "Final Year Marksheet" },
+                { name: "Sonam Kumari", doc: "Intermediate Passing Certificate" }
+            ]
+        },
+        { id: 4, heading: 'Resignation Request (2)' },
+        { id: 5, heading: 'Training Request (3)' },
+        {
+            id: 6, heading: 'Asset Request (2)', asset: [
+                { name: "Amit Raj", assetname: "Laptop" },
+                { name: "Sonam Kumari", assetname: "Headphones" }
+            ]
+        },
     ];
 
     // Function to toggle the visibility of specific content
@@ -22,6 +41,12 @@ export default function Pendingrequest() {
         }));
     };
 
+    const redirectUrls = {
+        2: '/admin/Attendance',
+        4: '/admin/Offboarded',
+        5: '/admin/Pendingrequest'
+    };
+
     return (
         <div className='container-fluid'>
             <div className=" d-flex justify-content-between align-items-center" style={{ flexDirection: "row-reverse", marginBottom: '-15px' }}>
@@ -29,60 +54,100 @@ export default function Pendingrequest() {
                     <Breadcrumb />
                 </div>
             </div>
-            <div className='offboard-emp-container'>
-                <div class="row flex-column">
+            <div className='pendingrequest-upper-container'>
+                <div class="row flex-column pendingrequest-container">
                     {pendingrequestlist.map((list) => (
-                        <div class="col-md-4 mb-3" key={list.id}>
-                            <div class="card">
+                        <div class="col-md-12 mb-3" key={list.id}>
+                            <div>
                                 <div class="pending-request-card">
                                     <div class="header-container">
                                         <p><b>{list.heading}</b></p>
                                         <div className='clearance-btn'>
                                             <img
-                                                src={expandedCards[list.id]
-                                                    ? require("assets/img/close-dropdown-icon.png") 
-                                                    : require("assets/img/dropdown_icon.png")  
+                                                src={redirectCards.includes(list.id) ?
+                                                    require("assets/img/close-dropdown-icon.png") :
+                                                    expandedCards[list.id]
+                                                        ? require("assets/img/close-dropdown-icon.png")
+                                                        : require("assets/img/dropdown_icon.png")
                                                 }
                                                 alt="toggle-icon"
-                                                onClick={() => toggleCard(list.id)} 
-                                                className={expandedCards[list.id] ? "icon-expanded" : "icon-collapsed"}  />
-                                         </div>
+                                                onClick={() => {
+                                                    if (redirectCards.includes(list.id)) {
+                                                        navigate(redirectUrls[list.id]);
+                                                    } else {
+                                                        toggleCard(list.id);
+                                                    }
+                                                }}
+                                                className={
+                                                    redirectCards.includes(list.id)
+                                                        ? "icon-redirect"
+                                                        : expandedCards[list.id]
+                                                            ? "icon-expanded"
+                                                            : "icon-collapsed"
+                                                } />
+                                        </div>
                                     </div>
                                     {/* Show different content for each employee */}
                                     {expandedCards[list.id] && (
                                         <div className="content-box">
-                                            {(list.details1 || list.details2) && (
-                                                <ul>
-                                                    {list.details1 && <li><p>{list.details1}</p></li>}
-                                                    {list.details2 && <li><p>{list.details2}</p></li>}
-                                                    <div className='edit-delete-btn-container' style={{ marginTop: '0' }}>
+                                            {list.details && list.details.length > 0 && (
+                                                <>
+                                                    <ul>
+                                                        {list.details.map((person, index) => (
+                                                            <li key={index}>
+                                                                <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap', alignItems: 'flex-start'  }}>
+                                                                    <p style={{ flex: 1 }}>{person.name}</p>
+                                                                    <p style={{ maxWidth: '200px' , textAlign: 'right' }}>{person.date}</p>
+                                                                </div>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+
+                                                    <div className='edit-delete-btn-container' style={{ marginTop: '-5px' }}>
                                                         <button className="primary-btn" style={{ background: 'limegreen', width: '100px' }} >Approved</button>
-                                                        <button className="primary-btn" type="submit" style={{ width: '100px', background: 'indianred' }} >Pending</button>
+                                                        <button className="primary-btn" type="submit" style={{ width: '100px', background: 'indianred' }} >Reject</button>
                                                     </div>
-                                                </ul>
+                                                </>
                                             )}
                                             {list.redirect && <p><a style={{ color: 'dodgerblue' }}>click here</a> to {list.redirect}</p>}
-                                            {list.docscontent &&
-                                                <ul>
-                                                    <li>{list.docscontent}</li>
-                                                    <a style={{ color: 'dodgerblue' }}>FinalYearMarksheet.pdf</a>
-                                                    <div className='edit-delete-btn-container' style={{ marginTop: '20px' }}>
+                                            {list.docscontent && list.docscontent.length > 0 && (
+                                                <>
+                                                    <ul>
+                                                        {list.docscontent.map((person, index) => (
+                                                            <li key={index}>
+                                                                <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap', alignItems: 'flex-start' }}>
+                                                                    <p style={{ flex: 1 }}>{person.name}</p>
+                                                                    <p style={{ maxWidth: '200px' , textAlign: 'right' }}>{person.doc}</p>
+                                                                </div>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                 <div className='edit-delete-btn-container' style={{ marginTop: '-5px' }}>
                                                         <button className="primary-btn" style={{ background: 'limegreen', width: '100px' }} >Approved</button>
                                                         <button className="primary-btn" type="submit" style={{ width: '100px', background: 'indianred' }} >Reject</button>
                                                     </div>
                                                     <p style={{ marginTop: '15px' }}><a style={{ color: 'dodgerblue' }}>click here</a> to add comment(if required)</p>
-                                                </ul>}
+                                                </>
+                                            )}
                                             {list.exit && <p><a style={{ color: 'dodgerblue' }}>click here</a> to {list.exit}</p>}
                                             {list.training && <p><a style={{ color: 'dodgerblue' }}>click here</a> to {list.training}</p>}
-                                            {(list.asset1 || list.asset2) && (
-                                                <ul>
-                                                    {list.asset1 && <li><p>{list.asset1}</p></li>}
-                                                    {list.asset2 && <li><p>{list.asset2}</p></li>}
-                                                    <div className='edit-delete-btn-container' style={{ marginTop: '0' }}>
+                                            {list.asset && list.asset.length > 0 && (
+                                                <>
+                                                    <ul>
+                                                        {list.asset.map((person, index) => (
+                                                            <li key={index}>
+                                                                <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap', alignItems: 'flex-start'  }}>
+                                                                    <p style={{ flex: 1 }}>{person.name}</p>
+                                                                    <p style={{ maxWidth: '200px' , textAlign: 'right' }}>{person.assetname}</p>
+                                                                </div>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                    <div className='edit-delete-btn-container' style={{ marginTop: '-5px', marginBottom: '20px' }}>
                                                         <button className="primary-btn" style={{ background: 'limegreen', width: '100px' }} >Approved</button>
                                                         <button className="primary-btn" type="submit" style={{ width: '100px', background: 'indianred' }} >Reject</button>
                                                     </div>
-                                                </ul>
+                                                </>
                                             )}
                                         </div>
                                     )}
