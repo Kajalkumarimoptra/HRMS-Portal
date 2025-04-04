@@ -30,15 +30,23 @@ export default function Pendingrequest() {
                 </div>
             </div>
             <div className='offboard-emp-container'>
-                <div class="row">
+                <div class="row flex-column">
                     {pendingrequestlist.map((list) => (
-                        <div class="col-sm-4" key={list.id}>
+                        <div class="col-md-4 mb-3" key={list.id}>
                             <div class="card">
                                 <div class="pending-request-card">
-                                    <p><b>{list.heading}</b></p>
-                                    <div className='clearance-btn'>
-                                        <img src={require("assets/img/dropdown_icon.png")} alt="..."
-                                            onClick={() => toggleCard(list.id)} />
+                                    <div class="header-container">
+                                        <p><b>{list.heading}</b></p>
+                                        <div className='clearance-btn'>
+                                            <img
+                                                src={expandedCards[list.id]
+                                                    ? require("assets/img/close-dropdown-icon.png") 
+                                                    : require("assets/img/dropdown_icon.png")  
+                                                }
+                                                alt="toggle-icon"
+                                                onClick={() => toggleCard(list.id)} 
+                                                className={expandedCards[list.id] ? "icon-expanded" : "icon-collapsed"}  />
+                                         </div>
                                     </div>
                                     {/* Show different content for each employee */}
                                     {expandedCards[list.id] && (
