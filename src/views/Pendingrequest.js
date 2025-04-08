@@ -10,25 +10,28 @@ export default function Pendingrequest() {
 
     const pendingrequestlist = [
         {
-            id: 1, heading: 'Assets (2)', asset: [
+            id: 1, heading: 'Assets (2)', icon: require("assets/img/assets-list-icon.png"),
+            asset: [
                 { name: "Amit Raj", assetname: "Laptop" },
                 { name: "Sonam Kumari", assetname: "Headphones" }
             ]
         },
-        { id: 2, heading: 'Attendance Corrections (1)' },
+        { id: 2, heading: 'Attendance (1)', icon: require("assets/img/attendance-correction-icon.png") },
         {
-            id: 3, heading: 'Documents (2)', docscontent: [
+            id: 3, heading: 'Documents (2)', icon: require("assets/img/docs-list-icon.png"),
+            docscontent: [
                 { name: "Amit Raj", doc: "Final Year Marksheet" },
                 { name: "Sonam Kumari", doc: "Intermediate Passing Certificate" }
             ]
         },
         {
-            id: 4, heading: 'Leaves (3)', details: [
+            id: 4, heading: 'Leaves (3)', icon: require("assets/img/leaveslist-icon.png"),
+            details: [
                 { name: "Amit Raj", date: "20-02-2025" },
                 { name: "Sonam Kumari", date: "22-02-2025" }
             ]
         },
-        { id: 5, heading: 'Resignations (2)' }
+        { id: 5, heading: 'Resignations (2)', icon: require("assets/img/resignation-list-icon.png") }
     ];
 
     const redirectUrls = {
@@ -50,23 +53,26 @@ export default function Pendingrequest() {
                 <h5 style={{ fontWeight: 'bold' }}>All Requests</h5>
             </div>
             <div className='pendingrequest-upper-container'>
-                <div class="row flex-column pendingrequest-container">
+                <div class="pendingrequest-container">
                     {pendingrequestlist.map((list) => (
                         <div class="col-md-12 mb-3" key={list.id}>
                             <div>
                                 <div class="pending-request-card">
                                     <div class="header-container" onClick={() => navigate(redirectUrls[list.id])} style={{ cursor: 'pointer' }}>
-                                        <p><b>{list.heading}</b></p>
-                                        <div className='clearance-btn'>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexDirection: 'column' }}>
+                                            <img src={list.icon} alt="icon" style={{ width: '50px', height: '50px' }} />
+                                            <div className='clearance-btn'>
                                             <img
                                                 src={require("assets/img/close-dropdown-icon.png")}
                                                 alt="toggle-icon"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     navigate(redirectUrls[list.id]);
-                                                  }}
+                                                }}
                                                 className="icon-redirect" />
-                                            </div>
+                                        </div>
+                                            <p><b>{list.heading}</b></p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
