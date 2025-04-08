@@ -1,37 +1,43 @@
 .pendingrequest-upper-container {
     display: flex;
-    align-items: center;
     justify-content: center;
     margin-top: 20px;
     margin-bottom: 30px;
+    padding: 0 1rem;
 
     .pendingrequest-container {
-        align-items: center;
-        border: 1px solid black;
-        border-radius: 0.55rem;
-        width: 35%;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(300px, 1fr));
+        gap: 20px;
+        width: 100%;
+        max-width: 1400px;
+        padding: 10px;
+
 
         .pending-request-card {
-            text-align: center;
+            border: 1px solid black;
+            border-radius: 0.55rem;
             padding: 20px;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            margin-bottom: -66px;
+            justify-content: center;
 
-            & > div:last-child{
+
+
+            &>div:last-child {
                 padding-bottom: 35px;
             }
 
             .header-container {
                 width: 100%;
                 display: flex;
-                justify-content: space-between;
+                justify-content: center;
                 align-items: center;
+                gap: 10px;
             }
 
             .clearance-btn {
-                margin-top: -12px;
+                margin-top: -15px;
                 width: 20px;
                 /* Set a fixed size to prevent shifting */
                 height: 20px;
@@ -54,7 +60,8 @@
                     cursor: pointer;
                     transition: transform 0.3s ease;
                 }
-                .icon-redirect{
+
+                .icon-redirect {
                     width: 28px;
                     height: 28px;
                     transition: all 0.3s ease;
