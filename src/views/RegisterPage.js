@@ -33,7 +33,7 @@ function RegisterPage() {
         // Clear server error when the user starts typing again
         setServerError('');
         clearErrors(field);
-        
+
         setPattern(prev => ({ ...prev, [field]: value }))
         if (field === 'userFullName') setRegFullName(value);
         if (field === 'userMobNo') setRegMobNo(value);
@@ -49,7 +49,7 @@ function RegisterPage() {
             // Perform validation
             if (value && !pattern.test(value)) {
                 patternErrorMessage = 'Only numbers are allowed';
-            } 
+            }
             setRegMobNo(value);
         }
         setCustomErrorForRegInputs(prev => ({ ...prev, [field]: patternErrorMessage }));
@@ -61,8 +61,8 @@ function RegisterPage() {
         }
     };
 
-     // 🔥 Fix: Change color dynamically, but ensure placeholder remains gray
-     const handleDobColorChange = (e) => {
+    // 🔥 Fix: Change color dynamically, but ensure placeholder remains gray
+    const handleDobColorChange = (e) => {
         const selectedDobValue = e.target.value;
         setDobSelectColor(selectedDobValue ? "black" : "#d3d3d3");
         clearErrors("userDob");
@@ -118,6 +118,7 @@ function RegisterPage() {
                 setCustomErrorForRegInputs({ userFullName: '', userMobNo: '' }); // Clear errors
                 setServerError(''); // Clear any server errors
                 setIsSubmitted(true); // Set submitted state to true
+                setDobSelectColor("#d3d3d3");
                 console.log('isSubmitted set to:', true);
             } else {
                 // Handle unexpected status codes
@@ -147,21 +148,26 @@ function RegisterPage() {
         }
     };
 
-    // Render success message if submitted
-    if (isSubmitted) {
-        return (
-            <>
-            <Breadcrumb/>
+    // Reset to form UI after 1 minute of success
+    useEffect(() => {
+        if (isSubmitted) {
+            const timer = setTimeout(() => {
+                setIsSubmitted(false);
+            }, 60000); 
+
+            return () => clearTimeout(timer); // Cleanup on unmount
+        }
+    }, [isSubmitted]);
+
+    return (
+        <div className="container-fluid">
+            <Breadcrumb />
+            {isSubmitted ? (
             <div className="expiredLink">
                 <h2 className='expiredLinkHeading'>Registration Successful</h2>
                 <p className='expiredLinkPara'>Account activation url has been sent to the registered email id.</p>
             </div>
-            </>
-        );
-    }
-    return (
-        <div className="container-fluid">
-            <Breadcrumb/>
+        ) : (
             <div className='register-container'>
                 <div className="row Signup-row">
                     <div className="col-6 left">
@@ -175,23 +181,24 @@ function RegisterPage() {
                                     Please fill the following details of the candidate
                                 </p>
                             </div>
-                            <br/>
+                            <br />
                             <div className="form">
                                 <form onSubmit={handleSubmit(handleFormSubmit)}>
                                     <div>
                                         <div className="input-text">
                                             <p>Employee Full Name <span style={{ color: "red" }}>*</span></p>
                                             <div className="user-input-icons">
-                                                <input className="input-field" type="text" placeholder="Enter Your Full Name" {...register("userFullName", { required: 'Please enter your name', 
+                                                <input className="input-field" type="text" placeholder="Enter Your Full Name" {...register("userFullName", {
+                                                    required: 'Please enter your name',
                                                     maxLength: {
                                                         value: 50,
                                                         message: 'Name cannot exceed 50 characters'
-                                                    } , 
+                                                    },
                                                     minLength: {
                                                         value: 3,
                                                         message: 'Name must be at least 3 characters'
                                                     }
-                                                 })}
+                                                })}
                                                     value={pattern.userFullName} onChange={(e) => handlePatternForRegInputs(e, /^[A-Za-z\s]+$/, 'userFullName')} />
                                                 {errors.userFullName && (<div className="userErrorMessage">{errors.userFullName.message}</div>)}
                                                 {customErrorForRegInputs.userFullName && (<div className='userErrorMessage'>{customErrorForRegInputs.userFullName}</div>)}
@@ -207,12 +214,13 @@ function RegisterPage() {
                                         <div className="input-text">
                                             <p>Mobile Number <span style={{ color: "red" }}>*</span></p>
                                             <div className="user-input-icons">
-                                                <input className="input-field" type="tel" placeholder="Enter Your Mobile No." {...register("userMobNo", { required: 'Please enter your mobile no.',
-                                                     minLength: {
+                                                <input className="input-field" type="tel" placeholder="Enter Your Mobile No." {...register("userMobNo", {
+                                                    required: 'Please enter your mobile no.',
+                                                    minLength: {
                                                         value: 10,
                                                         message: 'Mobile no. must be of ten digits'
                                                     }
-                                                 })}
+                                                })}
                                                     value={pattern.userMobNo} onChange={(e) => handlePatternForRegInputs(e, /^[0-9]+$/, 'userMobNo')} />
                                                 {errors.userMobNo && (<div className="userErrorMessage">{errors.userMobNo.message}</div>)}
                                                 {customErrorForRegInputs.userMobNo && (<div className='userErrorMessage'>{customErrorForRegInputs.userMobNo}</div>)}
@@ -222,16 +230,16 @@ function RegisterPage() {
                                             <p>Date Of Birth <span style={{ color: "red" }}>*</span></p>
                                             <div className="user-input-icons">
                                                 <input className="input-field" type="date" placeholder="Enter Your DOB in DD/MM/YYYY" {...register("userDob", { required: 'Please enter your date of birth' })}
-                                                onChange={handleDobColorChange} style={{ color: selectDobColor }} />
+                                                    onChange={handleDobColorChange} style={{ color: selectDobColor }} />
                                                 {errors.userDob && (<div className="userErrorMessage">{errors.userDob.message}</div>)}
                                             </div>
                                         </div>
                                         <br />
-                                         <div style={{textAlign: 'center'}}>
-                                                <button className="primary-btn" type="submit" style={{width: '90px', fontSize:'17px'}}>
-                                                    Submit
-                                                </button>
-                                            </div>
+                                        <div style={{ textAlign: 'center' }}>
+                                            <button className="primary-btn" type="submit" style={{ width: '90px', fontSize: '17px' }}>
+                                                Submit
+                                            </button>
+                                        </div>
                                         {serverError && (<div className="serverErrorMessage">{serverError}</div>)}
                                         <br />
                                     </div>
@@ -240,8 +248,8 @@ function RegisterPage() {
                         </div>
                     </div>
                 </div>
-            </div>
-            <ToastContainer />
+                <ToastContainer />
+            </div> )}
         </div>
     );
 }

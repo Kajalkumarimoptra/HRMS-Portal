@@ -149,7 +149,7 @@
                 border-radius: 4px;
                 appearance: none;
                 cursor: pointer;
-                background-color: #1C115D  !important;
+                background-color: #1C115D !important;
 
                 /* Custom arrow */
                 background: url('/assets/img/white-dropdown-icon.png') no-repeat right 10px center white;
@@ -179,13 +179,13 @@
                     &+th {
                         padding-left: 1rem;
                     }
-                    
+
                 }
 
-                & tr td:nth-child(2) {
-                    text-align: left;
-                    padding: 2px 4px 2px 27px !important;
-                }
+                // & tr td:nth-child(2) {
+                //     text-align: left;
+                //     padding: 2px 4px 2px 27px;
+                // }
 
                 .status-column {
                     padding-left: 30px;
@@ -199,6 +199,17 @@
                     vertical-align: middle;
                     padding: 0.75rem;
                     text-align: center;
+                    word-wrap: break-word !important;
+                    overflow-wrap: break-word !important;
+                    white-space: normal !important;
+                    overflow: hidden;
+                    text-overflow: ellipsis !important;
+                    max-width: 200px; // adjust as needed
+                    white-space: nowrap !important;
+                    overflow: hidden;
+                    text-overflow: ellipsis !important;
+                    vertical-align: middle;
+
 
                     &+td {
                         padding-left: 1rem;

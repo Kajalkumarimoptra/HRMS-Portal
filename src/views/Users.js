@@ -75,11 +75,11 @@ export default function Users() {
                 }
             }
 
-            }
+        }
         fetchUsersList();
     }, []);
 
- //  filter the user list for users and employee table
+    //  filter the user list for users and employee table
     const superAdminsAndAdmins = users.filter(user => user.roleName === "SUPER_ADMIN" || user.roleName === "ADMIN");
     const admins = users.filter(user => user.roleName === "ADMIN");
     const employees = users.filter(user => user.roleName === "EMPLOYEE");
@@ -97,101 +97,150 @@ export default function Users() {
                     )}
                 </div>
             </div>
-             {/* user list table */}
+            {/* user list table */}
             <div className='section-body'>
                 <div className='container-fluid'>
                     <div className='tab-content'>
                         <div className='tab-pane fade active show' id="Employee-list" role='tabpanel'>
                             <div className='card'>
                                 <div class="card-header">
-                                   { (getRoleForShowAddAdminBtn === "SUPER_ADMIN" || getRoleForShowAddAdminBtn === "ADMIN") && ( 
-                                       <div className='employeelist-header'>
-                                       {/* <h3 class="card-title mb-0 ml-4">User List  :</h3> */}
-                                       <div class="header-action">
-                                           <button type="button" class="primary-btn ml-4" fdprocessedid="g0g9qd" onClick={() => handleAddNewClick()}>
-                                               <i class="fe fe-plus"></i>+ Add New User
-                                           </button>
-                                       </div>
-                                       <div >
-                                           <form className="user-searchForm">
-                                               <input class="form-control me-2 search" type="search" placeholder="Search user" aria-label="Search" />
-                                               <i> <ImSearch className='searchIcon' /></i>
-                                           </form>
-                                       </div>
-                                   </div>
-                                   )} 
-                                    <div className='card-body' style={getRoleForShowAddAdminBtn === "EMPLOYEE" ? {padding: "0px 15px 15px 15px"} : {} }>
-                                        {/* When both tables are empty */}
-                                        {superAdminsAndAdmins.length === 0 && employees.length === 0 ? (
-                                            <div className="no-records-found text-center">
-                                                <p>No record found for both admins and employees</p>
+                                    {(getRoleForShowAddAdminBtn === "SUPER_ADMIN" || getRoleForShowAddAdminBtn === "ADMIN") && (
+                                        <div className='employeelist-header'>
+                                            {/* <h3 class="card-title mb-0 ml-4">User List  :</h3> */}
+                                            <div class="header-action">
+                                                <button type="button" class="primary-btn ml-4" fdprocessedid="g0g9qd" onClick={() => handleAddNewClick()}>
+                                                    <i class="fe fe-plus"></i>+ Add New User
+                                                </button>
                                             </div>
-                                        ) : (
+                                            <div >
+                                                <form className="user-searchForm">
+                                                    <input class="form-control me-2 search" type="search" placeholder="Search user" aria-label="Search" />
+                                                    <i> <ImSearch className='searchIcon' /></i>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    )}
+                                    <div className='card-body' style={getRoleForShowAddAdminBtn === "EMPLOYEE" ? { padding: "0px 15px 15px 15px" } : {}}>
+                                        {/* Super Admins & HR Admins Table */}
+                                        {(getRoleForShowAddAdminBtn === "SUPER_ADMIN" || getRoleForShowAddAdminBtn === "ADMIN") && (
                                             <>
-                                                {/* Super Admins & HR Admins Table */}
-                                                {(getRoleForShowAddAdminBtn === "SUPER_ADMIN" || getRoleForShowAddAdminBtn === "ADMIN") && superAdminsAndAdmins.length > 0 ? (
-
-                                                    <div className='user-table'>
-                                                        <table className='table table-hover table-vcenter text-nowrap mb-0'>
-                                                            <thead>
-                                                                <tr>
-                                                                    <th class="name-column">Name</th>
-                                                                    <th>Role</th>
-                                                                    <th>Joining Date</th>
-                                                                    <th>Designation</th>
-                                                                    <th>Client</th>
-                                                                    <th style={{ width: "16%" }}>Reporting Manager</th>
-                                                                    <th>Edit</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                {superAdminsAndAdmins.map((list, index) => (
-                                                                    <tr key={index}>
-                                                                        <td>{list.name}</td>
-                                                                        <td>
-                                                                            <span className={
-                                                                                list.roleName === 'SUPER_ADMIN' ? 'superadmin-role' :
-                                                                                    list.roleName === 'ADMIN' ? 'admin-role' : ''
-                                                                            }> {capitalize(list.roleName.toLowerCase().replace('_', ' '))}</span></td>
-                                                                        <td> {new Date(list.joiningDate)
-                                                                            .toLocaleDateString("en-GB", {
-                                                                                year: "numeric",
-                                                                                month: "2-digit",
-                                                                                day: "2-digit",
-                                                                            })
-                                                                            .split("/")
-                                                                            .join("-")}</td>
-                                                                        <td>{list.designation}</td>
-                                                                        <td>{list.projects}</td>
-                                                                        <td>{list.projectManager}</td>
-                                                                        <td>
-                                                                          { (getRoleForShowAddAdminBtn !== "ADMIN" || list.roleName !== 'SUPER_ADMIN') && getRoleForShowAddAdminBtn !== 'EMPLOYEE' && (
-                                                                            <button type="button" class="btn btn-icon btn-sm icons" title="Edit" fdprocessedid="tvsb17">
-                                                                            <GrEdit className='delete-icon' onClick={() => handleEditClick(list)} />
-                                                                        </button> 
-                                                                          ) } 
-                                                                            <button type="button" class="btn btn-icon btn-sm icons" title="View" data-type="confirm" fdprocessedid="f7knyq">
-                                                                                <img src={require("assets/img/view-icon.png")} alt="..." className='delete-icon' onClick={() => handleViewDetailsClick()} />
-                                                                            </button>
-                                                                        </td>
-                                                                    </tr>
-                                                                ))}
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                ) : ( (getRoleForShowAddAdminBtn === "SUPER_ADMIN" || getRoleForShowAddAdminBtn === "ADMIN") &&
+                                                {/* Combined message when both are empty */}
+                                                {superAdminsAndAdmins.length === 0 && employees.length === 0 ? (
                                                     <div className="no-records-found text-center">
-                                                        <p>No record found for admins</p>
+                                                        <p>No record found for admins and employees</p>
                                                     </div>
+                                                ) : (
+                                                    <>
+                                                        {/* Admin table or 'no admin' message */}
+                                                        {superAdminsAndAdmins.length > 0 ? (
+                                                            <div className='user-table'>
+                                                                <table className='table table-hover table-vcenter text-nowrap mb-0'>
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th className="name-column">Name</th>
+                                                                            <th>Role</th>
+                                                                            <th>Joining Date</th>
+                                                                            <th>Designation</th>
+                                                                            <th>Client</th>
+                                                                            <th style={{ width: "16%" }}>Reporting Manager</th>
+                                                                            <th>Edit</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        {superAdminsAndAdmins.map((list, index) => (
+                                                                            <tr key={index}>
+                                                                                <td>{list.name}</td>
+                                                                                <td>
+                                                                                    <span className={
+                                                                                        list.roleName === 'SUPER_ADMIN' ? 'superadmin-role' :
+                                                                                            list.roleName === 'ADMIN' ? 'admin-role' : ''
+                                                                                    }>
+                                                                                        {capitalize(list.roleName.toLowerCase().replace('_', ' '))}
+                                                                                    </span>
+                                                                                </td>
+                                                                                <td>{new Date(list.joiningDate).toLocaleDateString("en-GB").split("/").join("-")}</td>
+                                                                                <td>{list.designation}</td>
+                                                                                <td>{list.projects}</td>
+                                                                                <td>{list.projectManager}</td>
+                                                                                <td>
+                                                                                    {(getRoleForShowAddAdminBtn !== "ADMIN" || list.roleName !== 'SUPER_ADMIN') && getRoleForShowAddAdminBtn !== 'EMPLOYEE' && (
+                                                                                        <button type="button" className="btn btn-icon btn-sm icons" title="Edit">
+                                                                                            <GrEdit className='delete-icon' onClick={() => handleEditClick(list)} />
+                                                                                        </button>
+                                                                                    )}
+                                                                                    <button type="button" className="btn btn-icon btn-sm icons" title="View">
+                                                                                        <img src={require("assets/img/view-icon.png")} alt="view" className='delete-icon' onClick={() => handleViewDetailsClick()} />
+                                                                                    </button>
+                                                                                </td>
+                                                                            </tr>
+                                                                        ))}
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        ) : (
+                                                            <div className="no-records-found text-center">
+                                                                <p>No record found for admins</p>
+                                                            </div>
+                                                        )}
+
+                                                        {/* Employee table */}
+                                                        {employees.length > 0 ? (
+                                                            <div className='user-table'>
+                                                                <table className='table table-hover table-vcenter text-nowrap mb-0'>
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th className="name-column">Name</th>
+                                                                            <th>Role</th>
+                                                                            <th>Joining Date</th>
+                                                                            <th>Designation</th>
+                                                                            <th>Client</th>
+                                                                            <th style={{ width: "16%" }}>Reporting Manager</th>
+                                                                            <th>Edit</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        {employees.map((list, index) => (
+                                                                            <tr key={index}>
+                                                                                <td>{list.name}</td>
+                                                                                <td><span className='user-role'>{capitalize(list.roleName.toLowerCase())}</span></td>
+                                                                                <td>{new Date(list.joiningDate).toLocaleDateString("en-GB").split("/").join("-")}</td>
+                                                                                <td>{list.designation}</td>
+                                                                                <td>{list.projects}</td>
+                                                                                <td>{list.projectManager}</td>
+                                                                                <td>
+                                                                                    {getRoleForShowAddAdminBtn !== 'EMPLOYEE' && (
+                                                                                        <button type="button" className="btn btn-icon btn-sm icons" title="Edit">
+                                                                                            <GrEdit className='delete-icon' onClick={() => handleEditClick(list)} />
+                                                                                        </button>
+                                                                                    )}
+                                                                                    <button type="button" className="btn btn-icon btn-sm icons" title="View">
+                                                                                        <img src={require("assets/img/view-icon.png")} alt="view" className='delete-icon' onClick={() => handleViewDetailsClick()} />
+                                                                                    </button>
+                                                                                </td>
+                                                                            </tr>
+                                                                        ))}
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        ) : (
+                                                            <div className="no-records-found text-center" style={{marginTop: '10px'}}>
+                                                                <p>No record found for employees</p>
+                                                            </div>
+                                                        )}
+                                                    </>
                                                 )}
-                                                <br />
-                                                {/* table for employee */}
+                                            </>
+                                        )}
+
+                                        {/* EMPLOYEE Role Only */}
+                                        {getRoleForShowAddAdminBtn === "EMPLOYEE" && (
+                                            <>
                                                 {employees.length > 0 ? (
                                                     <div className='user-table'>
                                                         <table className='table table-hover table-vcenter text-nowrap mb-0'>
                                                             <thead>
                                                                 <tr>
-                                                                    <th class="name-column">Name</th>
+                                                                    <th className="name-column">Name</th>
                                                                     <th>Role</th>
                                                                     <th>Joining Date</th>
                                                                     <th>Designation</th>
@@ -204,27 +253,14 @@ export default function Users() {
                                                                 {employees.map((list, index) => (
                                                                     <tr key={index}>
                                                                         <td>{list.name}</td>
-                                                                        <td>
-                                                                            <span className='user-role'> {capitalize(list.roleName.toLowerCase())}</span></td>
-                                                                        <td> {new Date(list.joiningDate)
-                                                                            .toLocaleDateString("en-GB", {
-                                                                                year: "numeric",
-                                                                                month: "2-digit",
-                                                                                day: "2-digit",
-                                                                            })
-                                                                            .split("/")
-                                                                            .join("-")}</td>
+                                                                        <td><span className='user-role'>{capitalize(list.roleName.toLowerCase())}</span></td>
+                                                                        <td>{new Date(list.joiningDate).toLocaleDateString("en-GB").split("/").join("-")}</td>
                                                                         <td>{list.designation}</td>
                                                                         <td>{list.projects}</td>
                                                                         <td>{list.projectManager}</td>
                                                                         <td>
-                                                                           { getRoleForShowAddAdminBtn !== 'EMPLOYEE' && (
-                                                                                <button type="button" class="btn btn-icon btn-sm icons" title="Edit" fdprocessedid="tvsb17">
-                                                                                <GrEdit className='delete-icon' onClick={() => handleEditClick(list)} />
-                                                                            </button>
-                                                                           )} 
-                                                                            <button type="button" class="btn btn-icon btn-sm icons" title="View" data-type="confirm" fdprocessedid="f7knyq">
-                                                                                <img src={require("assets/img/view-icon.png")} alt="..." className='delete-icon' onClick={() => handleViewDetailsClick()} />
+                                                                            <button type="button" className="btn btn-icon btn-sm icons" title="View">
+                                                                                <img src={require("assets/img/view-icon.png")} alt="view" className='delete-icon' onClick={() => handleViewDetailsClick()} />
                                                                             </button>
                                                                         </td>
                                                                     </tr>
@@ -233,12 +269,13 @@ export default function Users() {
                                                         </table>
                                                     </div>
                                                 ) : (
-                                                    <div className="no-records-found text-center">
+                                                    <div className="no-records-found text-center" style={{marginTop: '10px'}}>
                                                         <p>No record found for employees</p>
                                                     </div>
                                                 )}
                                             </>
                                         )}
+
                                     </div>
                                 </div>
                             </div>

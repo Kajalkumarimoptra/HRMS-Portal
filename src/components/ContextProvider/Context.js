@@ -14,7 +14,7 @@ export const AuthProvider = ({ children}) => {
     watch,
     reset,
     clearErrors,
-    setError, getValues, control,
+    setError, getValues, control,unregister
   } = useForm();
 
   const onSubmit = data => {
@@ -38,7 +38,7 @@ export const AuthProvider = ({ children}) => {
     watch,
     reset,
     clearErrors,
-    setError, getValues, control,
+    setError, getValues, control, unregister,
     serverError,
     setServerError,
     showAddBtn, setShowAddBtn,

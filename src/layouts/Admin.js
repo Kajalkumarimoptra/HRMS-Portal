@@ -72,6 +72,9 @@ import EmpReport from "views/EmpReport";
 import Post from "views/Post";
 import AssetRequestForm from "views/AssetRequestForm";
 import Pendingrequest from "views/Pendingrequest";
+import LeaveRequestList from "views/LeaveRequestList";
+import DocumentRequestList from "views/DocumentRequestList";
+import AssetRequestList from "views/AssetRequestList";
 
 function Admin() {
 
@@ -130,6 +133,7 @@ function Admin() {
               <Route path="Leaves" element={<Leaves />} />
               <Route path="Applyleave" element={<ApplyLeave />} />
               <Route path="Attendance" element={<Attendance />} />
+              <Route path="PendingRequest/Attendance" element={<Attendance />} />
               <Route path="EmployeeAttendance" element={<EmpAttendance />} />
               <Route path="Attendance/:name" element={<EditAttendance />} />
               <Route path="Banner" element={<Banner/>} />
@@ -137,7 +141,10 @@ function Admin() {
               <Route path="FAQ" element={<Faq/>} />
               <Route path="Post" element={<Post/>} />
               <Route path="AssetRequest" element={<AssetRequestForm/>} />
-              <Route path="Pendingrequest" element={<Pendingrequest/>} />
+              <Route path="PendingRequest" element={<Pendingrequest/>} />
+              <Route path="PendingRequest/LeaveRequestList" element={<LeaveRequestList/>} />
+              <Route path="PendingRequest/DocumentRequestList" element={<DocumentRequestList/>} />
+              <Route path="PendingRequest/AssetRequestList" element={<AssetRequestList/>} />
               <Route path="Users" element={<Users />} />
               <Route path="Users/Addnewuser" element={<AddNewUser />} />
               <Route path="Users/:name" element={<EditUser />} />
@@ -172,6 +179,7 @@ function Admin() {
               <Route path="Policies" element={<Policies/>} />
               <Route path="Offboard" element={<Offboard/>} />
               <Route path="Offboarded" element={<OffboardForAdmins/>} />
+              <Route path="PendingRequest/Offboarded" element={<OffboardForAdmins/>} />
               
               {/* Dynamically generate all the routes from dashboardRoutes */}
               {getRoutes(dashboardRoutes())}

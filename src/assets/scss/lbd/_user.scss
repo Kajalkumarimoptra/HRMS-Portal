@@ -68,7 +68,8 @@
         }
 
         .card-body {
-            padding: 23px 15px 10px 15px;
+            // padding: 23px 15px 10px 15px;
+            padding: 15px;
 
 
             .user-table {
@@ -88,6 +89,19 @@
                         }
                     }
 
+                    td {
+                        word-wrap: break-word !important;
+                        overflow-wrap: break-word !important;
+                        white-space: normal !important;
+                        overflow: hidden;
+                        text-overflow: ellipsis !important;
+                        max-width: 200px; 
+                        white-space: nowrap !important;
+                        overflow: hidden;
+                        text-overflow: ellipsis !important;
+                        vertical-align: middle;
+                    }
+
                     tbody {
                         & tr td.serialColumn {
                             text-align: center;
@@ -99,11 +113,11 @@
                         }
                     }
 
-                    & tr td:first-child,
-                    th:first-child {
-                        text-align: left;
-                        padding: 4px 4px 4px 45px !important;
-                    }
+                    // & tr td:first-child,
+                    // th:first-child {
+                    //     text-align: left;
+                    //     padding: 4px 4px 4px 45px !important;
+                    // }
 
                     th {
                         color: #2c2945;

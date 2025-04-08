@@ -10,7 +10,7 @@ export default function PersonalDetailsForm() {
 
   const navigate = useNavigate();
   const {
-    register, handleSubmit, errors, onSubmit, setValue, watch, reset, clearErrors
+    register, handleSubmit, errors, onSubmit, setValue, watch, reset, clearErrors,unregister
   } = useFormContext();
   const { registrationData } = useRegistrationContext();  // Access registration data from context
   const [selectPersonalDetailGenderColor, setPersonalDetailGenderColor] = useState("#d3d3d3"); // for giving diff color to select placeholder and option
@@ -85,6 +85,7 @@ export default function PersonalDetailsForm() {
     fileForPan: '',
     fileForPassport: '',
   }); // error msg on not uploading the file
+
 
   // pattern failure validation 
   const handlePatternForPersonalDetailInputs = (e, pattern, field) => {
@@ -172,7 +173,7 @@ export default function PersonalDetailsForm() {
     setPersonalDetailGenderColor(selectedValue ? "black" : "#d3d3d3");
     clearErrors('gender');
   };
-  // const handleFileForDocs = (e, field) => {
+
   //   const file = e.target.files[0];
   //   if (file) {
   //     const fileType = file.type;
@@ -446,6 +447,13 @@ export default function PersonalDetailsForm() {
     }
   }, [registrationData]);
 
+  useEffect(() => {
+    console.log("Current errors:", errors);
+  }, [errors]);
+
+  useEffect(() => {
+    unregister(["otp0", "otp1", "otp2", "otp3", "otp4", "otp5"]);
+  }, []);
 
   const handleFormSubmit = async (data) => {
     console.log("Form submission triggered");
@@ -664,32 +672,17 @@ export default function PersonalDetailsForm() {
 
     console.log("Payload of personal details page :", newPayload);
 
-    let docsUpload = false;
-    // check files are uploaded or not
-    if (!fileUploaded.fileForAadhar) {
-      setCustomErrorForDocUpload(prev => ({ ...prev, fileForAadhar: 'Please upload your Aadhar Card' }));
-      docsUpload = true;
-    }
-    if (!fileUploaded.fileForPan) {
-      setCustomErrorForDocUpload(prev => ({ ...prev, fileForPan: 'Please upload your Pan card' }));
-      docsUpload = true;
-    }
-
-    if (data.passport) {
-      console.log("Passport entered, checking fileForPassport");
-      if (!fileUploaded.fileForPassport) {
-        setCustomErrorForDocUpload(prev => ({ ...prev, fileForPassport: 'Please upload your Passport' }));
-        docsUpload = true;
-      } else {
-        setCustomErrorForDocUpload(prev => ({ ...prev, fileForPassport: '' }));
-      }
-    }
-    else {
-      setCustomErrorForDocUpload(prev => ({ ...prev, fileForPassport: '' }));
-    }
-
-    if (docsUpload) {
+    const errors = {
+      fileForAadhar: !fileUploaded.fileForAadhar ? 'Please upload your Aadhar Card' : '',
+      fileForPan: !fileUploaded.fileForPan ? 'Please upload your Pan card' : '',
+      fileForPassport: data.passport && !fileUploaded.fileForPassport ? 'Please upload your Passport' : '',
+    };
+  
+    const hasErrors = Object.values(errors).some(val => val);
+  
+    if (hasErrors) {
       console.error("Document upload validation failed.");
+      setCustomErrorForDocUpload(errors);
       return;
     }
     console.log("All required documents are uploaded.");
@@ -771,34 +764,8 @@ export default function PersonalDetailsForm() {
               will form part of your official records in the Company<br /> and is subjected to verification.</span></h5>
           </div>
           <hr />
-
-          {/* <div className='basicInformation'>
-          <div className='empId'>
-            <label>Employee ID :</label>
-            <input type='text' placeholder='Employee ID' />
-          </div>
-          <div className='dateOfJoining'>
-            <label>Date of Joining :</label>
-            <input type='date' placeholder='DD/MM/YYYY' />
-          </div>
-          <div className='workPlace'>
-            <label>Place of Work :</label>
-            <input type='text' placeholder='Place of Work' className='placeInput' />
-          </div>
-          <div className='empType'>
-            <label>Employment Type :</label>
-            <select>
-              <option hidden>Select Employment Type</option>
-              <option>Permanent</option>
-              <option>Temporary</option>
-              <option>Contractual</option>
-            </select>
-          </div>
-        </div> */}
         </form>
-        {/* <hr /> */}
-
-        {/* personal detail form */}
+       {/* personal detail form */}
         <div className='personalDetailForm' >
 
           <div className='personalDetailHeading'> <h6 className='personalDetailHeadline'>PERSONAL DETAILS</h6> </div>

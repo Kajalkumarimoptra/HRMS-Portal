@@ -679,7 +679,7 @@ function Dashboard({ role }) {
                         </div>
                         {roleBasedSection === "SUPER_ADMIN" || roleBasedSection === "ADMIN" ? (
                            <div className="assign-leave-container" style={{ position: 'relative', left: '41px' }}>
-                           <a className="sort-cut" href="/admin/Pendingrequest" style={{ color: "#2c2945" }}>
+                           <a className="sort-cut" href="/admin/PendingRequest" style={{ color: "#2c2945" }}>
                              <button className="assign-leave-btn" type="button" title="Assign Leave">
                                <img src={require("assets/img/pendingrequest-icon.png")} alt="..." className="quick-links-icon" />
                              </button>
@@ -803,7 +803,7 @@ function Dashboard({ role }) {
                       </div>
                       <div className="secondColumn">
                         <div className="assign-leave-container" style={{ position: 'relative', left: '7px' }}>
-                          <a className="sort-cut" href="/admin/Pendingrequest" style={{ color: "#2c2945" }}>
+                          <a className="sort-cut" href="/admin/PendingRequest" style={{ color: "#2c2945" }}>
                             <button className="assign-leave-btn" type="button" title="Assign Leave">
                               <img src={require("assets/img/pendingrequest-icon.png")} alt="..." className="quick-links-icon" />
                             </button>

@@ -92,6 +92,7 @@
 
             .attendance-table, .emp-attendance-table {
                 width: 100%;
+                table-layout: fixed;
 
                 & th,
                 & td {
@@ -100,9 +101,22 @@
                     border-bottom: 1px solid darkgray;
                 }
 
-                 & tr td:first-child, th:first-child {  
-                   text-align: left;
+                td {
+                    word-wrap: break-word !important;
+                    overflow-wrap: break-word !important;
+                    white-space: normal !important;
+                    overflow: hidden;
+                    text-overflow: ellipsis !important;
+                    max-width: 200px; 
+                    white-space: nowrap !important;
+                    overflow: hidden;
+                    text-overflow: ellipsis !important;
+                    vertical-align: middle;
                 }
+
+                //  & tr td:first-child, th:first-child {  
+                //    text-align: left;
+                // }
 
                 & tr:last-child td {
                     border-bottom: none;  // Remove the bottom border from the last row's td elements

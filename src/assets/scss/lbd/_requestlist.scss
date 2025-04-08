@@ -1,0 +1,106 @@
+.request-list-table{
+    table {
+        width: 100%;
+        margin-top: auto;
+        table-layout: fixed;
+
+        thead {
+            text-align: center !important;
+            background: lightgray;
+        }
+
+        td {
+            word-wrap: break-word !important;
+            overflow-wrap: break-word !important;
+            white-space: normal !important;
+            overflow: hidden;
+            text-overflow: ellipsis !important;
+            max-width: 200px; // adjust as needed
+            white-space: nowrap !important;
+            overflow: hidden;
+            text-overflow: ellipsis !important;
+            vertical-align: middle;
+        }
+
+        // & tr td:first-child {
+        //     text-align: left !important;
+        //     padding-left: 55px !important;
+        // }
+
+        & tr td:nth-child(2) {
+            text-align: center !important;
+        }
+
+        th {
+            color: #2c2945;
+            padding: 11px !important;
+            border: 1px solid darkgray;
+            word-wrap: break-word;
+
+            &+th {
+                padding-left: 1rem;
+            }
+        }
+
+
+        td {
+            vertical-align: middle;
+            padding: 0.75rem;
+            border: 1px solid darkgray;
+            word-wrap: break-word;
+
+            &+td {
+                padding-left: 1rem;
+            }
+        }
+
+        td {
+            padding: 4px !important;
+            line-height: 1.2;
+            vertical-align: middle;
+        }
+        .attach-doc-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        .docs-action-column {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .d-flex {
+            display: flex;
+            align-items: center;
+        }
+
+        .name-data {
+            margin-top: 19px;
+        }
+
+        td h6,
+        td span {
+            margin: 0;
+            line-height: 1;
+        }
+
+        .icons {
+            border: none;
+            color: #212529;
+
+            .delete-icon {
+                width: 17px;
+                height: 19px;
+            }
+
+            .toggle-icon {
+                width: 30px;
+                height: 16px;
+            }
+        }
+
+    }
+
+}
+
