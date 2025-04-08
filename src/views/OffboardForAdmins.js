@@ -3,27 +3,27 @@ import Breadcrumb from './Breadcrumb';
 import { useOffboardPopupContext } from 'components/ContextProvider/OffboardPopupContext';
 
 export default function OffboardForAdmins() {
-  const [ roleBasedOffboardSection, setRoleBasedOffboardSection ] = useState(null);
-   const { toggleExitPopup } = useOffboardPopupContext();
+  const [roleBasedOffboardSection, setRoleBasedOffboardSection] = useState(null);
+  const { toggleExitPopup } = useOffboardPopupContext();
 
   useEffect(() => {
-      // Directly read the role from localStorage
-      const storedRole = localStorage.getItem("role");
-      setRoleBasedOffboardSection(storedRole);
-    }, []);
+    // Directly read the role from localStorage
+    const storedRole = localStorage.getItem("role");
+    setRoleBasedOffboardSection(storedRole);
+  }, []);
 
   return (
     <div className='container-fluid'>
       <div className=" d-flex justify-content-between align-items-center" style={{ flexDirection: "row-reverse", marginBottom: '-15px' }}>
         <div className="icons-list">
           <Breadcrumb />
-          { roleBasedOffboardSection === "ADMIN" ? (
+          {roleBasedOffboardSection === "ADMIN" ? (
             <div>
-              <button type="button" className="primary-btn" 
-              onClick={() => toggleExitPopup(true)}
+              <button type="button" className="primary-btn"
+                onClick={() => toggleExitPopup(true)}
               >Offboard</button>
             </div>
-          ) : "" }
+          ) : ""}
         </div>
       </div>
       <div className='offboard-emp-container'>
@@ -36,7 +36,7 @@ export default function OffboardForAdmins() {
                 <p><b>Department:</b><span>Web Development</span></p>
                 <p><b>Last Working Day :</b><span>02-feb-2025</span></p>
                 <div className='clearance-btn'>
-                  <a class="primary-btn">Clearance</a>
+                  <a class="primary-btn">Acknowledge</a>
                 </div>
                 <div className='exit-pic'>
                   <img
@@ -61,7 +61,7 @@ export default function OffboardForAdmins() {
                 <p><b>Department:</b><span>Web Development</span></p>
                 <p><b>Last Working Day :</b><span>02-feb-2025</span></p>
                 <div className='clearance-btn'>
-                  <a class="primary-btn">Clearance</a>
+                  <a class="primary-btn">Acknowledge</a>
                 </div>
               </div>
             </div>
@@ -80,7 +80,7 @@ export default function OffboardForAdmins() {
                 <p><b>Department:</b><span>QA Testing</span></p>
                 <p><b>Last Working Day :</b><span>02-feb-2025</span></p>
                 <div className='clearance-btn'>
-                  <a class="primary-btn">Clearance</a>
+                  <a class="primary-btn">Acknowledge</a>
                 </div>
               </div>
             </div>
@@ -101,7 +101,7 @@ export default function OffboardForAdmins() {
                 <p><b>Department:</b><span>Web Development</span></p>
                 <p><b>Last Working Day :</b><span>02-feb-2025</span></p>
                 <div className='clearance-btn'>
-                  <a class="primary-btn">Clearance</a>
+                  <a class="primary-btn">Acknowledge</a>
                 </div>
               </div>
             </div>
@@ -120,7 +120,7 @@ export default function OffboardForAdmins() {
                 <p><b>Department:</b><span>Web Development</span></p>
                 <p><b>Last Working Day :</b><span>02-feb-2025</span></p>
                 <div className='clearance-btn'>
-                  <a class="primary-btn">Clearance</a>
+                  <a class="primary-btn">Acknowledge</a>
                 </div>
               </div>
             </div>
@@ -139,7 +139,7 @@ export default function OffboardForAdmins() {
                 <p><b>Department:</b><span>WCS Support</span></p>
                 <p><b>Last Working Day :</b><span>02-feb-2025</span></p>
                 <div className='clearance-btn'>
-                  <a class="primary-btn">Clearance</a>
+                  <a class="primary-btn">Acknowledge</a>
                 </div>
               </div>
             </div>

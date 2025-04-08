@@ -22,7 +22,7 @@ export default function EducationalDetailsForm() {
     const [showEmpHistory, setEmpHistory] = useState([]); // shows emp history in array as much required
     const [selectedDegree, setSelectedDegree] = useState(""); // state for holding degree name
     const [nestedOptions, setNestedOptions] = useState([]); // state for taking values from object 'educationOptions'
-    const [selectedCertificate, setSelectedCertificate] = useState([]); // to keep track of the selected certificate
+    const [selectedCertificatesByDegree, setSelectedCertificatesByDegree] = useState({}); // to keep track of the selected certificate
     const [optionSelected, setOptionSelected] = useState(false); // State to track if an option is selected
     const [degreeNames, setDegreeNames] = useState([]); // initialize the state to track all the degree names invaid input in array
     const [subjects, setSubjects] = useState([]); // initialize the state to track all the subjects invaid input in array
@@ -58,14 +58,17 @@ export default function EducationalDetailsForm() {
 
     const changeNestedOptionHandler = (e) => {
         const { value, checked } = e.target;
-        setSelectedCertificate((prevSelected) => {
-            if (checked) {
-                return [...prevSelected, value]; // Adds new selection at the end.
-            } else {
-                return prevSelected.filter(cert => cert !== value); // Removes unselected certificate.
-            }
+        setSelectedCertificatesByDegree(prev => {
+            const current = prev[selectedDegree] || [];
+            const updated = checked
+                ? [...current, value]
+                : current.filter(cert => cert !== value);
+            return {
+                ...prev,
+                [selectedDegree]: updated
+            };
         });
-    };
+    };    
 
 
     const addTableForNextEducationDetail = () => {

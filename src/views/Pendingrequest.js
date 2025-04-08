@@ -16,7 +16,7 @@ export default function Pendingrequest() {
                 { name: "Sonam Kumari", assetname: "Headphones" }
             ]
         },
-        { id: 2, heading: 'Attendance Corrections (1)', icon: require("assets/img/attendance-correction-icon.png") },
+        { id: 2, heading: 'Attendance (1)', icon: require("assets/img/attendance-correction-icon.png") },
         {
             id: 3, heading: 'Documents (2)', icon: require("assets/img/docs-list-icon.png"),
             docscontent: [
@@ -59,11 +59,9 @@ export default function Pendingrequest() {
                             <div>
                                 <div class="pending-request-card">
                                     <div class="header-container" onClick={() => navigate(redirectUrls[list.id])} style={{ cursor: 'pointer' }}>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                            <img src={list.icon} alt="icon" style={{ width: '25px', height: '25px', marginTop: '-13px' }} />
-                                            <p><b>{list.heading}</b></p>
-                                        </div>
-                                        <div className='clearance-btn'>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexDirection: 'column' }}>
+                                            <img src={list.icon} alt="icon" style={{ width: '50px', height: '50px' }} />
+                                            <div className='clearance-btn'>
                                             <img
                                                 src={require("assets/img/close-dropdown-icon.png")}
                                                 alt="toggle-icon"
@@ -72,6 +70,8 @@ export default function Pendingrequest() {
                                                     navigate(redirectUrls[list.id]);
                                                 }}
                                                 className="icon-redirect" />
+                                        </div>
+                                            <p><b>{list.heading}</b></p>
                                         </div>
                                     </div>
                                 </div>

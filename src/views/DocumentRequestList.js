@@ -26,19 +26,33 @@ export default function DocumentRequestList() {
         if (status === "Pending") {
             return (
                 <>
-                    <button type="button" className="btn btn-icon btn-sm icons" title="Approve">
-                        <img src={require("assets/img/approved-icon.png")} alt="..." className='delete-icon' />
-                    </button>
-                    <button type="button" className="btn btn-icon btn-sm icons" title="Reject">
-                        <img src={require("assets/img/reject-icon.png")} alt="..." className='delete-icon' />
-                    </button>
+                    <div style={{ display: 'flex', flexDirection: 'column', paddingTop: '8px' }}>
+                        <div>
+                            <img src={require("assets/img/docs-attach-icon.png")} alt="..." style={{ width: '20px', height: '20px' }} /> Upload doc
+                        </div>
+                        <div>
+                            <button type="button" className="btn btn-icon btn-sm icons" title="Approve">
+                                <img src={require("assets/img/approved-icon.png")} alt="..." className='delete-icon' />
+                            </button>
+                            <button type="button" className="btn btn-icon btn-sm icons" title="Reject">
+                                <img src={require("assets/img/reject-icon.png")} alt="..." className='delete-icon' />
+                            </button>
+                        </div>
+                    </div>
                 </>
             );
         } else if (status === "Approved" || status === "Rejected") {
             return (
-                <> <button type="button" className="btn btn-icon btn-sm icons" title="none">
-                    <img src={require("assets/img/none-icon.png")} alt="..." className='delete-icon' style={{width: '15px'}} />
-                    </button> 
+                <>
+                    <div style={{ display: 'flex', flexDirection: 'column', paddingTop: '8px' }}>
+                        <div>
+                            <img src={require("assets/img/docs-attach-icon.png")} alt="..." style={{ width: '20px', height: '20px' }} /> Upload doc
+                        </div>
+                        <div> <button type="button" className="btn btn-icon btn-sm icons" title="none">
+                            <img src={require("assets/img/none-icon.png")} alt="..." className='delete-icon' style={{ width: '15px' }} />
+                        </button>
+                        </div>
+                    </div>
                 </>
             );
         }
