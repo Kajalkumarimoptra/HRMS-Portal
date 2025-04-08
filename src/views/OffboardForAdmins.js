@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Breadcrumb from './Breadcrumb';
 import { useOffboardPopupContext } from 'components/ContextProvider/OffboardPopupContext';
+import { useNavigate } from 'react-router-dom';
 
 export default function OffboardForAdmins() {
+  const navigate = useNavigate();
   const [roleBasedOffboardSection, setRoleBasedOffboardSection] = useState(null);
   const { toggleExitPopup } = useOffboardPopupContext();
 
@@ -36,7 +38,7 @@ export default function OffboardForAdmins() {
                 <p><b>Department:</b><span>Web Development</span></p>
                 <p><b>Last Working Day :</b><span>02-feb-2025</span></p>
                 <div className='clearance-btn'>
-                  <a class="primary-btn">Acknowledge</a>
+                  <button class="primary-btn" onClick={() => navigate('/admin/Offboarded/Policies')}>Acknowledge</button>
                 </div>
                 <div className='exit-pic'>
                   <img
@@ -61,7 +63,7 @@ export default function OffboardForAdmins() {
                 <p><b>Department:</b><span>Web Development</span></p>
                 <p><b>Last Working Day :</b><span>02-feb-2025</span></p>
                 <div className='clearance-btn'>
-                  <a class="primary-btn">Acknowledge</a>
+                  <button class="primary-btn" onClick={() => navigate('/admin/Offboarded/Policies')}>Acknowledge</button>
                 </div>
               </div>
             </div>
@@ -80,7 +82,7 @@ export default function OffboardForAdmins() {
                 <p><b>Department:</b><span>QA Testing</span></p>
                 <p><b>Last Working Day :</b><span>02-feb-2025</span></p>
                 <div className='clearance-btn'>
-                  <a class="primary-btn">Acknowledge</a>
+                  <button class="primary-btn" onClick={() => navigate('/admin/Offboarded/Policies')}>Acknowledge</button>
                 </div>
               </div>
             </div>
@@ -101,7 +103,7 @@ export default function OffboardForAdmins() {
                 <p><b>Department:</b><span>Web Development</span></p>
                 <p><b>Last Working Day :</b><span>02-feb-2025</span></p>
                 <div className='clearance-btn'>
-                  <a class="primary-btn">Acknowledge</a>
+                  <button class="primary-btn" onClick={() => navigate('/admin/Offboarded/Policies')}>Acknowledge</button>
                 </div>
               </div>
             </div>
@@ -120,7 +122,7 @@ export default function OffboardForAdmins() {
                 <p><b>Department:</b><span>Web Development</span></p>
                 <p><b>Last Working Day :</b><span>02-feb-2025</span></p>
                 <div className='clearance-btn'>
-                  <a class="primary-btn">Acknowledge</a>
+                  <button class="primary-btn" onClick={() => navigate('/admin/Offboarded/Policies')}>Acknowledge</button>
                 </div>
               </div>
             </div>
@@ -139,14 +141,13 @@ export default function OffboardForAdmins() {
                 <p><b>Department:</b><span>WCS Support</span></p>
                 <p><b>Last Working Day :</b><span>02-feb-2025</span></p>
                 <div className='clearance-btn'>
-                  <a class="primary-btn">Acknowledge</a>
+                  <button class="primary-btn" onClick={() => navigate('/admin/Offboarded/Policies')}>Acknowledge</button>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-    </div>
+ </div>
   )
 }
