@@ -177,6 +177,7 @@ function Admin() {
               <Route path="Holidays" element={<Holidays />} />
               <Route path="Appraisal" element={<Appraisal/>} />
               <Route path="Policies" element={<Policies/>} />
+              <Route path="Offboarded/Policies" element={<Policies/>} />
               <Route path="Offboard" element={<Offboard/>} />
               <Route path="Offboarded" element={<OffboardForAdmins/>} />
               <Route path="PendingRequest/Offboarded" element={<OffboardForAdmins/>} />
