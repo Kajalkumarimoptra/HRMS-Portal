@@ -22,7 +22,7 @@ export default function EducationalDetailsForm() {
     const [showEmpHistory, setEmpHistory] = useState([]); // shows emp history in array as much required
     const [selectedDegree, setSelectedDegree] = useState(""); // state for holding degree name
     const [nestedOptions, setNestedOptions] = useState([]); // state for taking values from object 'educationOptions'
-    const [selectedCertificatesByDegree, setSelectedCertificatesByDegree] = useState({}); // to keep track of the selected certificate
+    const [selectedCertificate, setSelectedCertificate] = useState({}); // to keep track of the selected certificate
     const [optionSelected, setOptionSelected] = useState(false); // State to track if an option is selected
     const [degreeNames, setDegreeNames] = useState([]); // initialize the state to track all the degree names invaid input in array
     const [subjects, setSubjects] = useState([]); // initialize the state to track all the subjects invaid input in array
@@ -51,24 +51,24 @@ export default function EducationalDetailsForm() {
         setSelectedDegree(value);
         const options = educationOptions[value] || []; // to show certificates list or nothing
         setNestedOptions(options);
-        setSelectedCertificate([]); // to reset the input type file for certificates
+        setSelectedCertificate((prev) => ({
+            ...prev,
+            [value]: prev[value] || []
+        })); // to reset the input type file for certificates
         setOptionSelected(true); // Set option selected state to true when an option is selected
 
     };
 
     const changeNestedOptionHandler = (e) => {
         const { value, checked } = e.target;
-        setSelectedCertificatesByDegree(prev => {
-            const current = prev[selectedDegree] || [];
-            const updated = checked
-                ? [...current, value]
-                : current.filter(cert => cert !== value);
-            return {
-                ...prev,
-                [selectedDegree]: updated
-            };
+        setSelectedCertificate((prev) => {
+            const prevForDegree = prev[selectedDegree] || [];
+            const updatedForDegree = checked
+                ? [...prevForDegree, value]
+                : prevForDegree.filter(cert => cert !== value);
+            return { ...prev, [selectedDegree]: updatedForDegree };
         });
-    };    
+    };
 
 
     const addTableForNextEducationDetail = () => {
@@ -315,9 +315,9 @@ export default function EducationalDetailsForm() {
 
     // for handle submit
     const handleFormSubmit = async (data) => {
-         alert("Form submitted!");
+        alert("Form submitted!");
         console.log("Submitted data:", data);
-    console.log("Errors during submission:", errors);
+        console.log("Errors during submission:", errors);
         if (Object.keys(errors).length > 0) {
             console.error("Form has errors:", errors);
             return;
@@ -647,7 +647,7 @@ export default function EducationalDetailsForm() {
                                             {/* <td className={`${index % 2 === 0 ? 'tableBody' : 'tableBodyLight'} ${errors[`higherDegreeName_${index}`] ? 'invalid' : ''}`}> */}
                                             <input type='text' className='addressTableInput'
                                                 {...register(`higherDegreeName_${index}`, { required: true })}
-                                                onChange={(e) => handlePatternChangeForEduDoc(index,/^[A-Za-z.\-\s()]+$/, `higherDegreeName_${index}`, e)} value={degreeNames[index] || ''}
+                                                onChange={(e) => handlePatternChangeForEduDoc(index, /^[A-Za-z.\-\s()]+$/, `higherDegreeName_${index}`, e)} value={degreeNames[index] || ''}
                                             />
                                         </td>
                                         <td className={`${index % 2 === 0 ? 'tableBody' : 'tableBodyLight'} `}>
@@ -662,15 +662,15 @@ export default function EducationalDetailsForm() {
                                                 onChange={(e) => {
                                                     const currentYear = new Date().getFullYear(); // Get current year
                                                     const enteredYear = parseInt(e.target.value, 10); // Convert input to number
-                                        
+
                                                     if (enteredYear > currentYear) {
                                                         alert("Future years are not allowed!");
                                                         e.target.value = ''; // Clear input
                                                         return;
                                                     }
-                                        
+
                                                     handlePatternChangeForEduDoc(index, /^[0-9]+$/, `higherDegreePassingYr_${index}`, e);
-                                                }}  value={passingYr[index] || ''}
+                                                }} value={passingYr[index] || ''}
                                             />
                                         </td>
                                         <td className={`${index % 2 === 0 ? 'tableBody' : 'tableBodyLight'} `}>
@@ -725,7 +725,7 @@ export default function EducationalDetailsForm() {
                                                     id={option}
                                                     name='certificate'
                                                     value={option}
-                                                    checked={selectedCertificate.includes(option)}
+                                                    checked={selectedCertificate[selectedDegree]?.includes(option) || false}
                                                     onChange={changeNestedOptionHandler}
                                                 />
                                                 <label style={{ verticalAlign: 'sub' }} htmlFor={option}>
@@ -737,9 +737,9 @@ export default function EducationalDetailsForm() {
                                 )}
 
                                 {/* ✅ FIX: Loop through selectedCertificate instead of nestedOptions */}
-                                {selectedCertificate.length > 0 && (
+                                {selectedCertificate[selectedDegree]?.length > 0 && (
                                     <div className='selectedCertificatesList'>
-                                        {selectedCertificate.map((certificate, index) => (
+                                        {selectedCertificate[selectedDegree].map((certificate, index) => (
                                             <div className='certificateContainer' key={certificate}>
                                                 <div className='fileUploadContainer'>
                                                     <input
@@ -748,19 +748,35 @@ export default function EducationalDetailsForm() {
                                                         {...register(`${selectedDegree}-${certificate}Doc`, { required: true })}
                                                         onChange={(e) => handleFileForDegreeDoc(e, `${selectedDegree}-${certificate}Doc`)}
                                                     />
-                                                    <button type="button" className="eduUpload" onClick={() => handleFileUpload(`${selectedDegree}-${certificate}Doc`)}>Upload</button>
-                                                    {customErrorForEducationalDocUpload[`${selectedDegree}-${certificate}Doc`] ? <div className="docUploadErrorMessage">{customErrorForEducationalDocUpload[`${selectedDegree}-${certificate}Doc`]}</div> : ''}
-                                                    {successfulEducationalFileUploadMsg[`${selectedDegree}-${certificate}Doc`] ? <div className="docUploadSuccessMessage">{successfulEducationalFileUploadMsg[`${selectedDegree}-${certificate}Doc`]}</div> : ''}
+                                                    {/* ✅ Display file name inside the loop */}
+                                                    {educationalDegreeDoc[`${selectedDegree}-${certificate}Doc`] && (
+                                                        <div className="uploadedFileName">
+                                                             {educationalDegreeDoc[`${selectedDegree}-${certificate}Doc`].name}
+                                                        </div>
+                                                    )}
+                                                    <button
+                                                        type="button"
+                                                        className="eduUpload"
+                                                        onClick={() => handleFileUpload(`${selectedDegree}-${certificate}Doc`)}
+                                                    >
+                                                        Upload
+                                                    </button>
+                                                    {customErrorForEducationalDocUpload[`${selectedDegree}-${certificate}Doc`] && (
+                                                        <div className="docUploadErrorMessage">
+                                                            {customErrorForEducationalDocUpload[`${selectedDegree}-${certificate}Doc`]}
+                                                        </div>
+                                                    )}
+                                                    {successfulEducationalFileUploadMsg[`${selectedDegree}-${certificate}Doc`] && (
+                                                        <div className="docUploadSuccessMessage">
+                                                            {successfulEducationalFileUploadMsg[`${selectedDegree}-${certificate}Doc`]}
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </div>
                                         ))}
                                     </div>
                                 )}
                             </div>
-
-
-
-
                         </div>
 
                         {/* experience yrs input*/}
