@@ -116,6 +116,8 @@ export default function ContactDetailsForm() {
         setSelectedState(state); // Also set the selected state to pincode state initially
         setCityOption(getCitiesByState(state)); // set the related cities list based on state coming from pincode
         setPermanentAddress(prevState => ({ ...prevState, state: state })); // Update permanent address state
+        setValue("state", state);
+        clearErrors("state");
 
         // Update the color to black when state comes from pincode
         setPermanentContactDetailStateColor("black");
@@ -274,7 +276,8 @@ export default function ContactDetailsForm() {
         setAnotherPincodeState(anotherState); // Set state based on pincode
         setAnotherSelectedState(anotherState); // Also set the selected state to pincode state initially
         setAnotherCityOption(getAnotherCitiesByState(anotherState)); // set the related cities list based on state coming from pincode
-
+        setValue("anotherState", anotherState);
+        clearErrors("anotherState")
         // Update the color to black when state comes from pincode
         setCurrentContactDetailStateColor("black");
         console.log(anotherPostOffice);
@@ -736,7 +739,7 @@ export default function ContactDetailsForm() {
                   {...register("state", { required: true })}
                   value={selectedState} // Bind select element to state value
                   onChange={(e) => { handleStateChange(e); handleAddressChange('permanent', 'state', e.target.value); handlePermanentContactDetailsStateColorChange(e) }} // Update state variable on change
-                  style={{ color: selectPermanentContactDetailStateColor }}> <option hidden style={{ color: "#d3d3d3" }}>Select State</option>
+                  style={{ color: selectPermanentContactDetailStateColor }}> <option value="" hidden style={{ color: "#d3d3d3" }}>Select State</option>
                   {stateOption.map((eachState, index) => (
                     <option key={index} value={eachState} style={{ color: "black" }}>{eachState}</option>
                   ))}
@@ -747,7 +750,7 @@ export default function ContactDetailsForm() {
                 <select className={`cityInput  ${errors.city ? 'invalid' : ''}`} {...register("city", { required: true })}
                   value={selectedCity} // Bind select element to city value
                   onChange={(e) => { handleCityChange(e); handleAddressChange('permanent', 'city', e.target.value); handlePermanentContactDetailsCityColorChange(e) }} // Update city variable on change
-                  style={{ color: selectPermanentContactDetailCityColor }}> <option hidden style={{ color: "#d3d3d3" }}>Select City</option>
+                  style={{ color: selectPermanentContactDetailCityColor }}> <option value="" hidden style={{ color: "#d3d3d3" }}>Select City</option>
                   {cityOption.map((eachCity, id) => (
                     <option key={id} value={eachCity} style={{ color: "black" }}>{eachCity}</option>
                   ))}
@@ -853,7 +856,7 @@ export default function ContactDetailsForm() {
                       {...register("anotherState", { required: true })}
                       value={anotherSelectedState} // Bind select element to state value
                       onChange={(e) => { handleAnotherStateChange(e); handleAddressChange('current', 'anotherState', e.target.value); handleCurrentContactDetailsStateColorChange(e) }} // Update state variable on change
-                      style={{ color: selectCurrentContactDetailStateColor }} disabled={checked ? true : false}> <option hidden style={{ color: "#d3d3d3" }}>Select State</option>
+                      style={{ color: selectCurrentContactDetailStateColor }} disabled={checked ? true : false}> <option value="" hidden style={{ color: "#d3d3d3" }}>Select State</option>
                       {anotherStateOption.map((anotherEachState, index) => (
                         <option key={index} value={anotherEachState} style={{ color: "black" }}>{anotherEachState}</option>
                       ))}
@@ -865,7 +868,7 @@ export default function ContactDetailsForm() {
                       value={anotherSelectedCity} // Bind select element to city value
                       onChange={(e) => { handleAnotherCityChange(e); handleAddressChange('current', 'anotherCity', e.target.value); handleCurrentContactDetailsCityColorChange(e) }} // Update city variable on change
                       style={{ color: selectCurrentContactDetailCityColor }} disabled={checked ? true : false}> 
-                      <option hidden style={{ color: "#d3d3d3" }}>Select City</option>
+                      <option value="" hidden style={{ color: "#d3d3d3" }}>Select City</option>
                       {anotherCityOption.map((anotherEachCity, id) => (
                         <option key={id} value={anotherEachCity} style={{ color: "black" }}>{anotherEachCity}</option>
                       ))}
@@ -875,8 +878,8 @@ export default function ContactDetailsForm() {
                 <div className='stateCityContainer'>
                   <div className='fromContainer'>
                     <label>Period Of Stay <span className='separatorForStayFrom'>:</span></label>  <label className='fromLabel'>From</label>
-                    <input type='date' placeholder='Select Date' className={`fromInput ${errors.anotherFromStay ? 'invalid' : ''}
-                    //  ${checked ? 'disabledDropdown' : ''}`} 
+                    <input type='date' placeholder='Select Date' className={`fromInput ${errors.anotherFromStay ? 'invalid' : ''}`}
+                      // ${checked ? 'disabledDropdown' : ''}`} 
                      {...register("anotherFromStay", { required: true })}
                       value={currentAddress.anotherFromStay} onChange={(e) => {
                         handleAddressChange('current', 'anotherFromStay', e.target.value); 

@@ -128,6 +128,11 @@ body {
         /* Hides default arrow (optional) */
         background: url('/assets/img/dropdown_icon.png') no-repeat right 10px center;
         background-size: 10px;
+
+        &.invalid {
+          border: 1px solid red !important;
+          outline: red;
+        }
       }
 
       input[type="date"] {

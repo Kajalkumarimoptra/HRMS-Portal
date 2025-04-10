@@ -15,32 +15,65 @@ export default function AddressHistory() {
     const [isValid, setIsValid] = useState(true); // To track whether input is valid for length validation
     const [fromStayDate, setFromStayDate] = useState("");
     const [fromStayDates, setFromStayDates] = useState({});
+   
+    // Show alert for any zipcode or contact no. minLength errors (for all indexes)
+    useEffect(() => {
+        const zipcodeFields = Object.keys(errors).filter(
+            (fieldName) =>
+                (fieldName === 'firstAddressZipcode' ||
+                    fieldName.startsWith('anotherAddressZipcode_')) &&
+                errors[fieldName]?.type === 'minLength'
+        );
+    
+        if (zipcodeFields.length > 0) {
+            // Show alert only once for the first invalid field
+            alert(errors[zipcodeFields[0]].message);
+        }
+    }, [errors.firstAddressZipcode?.type, errors.anotherAddressZipcode_]);
 
-    // for pattern validation of address
+    useEffect(() => {
+        const contactNoFields = Object.keys(errors).filter(
+            (fieldName) =>
+                (fieldName === 'firstAddressRtnContact' ||
+                    fieldName.startsWith('anotherAddressRtnContact_')) &&
+                errors[fieldName]?.type === 'minLength'
+        );
+    
+        if (contactNoFields.length > 0) {
+            alert(errors[contactNoFields[0]].message);
+        }
+    }, [errors.firstAddressRtnContact, errors.anotherAddressRtnContact_]);
+
+
+   // for pattern validation of address
     const handlePatternForAddressHistoryTableInputs = (index, pattern, field, e) => {
         const value = e.target.value;
+        console.log(`[DEBUG] Field: ${field}, Value Entered: ${value}`);
 
         if (field.includes('Zipcode')) {
-            // Create a copy of the zipcodes array to update the specific index
-            const newZipcodes = [...zipcodes]; // to ensure that the original state is not mutated
+            const newZipcodes = [...zipcodes];
+            let newValue = value;
 
-            // Validate the input value
-            if (value && !pattern.test(value)) {
-                const newZipcodes = [...zipcodes];
-                let newValue = value;
+            console.log(`[DEBUG] Initial Zipcode Value: ${newValue}`);
 
-                if (newValue.length > 6) {
-                    newValue = newValue.slice(0, 6);
-                }
-                // Validate the input value
-                if (newValue && !pattern.test(newValue)) {
-                    alert('Only numbers are allowed');
-                    newValue = newValue.slice(0, -1);
-                }
-                newZipcodes[index] = newValue;
-                setZipcodes(newZipcodes);
-                setIsValid(true);
+            // Trim if more than 6 digits
+            if (newValue.length > 6) {
+                newValue = newValue.slice(0, 6);
+                console.log(`[DEBUG] Trimmed to 6 digits: ${newValue}`);
             }
+
+            // Pattern validation
+            if (newValue && !pattern.test(newValue)) {
+                alert('Only numbers are allowed');
+                console.log(`[DEBUG] Pattern test failed for zipcode. Removing last digit.`);
+                newValue = newValue.slice(0, -1);
+            }
+
+            newZipcodes[index] = newValue;
+            setZipcodes(newZipcodes);
+            setIsValid(true);
+            handleInputChange(field, newValue);
+            console.log(`[DEBUG] Updated Zipcodes State: `, newZipcodes);
         }
         else if (field.includes('Country')) {
             const newCountries = [...countries];
@@ -124,7 +157,7 @@ export default function AddressHistory() {
                         </tr>
                         <tr>
                             <td className='tableBody'>1.</td>
-                            <td className={`tableBody ${errors.firstAddressFrom ? 'invalid' : ''}`} ><input type='date' className='addressTableInput' {...register("firstAddressFrom", { required: true })}
+                            <td className='tableBody'><input type='date' className='addressTableInput' {...register("firstAddressFrom", { required: true })}
                                 max={new Date().toISOString().split("T")[0]}
                                 onChange={(e) => {
                                     handleInputChange("firstAddressFrom", e.target.value);
@@ -133,7 +166,7 @@ export default function AddressHistory() {
                                     handleFromStayDateChange(e.target.value)
                                 }}
                             /></td>
-                            <td className={`tableBody ${errors.firstAddressTo ? 'invalid' : ''}`} ><input type='date' className='addressTableInput' {...register("firstAddressTo", { required: true })}
+                            <td className='tableBody'><input type='date' className='addressTableInput' {...register("firstAddressTo", { required: true })}
                                 min={
                                     fromStayDate
                                         ? new Date(new Date(fromStayDate).setDate(new Date(fromStayDate).getDate() + 1))
@@ -143,39 +176,46 @@ export default function AddressHistory() {
                                 }
                                 onChange={(e) => handleInputChange("firstAddressTo", e.target.value)}
                             /></td>
-                            <td className={`tableBody ${errors.firstFullAddress ? 'invalid' : ''}`} ><input type='text area' className='addressTableInput' {...register("firstFullAddress", { required: true })}
+                            <td className='tableBody'><input type='text area' className='addressTableInput' {...register("firstFullAddress", { required: true })}
                                 onChange={(e) => handleInputChange("firstFullAddress", e.target.value)}
                             /></td>
-                            <td className={`tableBody ${errors.firstAddressZipcode ? 'invalid' : ''}`} ><input type='text' className='addressTableInput' {...register("firstAddressZipcode",
-                                { required: true })} value={zipcodes[0]}
+                            <td className='tableBody'><input type='text' className='addressTableInput' {...register("firstAddressZipcode",
+                                {
+                                    required: true,
+                                    minLength: {
+                                        value: 6,
+                                        message: 'Zipcode must be exactly 6 digits',
+                                    }
+                                })} value={zipcodes[0]}
                                 onChange={(e) => {
                                     handlePatternForAddressHistoryTableInputs(0, /^[0-9]+$/, 'firstAddressZipcode', e);
-                                    handleInputChange("firstAddressZipcode", e.target.value)
                                 }}
-                            // onBlur={(e) => handlePatternForTotalDigits(0, 'firstAddressZipcode', e)}
                             />
                             </td>
-                            <td className={`tableBody ${errors.firstAddressCountry ? 'invalid' : ''}`} ><input type='text' className='addressTableInput' {...register("firstAddressCountry", { required: true })} value={countries[0]}
+                            <td className='tableBody'><input type='text' className='addressTableInput' {...register("firstAddressCountry", { required: true })} value={countries[0]}
                                 onChange={(e) => {
                                     handlePatternForAddressHistoryTableInputs(0, /^[A-Za-z\s'-]+$/, 'firstAddressCountry', e);
                                     handleInputChange("firstAddressCountry", e.target.value)
                                 }} />
                             </td>
-                            <td className={`tableBody ${errors.firstAddressRtnContact ? 'invalid' : ''}`}><input type='text' className='addressTableInput'  {...register("firstAddressRtnContact", { required: true })} value={contactHistories[0]}
+                            <td className='tableBody'><input type='text' className='addressTableInput'  {...register("firstAddressRtnContact", {
+                                required: true,
+                                minLength: {
+                                    value: 10,
+                                    message: 'Contact no. must be exactly 10 digits',
+                                }
+                            })} value={contactHistories[0]}
                                 onChange={(e) => {
                                     handlePatternForAddressHistoryTableInputs(0, /^[0-9]+$/, 'firstAddressRtnContact', e);
                                     handleInputChange("firstAddressRtnContact", e.target.value)
                                 }}
-                            // onBlur={(e) => handlePatternForTotalDigits(0, 'firstAddressRtnContact', e)} 
                             />
                             </td>
                         </tr>
                         {rowsOfAddressHistory.map((_, index) => (
                             <tr key={index}>
                                 <td className='tableBody'>{index + 2}.</td>
-                                {/* <td className={index % 2 === 0 ? 'tableBody' : 'tableBodyLight'}>{index + 2}.</td> */}
-                                {/* <td className={`${index % 2 === 0 ? 'tableBody' : 'tableBodyLight'}  */}
-                                <td className={`tableBody ${errors[`anotherAddressFrom_${index}`] ? 'invalid' : ''}`}>
+                                <td className='tableBody'>
                                     <input type='date' className='addressTableInput' {...register(`anotherAddressFrom_${index}`, { required: true })}
                                         max={new Date().toISOString().split("T")[0]} onChange={(e) => {
                                             handleInputChange(`anotherAddressFrom_${index}`, e.target.value);
@@ -185,7 +225,7 @@ export default function AddressHistory() {
                                         }}
                                     />
                                 </td>
-                                <td className={`tableBody ${errors[`anotherAddressTo_${index}`] ? 'invalid' : ''}`}>
+                                <td className='tableBody'>
                                     <input type='date' className='addressTableInput' {...register(`anotherAddressTo_${index}`, { required: true })}
                                         onChange={(e) => handleInputChange(`anotherAddressTo_${index}`, e.target.value)}
                                         min={
@@ -197,39 +237,47 @@ export default function AddressHistory() {
                                         }
                                     />
                                 </td>
-                                <td className={`tableBody ${errors[`anotherFullAddress_${index}`] ? 'invalid' : ''}`}>
+                                <td className='tableBody'>
                                     <input type='text area' className='addressTableInput' {...register(`anotherFullAddress_${index}`, { required: true })}
                                         onChange={(e) => handleInputChange(`anotherFullAddress_${index}`, e.target.value)}
                                     />
                                 </td>
-                                <td className={`tableBody ${errors[`anotherAddressZipcode_${index}`] ? 'invalid' : ''}`}>
-                                    <input type='text' className='addressTableInput' {...register(`anotherAddressZipcode_${index}`, { required: true })} value={zipcodes[index + 1]}
+                                <td className='tableBody'>
+                                    <input type='text' className='addressTableInput' {...register(`anotherAddressZipcode_${index}`, {
+                                        required: true,
+                                        minLength: {
+                                            value: 6,
+                                            message: 'Zipcode must be exactly 6 digits',
+                                        }
+                                    })} value={zipcodes[index + 1]}
                                         onChange={(e) => {
                                             handlePatternForAddressHistoryTableInputs(index + 1, /^[0-9]+$/, `anotherAddressZipcode_${index}`, e);
-                                            handleInputChange(`anotherAddressZipcode_${index}`, e.target.value)
                                         }}
-                                    // onBlur={(e) => handlePatternForTotalDigits(index + 1, `anotherAddressZipcode_${index}`, e)} 
                                     />
                                 </td>
-                                <td className={`tableBody ${errors[`anotherAddressCountry_${index}`] ? 'invalid' : ''}`}>
+                                <td className='tableBody'>
                                     <input type='text' className='addressTableInput' {...register(`anotherAddressCountry_${index}`, { required: true })}
                                         onChange={(e) => {
                                             handlePatternForAddressHistoryTableInputs(index + 1, /^[A-Za-z\s'-]+$/, `anotherAddressCountry_${index}`, e);
                                             handleInputChange(`anotherAddressCountry_${index}`, e.target.value)
                                         }} value={countries[index + 1]} />
                                 </td>
-                                <td className={`tableBody ${errors[`anotherAddressRtnContact_${index}`] ? 'invalid' : ''}`}>
-                                    <input type='text' className='addressTableInput' {...register(`anotherAddressRtnContact_${index}`, { required: true })} value={contactHistories[index + 1]}
+                                <td className='tableBody'>
+                                    <input type='text' className='addressTableInput' {...register(`anotherAddressRtnContact_${index}`, {
+                                        required: true,
+                                        minLength: {
+                                            value: 10,
+                                            message: 'Contact no. must be exactly 10 digits',
+                                        }
+                                    })} value={contactHistories[index + 1]}
                                         onChange={(e) => {
                                             handlePatternForAddressHistoryTableInputs(index + 1, /^[0-9]+$/, `anotherAddressRtnContact_${index}`, e);
                                             handleInputChange(`anotherAddressRtnContact_${index}`, e.target.value)
                                         }}
-                                    // onBlur={(e) => handlePatternForTotalDigits(index + 1, `anotherAddressRtnContact_${index}`, e)} 
                                     />
                                 </td>
                             </tr>
                         ))}
-
                     </tbody>
                 </table>
                 <div>
