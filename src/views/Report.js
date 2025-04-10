@@ -1,10 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Breadcrumb from './Breadcrumb';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export default function Report() {
 
   const [selectedFolder, setSelectedFolder] = useState("Onboarding Documents"); // State to track the selected folder
   const [folderProgress, setFolderProgress] = useState({}); // stores upload progress for each folder
+
+  const location = useLocation();
+  const from = location.state?.from;
+  useEffect(() => {
+    console.log("Navigated from:", from);
+  }, [from]);
 
   // Mapping of folders to their respective documents
   const folderDocs = {
@@ -13,7 +20,8 @@ export default function Report() {
     "Appointment Letter": ["Appointment Letter"],
     "Confirmation Letter": ["Confirmation Letter"],
     "Appraisal Letter": ["Appraisal Letter"],
-    "Experience Letter": ["Experience Letter"]
+    "Experience Letter": ["Experience Letter"],
+    "Termination Letter": ["Termination Letter"]
   };
 
   // Simulate progress update when clicking a folder

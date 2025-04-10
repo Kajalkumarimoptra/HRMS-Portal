@@ -35,12 +35,13 @@ export default function Pendingrequest() {
     ];
 
     const redirectUrls = {
-        1: '/admin/PendingRequest/AssetRequestList',
-        2: '/admin/PendingRequest/Attendance',
-        3: '/admin/PendingRequest/DocumentRequestList',
-        4: '/admin/PendingRequest/LeaveRequestList',
-        5: '/admin/PendingRequest/Offboarded'
+        1: { path: '/admin/PendingRequest/AssetRequestList' },
+        2: { path: '/admin/PendingRequest/Attendance' },
+        3: { path: '/admin/PendingRequest/DocumentRequestList' },
+        4: { path: '/admin/PendingRequest/LeaveRequestList' },
+        5: { path: '/admin/PendingRequest/Offboarded', state: { from: 'PendingRequest' } }
     };
+    
 
     return (
         <div className='container-fluid'>
@@ -58,7 +59,7 @@ export default function Pendingrequest() {
                         <div class="col-md-12 mb-3" key={list.id}>
                             <div>
                                 <div class="pending-request-card">
-                                    <div class="header-container" onClick={() => navigate(redirectUrls[list.id])} style={{ cursor: 'pointer' }}>
+                                    <div class="header-container" onClick={() => navigate(redirectUrls[list.id].path, { state: redirectUrls[list.id].state })} style={{ cursor: 'pointer' }}>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexDirection: 'column' }}>
                                             <img src={list.icon} alt="icon" style={{ width: '50px', height: '50px' }} />
                                             <div className='clearance-btn'>
@@ -67,8 +68,8 @@ export default function Pendingrequest() {
                                                 alt="toggle-icon"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    navigate(redirectUrls[list.id]);
-                                                }}
+                                                    navigate(redirectUrls[list.id].path, { state: redirectUrls[list.id].state });
+                                                }}                                                
                                                 className="icon-redirect" />
                                         </div>
                                             <p><b>{list.heading}</b></p>

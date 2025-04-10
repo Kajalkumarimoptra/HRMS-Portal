@@ -560,52 +560,53 @@ export default function ContactDetailsForm() {
           "contactNumber": ""
         }
       ],
-      "relativeInfos": [
-        {
-          "name": "",
-          "employeeId": "",
-          "relationship": "",
-          "department": "",
-          "location": "",
-          "remarks": ""
-        },
-        {
-          "name": "",
-          "employeeId": "",
-          "relationship": "",
-          "department": "",
-          "location": "",
-          "remarks": ""
-        }
-      ],
+      "employeeRelatives": {
+        "hasRelative": false,
+        "relativeInfoDTOS": [
+            {
+                "name": "",
+                "employeeId": "",
+                "relationship": "",
+                "department": "",
+                "location": "",
+                "remarks": ""
+            },
+            {
+              "name": "",
+              "employeeId": "",
+              "relationship": "",
+              "department": "",
+              "location": "",
+              "remarks": ""
+          }
+        ]
+    },
       "passportDetails": {
         "passportNumber": "",
         "issueDate": "",
         "placeOfIssue": "",
         "expiryDate": "",
         "countryOfIssue": "",
-        "nationality": "",
-        "citizenship": "",
+        "nationality": ""
+      },
+      "visaStatus": {
+        "citizen": false,
         "expatOnGreenCard": false,
         "expatOnWorkPermit": false,
         "expatOnPermanentResidencyPermit": false,
-        "anyOtherStatus": "",
-        "legalRightToWorkInCountry": false,
-        "workPermitExpiryDate": "",
-        "workPermitDetails": "",
-        "passportCopy": "",
-        "passportUrl": ""
+        "anyOtherStatus": false
       },
-      "visaStatus": {
-        "visaType": "",
+      "workPermit": {
         "legalRightToWork": false,
         "workPermitDetails": "",
         "workPermitValidTill": "",
+        "passportCopy": "",
         "passportCopyPath": ""
       },
       "otherDetails": {
         "illness": "",
-        "selfIntroduction": ""
+        "selfIntroduction": "",
+        "declarationAccepted": false
       }
     }
     console.log("Payload of contact page :", newPayload);
@@ -673,18 +674,6 @@ export default function ContactDetailsForm() {
   useEffect(() => {
     console.log("Address History Data:", addressHistoryDetails);
   }, [addressHistoryDetails]);
-
-  // useEffect( () => {
-  //   const personalFormDetails = sessionStorage.getItem('personalDetails');
-  //   if (personalFormDetails){
-  //     const parsedPersonalDetails = JSON.parse(personalFormDetails);
-  //     setStoredPersonalDetails(parsedPersonalDetails);
-  //     console.log('parsed personal details data:', parsedPersonalDetails);
-  //     console.log('retrieved personal details data:', storedPersonalDetails);
-  //   }else {
-  //     console.log('No personalDetails found in sessionStorage');
-  //   }
-  // }, []);
 
   return (
     <div className='container-fluid form-navbar'>
@@ -875,7 +864,8 @@ export default function ContactDetailsForm() {
                     <select className={`cityInput ${errors.anotherCity ? 'invalid' : ''}`} {...register("anotherCity", { required: true })}
                       value={anotherSelectedCity} // Bind select element to city value
                       onChange={(e) => { handleAnotherCityChange(e); handleAddressChange('current', 'anotherCity', e.target.value); handleCurrentContactDetailsCityColorChange(e) }} // Update city variable on change
-                      style={{ color: selectCurrentContactDetailCityColor }} disabled={checked ? true : false}> <option hidden style={{ color: "#d3d3d3" }}>Select City</option>
+                      style={{ color: selectCurrentContactDetailCityColor }} disabled={checked ? true : false}> 
+                      <option hidden style={{ color: "#d3d3d3" }}>Select City</option>
                       {anotherCityOption.map((anotherEachCity, id) => (
                         <option key={id} value={anotherEachCity} style={{ color: "black" }}>{anotherEachCity}</option>
                       ))}
@@ -885,7 +875,9 @@ export default function ContactDetailsForm() {
                 <div className='stateCityContainer'>
                   <div className='fromContainer'>
                     <label>Period Of Stay <span className='separatorForStayFrom'>:</span></label>  <label className='fromLabel'>From</label>
-                    <input type='date' placeholder='Select Date' className={`fromInput ${errors.anotherFromStay ? 'invalid' : ''} ${checked ? 'disabledDropdown' : ''}`} {...register("anotherFromStay", { required: true })}
+                    <input type='date' placeholder='Select Date' className={`fromInput ${errors.anotherFromStay ? 'invalid' : ''}
+                    //  ${checked ? 'disabledDropdown' : ''}`} 
+                     {...register("anotherFromStay", { required: true })}
                       value={currentAddress.anotherFromStay} onChange={(e) => {
                         handleAddressChange('current', 'anotherFromStay', e.target.value); 
                         handleCurrentContactDetailsFromDateColorChange(e);
