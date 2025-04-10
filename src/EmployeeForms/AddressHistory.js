@@ -16,18 +16,6 @@ export default function AddressHistory() {
     const [fromStayDate, setFromStayDate] = useState("");
     const [fromStayDates, setFromStayDates] = useState({});
 
-    // const [rows, setRows] = useState([]);  // for addition of rows on click
-    // const [showAddButtonOfAddressHistory, setShowAddButton] = useState(true); // state to control add row button visibility
-
-    // const addRowForAddressHistory = () => {  // for handling row counter on button click
-    //     if (rows.length < 2) {
-    //         setRows([...rows, {}])
-    //     }
-    //     if (rows.length + 1 === 2) {
-    //         setShowAddButton(false);
-    //     }
-    // }
-
     // for pattern validation of address
     const handlePatternForAddressHistoryTableInputs = (index, pattern, field, e) => {
         const value = e.target.value;
@@ -38,16 +26,21 @@ export default function AddressHistory() {
 
             // Validate the input value
             if (value && !pattern.test(value)) {
-                alert('Only numbers are allowed');
-                const validValue = value.slice(0, -1); // Removing the last entered invalid character
-                newZipcodes[index] = validValue;
+                const newZipcodes = [...zipcodes];
+                let newValue = value;
+
+                if (newValue.length > 6) {
+                    newValue = newValue.slice(0, 6);
+                }
+                // Validate the input value
+                if (newValue && !pattern.test(newValue)) {
+                    alert('Only numbers are allowed');
+                    newValue = newValue.slice(0, -1);
+                }
+                newZipcodes[index] = newValue;
                 setZipcodes(newZipcodes);
-                setIsValid(false);
-                return;
+                setIsValid(true);
             }
-            newZipcodes[index] = value; // Updates the copied array at the specified index with the new value
-            setZipcodes(newZipcodes);
-            setIsValid(true);
         }
         else if (field.includes('Country')) {
             const newCountries = [...countries];
@@ -80,34 +73,6 @@ export default function AddressHistory() {
             setIsValid(true);
         }
     };
-
-    // for pattern validation of total numbers of inputs
-    //  const handlePatternForTotalDigits = (index, field,e) => {
-    //     const value = e.target.value;
-
-    //     if(field.includes('Zipcode')){
-    //         const newZipcodes = [...zipcodes];
-    //         if(isValid && value.length!== 6){
-    //             alert('Zip code contains only six digits');
-    //             newZipcodes[index] = ''; // Clear the input field on invalid input
-    //             setZipcodes(newZipcodes);
-    //             return;
-    //         }
-    //         newZipcodes[index] = value; // Updates the copied array at the specified index with the new value
-    //         setZipcodes(newZipcodes);
-    //     }
-    //     else if(field.includes('Contact')){
-    //         const newContactHistories = [...contactHistories];
-    //         if(isValid && value.length!== 10){
-    //             alert('Contact No. contains only ten digits');
-    //             newContactHistories[index] = ''; 
-    //             setContactHistories(newContactHistories);
-    //             return;
-    //         }
-    //         newContactHistories[index] = value; 
-    //         setContactHistories(newContactHistories);
-    //     }
-    // }
 
     // to store theese fields in context
     const handleInputChange = (field, value) => {

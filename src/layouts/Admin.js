@@ -75,6 +75,9 @@ import Pendingrequest from "views/Pendingrequest";
 import LeaveRequestList from "views/LeaveRequestList";
 import DocumentRequestList from "views/DocumentRequestList";
 import AssetRequestList from "views/AssetRequestList";
+import ScheduleMeeting from "views/ScheduleMeeting";
+import ChecklistApproval from "views/ChecklistApproval";
+import FinalClearance from "views/FinalClearance";
 
 function Admin() {
 
@@ -160,6 +163,7 @@ function Admin() {
               <Route path="Performance" element={<Performance />} />
               <Route path="Project" element={<Project />} />
               <Route path="Report" element={<Report />} />
+              <Route path="FinalClearance/Report" element={<Report />} />
               <Route path="EmployeeReport" element={<EmpReport />} />
               <Route path="Report" element={<Document />} />
               <Route path="Jobportal" element={<JobPortal />} />
@@ -181,6 +185,10 @@ function Admin() {
               <Route path="Offboard" element={<Offboard/>} />
               <Route path="Offboarded" element={<OffboardForAdmins/>} />
               <Route path="PendingRequest/Offboarded" element={<OffboardForAdmins/>} />
+              <Route path="Policies/ScheduleMeeting" element={<ScheduleMeeting/>} />
+              <Route path="ScheduleMeeting/Checklist" element={<ChecklistApproval/>} />
+              <Route path="Checklist/FinalClearance" element={<FinalClearance/>} />
+
               
               {/* Dynamically generate all the routes from dashboardRoutes */}
               {getRoutes(dashboardRoutes())}

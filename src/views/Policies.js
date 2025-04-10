@@ -1,9 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Breadcrumb from './Breadcrumb';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function Policies() {
     const location = useLocation();
+    const from = location.state?.from;
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        console.log("Navigated from:", from);  // 'PendingRequest'
+    }, [from]);
+
     const isComingFromPendingRequest = location.pathname === '/admin/Offboarded/Policies';
     const [agreed, setAgreed] = useState(false);
 
@@ -127,7 +134,7 @@ export default function Policies() {
                                         alert("Please checkmark first to agree to the terms before proceeding.");
                                         return;
                                     }
-                                    console.log("Proceeding with resignation request...");
+                                    navigate('/admin/Policies/ScheduleMeeting', {state: { from: 'Policies' , fromPath: location.pathname }});
                                 }}>Proceed</button>
                             </div>
                         </div>

@@ -490,12 +490,6 @@ export default function EducationalDetailsForm() {
             "educationalQualifications": educationalQualifications,
 
             "documents": documents,
-            // ], {
-            //                 "attachmentPath": Object.keys(data)
-            //                     .filter(key => key.startsWith(`${selectedDegree}-`)) // Find all related docs
-            //                     .map(key => data[key]) || [], // Store them in an array
-
-            //             }
 
             "employmentHistories": employmentHistories,
             "professionalReferences": [
@@ -512,52 +506,53 @@ export default function EducationalDetailsForm() {
                     "contactNumber": ""
                 }
             ],
-            "relativeInfos": [
-                {
-                    "name": "",
-                    "employeeId": "",
-                    "relationship": "",
-                    "department": "",
-                    "location": "",
-                    "remarks": ""
-                },
-                {
-                    "name": "",
-                    "employeeId": "",
-                    "relationship": "",
-                    "department": "",
-                    "location": "",
-                    "remarks": ""
-                }
-            ],
+            "employeeRelatives": {
+                "hasRelative": false,
+                "relativeInfoDTOS": [
+                    {
+                        "name": "",
+                        "employeeId": "",
+                        "relationship": "",
+                        "department": "",
+                        "location": "",
+                        "remarks": ""
+                    },
+                    {
+                        "name": "",
+                        "employeeId": "",
+                        "relationship": "",
+                        "department": "",
+                        "location": "",
+                        "remarks": ""
+                    }
+                ]
+            },
             "passportDetails": {
                 "passportNumber": "",
                 "issueDate": "",
                 "placeOfIssue": "",
                 "expiryDate": "",
                 "countryOfIssue": "",
-                "nationality": "",
-                "citizenship": "",
+                "nationality": ""
+            },
+            "visaStatus": {
+                "citizen": false,
                 "expatOnGreenCard": false,
                 "expatOnWorkPermit": false,
                 "expatOnPermanentResidencyPermit": false,
-                "anyOtherStatus": "",
-                "legalRightToWorkInCountry": false,
-                "workPermitExpiryDate": "",
-                "workPermitDetails": "",
-                "passportCopy": "",
-                "passportUrl": ""
+                "anyOtherStatus": false
             },
-            "visaStatus": {
-                "visaType": "",
+            "workPermit": {
                 "legalRightToWork": false,
                 "workPermitDetails": "",
                 "workPermitValidTill": "",
+                "passportCopy": "",
                 "passportCopyPath": ""
             },
             "otherDetails": {
                 "illness": "",
-                "selfIntroduction": ""
+                "selfIntroduction": "",
+                "declarationAccepted": false
             }
         }
         console.log("Payload of educational page :", newPayload);

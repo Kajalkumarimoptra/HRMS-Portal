@@ -99,7 +99,7 @@ export default function Post() {
             <div className='row clearfix'>
                 <div className='col-md-12'>
                     <Breadcrumb />
-                    <div className='attendance-container' style={{ padding: '0', marginBottom: '45px' }}>
+                    <div className='attendance-container' style={{ padding: '0', marginBottom: '45px', marginTop: '34px' }}>
                         <form onSubmit={handleSubmit(handleFormSubmit)}>
                             <h4 className='apply-leave-heading'>Post</h4>
                             <div className='apply-leave-section'>

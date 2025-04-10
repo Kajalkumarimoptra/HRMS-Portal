@@ -1,0 +1,37 @@
+.attendance-container{
+    input[type="checkbox"] {
+        margin-left: 0;
+        margin-right: 15px;
+        cursor: pointer;
+        vertical-align: middle;
+        box-sizing: border-box;
+        appearance: none;
+        -webkit-appearance: none;
+        background-color: white;
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3);
+        border: 1px solid black;
+        width: 16px;
+        height: 16px;
+        position: relative;
+        margin-top: -3px;
+
+        &:checked::after {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: 4px;
+            width: 6px;
+            height: 12px;
+            border: 1px solid blue;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+            z-index: 1;
+        }
+
+        &:checked {
+            background-color: white;
+            border: 1px solid black;
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3);
+        }
+    }
+}

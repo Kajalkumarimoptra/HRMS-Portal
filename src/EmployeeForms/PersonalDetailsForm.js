@@ -10,7 +10,7 @@ export default function PersonalDetailsForm() {
 
   const navigate = useNavigate();
   const {
-    register, handleSubmit, errors, onSubmit, setValue, watch, reset, clearErrors,unregister
+    register, handleSubmit, errors, onSubmit, setValue, watch, reset, clearErrors, unregister
   } = useFormContext();
   const { registrationData } = useRegistrationContext();  // Access registration data from context
   const [selectPersonalDetailGenderColor, setPersonalDetailGenderColor] = useState("#d3d3d3"); // for giving diff color to select placeholder and option
@@ -174,56 +174,6 @@ export default function PersonalDetailsForm() {
     clearErrors('gender');
   };
 
-  //   const file = e.target.files[0];
-  //   if (file) {
-  //     const fileType = file.type;
-  //     const allowedFileTypes = ["application/pdf"];  // file type allowed
-  //     if (!allowedFileTypes.includes(fileType)) {
-  //       window.alert("Only PDF files are supported");
-  //       e.target.value = ''; // Reset the input field
-  //       setFileUploaded(prev => ({ ...prev, [field]: false })); // Mark the file as not uploaded on invalid file type
-  //       return;
-  //     }
-
-  //     const fileSize = file.size;
-  //     if (fileSize / 1024 > 20) {
-  //       setCustomErrorForDoc(prev => ({ ...prev, [field]: "File should be less than or upto 20kb" }));  // file size validation
-  //       e.target.value = '';
-  //       setFileUploaded(prev => ({ ...prev, [field]: false })); // Mark the file as not uploaded on invalid file size
-  //       return;
-  //     }
-
-  //     // Clear previous file and upload state if a new file is selected
-  //     setCustomErrorForDoc(prev => ({ ...prev, [field]: '' }));
-  //     setFileUploaded(prev => ({ ...prev, [field]: false }));  // Mark the new file as not uploaded until being uploaded
-  //     setSuccessfulUploadMsg(prev => ({ ...prev, [field]: '' }));
-  //     setDoc(prev => ({ ...prev, [field]: file })); // set all the files in their state
-  //     if (field === 'fileForAadhar') setAadharDoc(file);
-  //     if (field === 'fileForPan') setPanDoc(file);
-  //     if (field === 'fileForPassport') setPassportDoc(file);
-  //   }
-  //   else {
-  //     // Reset file and errors if no file selected
-  //     setDoc(prev => ({ ...prev, [field]: null }));
-  //     setFileUploaded(prev => ({ ...prev, [field]: false }));
-  //     setCustomErrorForDoc(prev => ({ ...prev, [field]: '' }));
-  //     setSuccessfulUploadMsg(prev => ({ ...prev, [field]: '' }));
-  //   }
-  // }
-
-  // const handleFileUpload = (field) => {
-  //   if (doc[field]) {
-  //     setValue(field, doc[field]); // Manually set the file in React Hook Form on upload button click
-  //     setFileUploaded(prev => ({ ...prev, [field]: true })); // Mark the file as uploaded on upload click
-  //     setSuccessfulUploadMsg(prev => ({ ...prev, [field]: 'Uploaded successfully' }));
-  //     setCustomErrorForDocUpload(prev => ({ ...prev, [field]: '' })); // Clear any previous error messages
-  //   }
-  //   else {
-  //     setCustomErrorForDocUpload(prev => ({ ...prev, [field]: 'Please upload a file' }));
-  //     setSuccessfulUploadMsg(prev => ({ ...prev, [field]: '' }));
-  //   }
-  // };
-
   const handleFileForDocs = (e, field, setImageSizeError, setPhoto, setLoading, uploadAllowed, setImgDirection, isCropping, setIsCropping) => {
     const file = e.target.files[0];
     console.log(`Selected file for ${field}:`, file);
@@ -287,7 +237,7 @@ export default function PersonalDetailsForm() {
       setFileUploaded(prev => ({ ...prev, [field]: false }));
       setSuccessfulUploadMsg(prev => ({ ...prev, [field]: '' }));
       setImageSizeError && setImageSizeError('');
-      if(field === 'photo') {
+      if (field === 'photo') {
         const tempURL = URL.createObjectURL(file); // Temporary URL for preview
         setLoading(true); // Start loading spinner
         console.log('Temporary URL:', tempURL); // Debugging line to ensure temp URL is created
@@ -621,52 +571,53 @@ export default function PersonalDetailsForm() {
           "contactNumber": ""
         }
       ],
-      "relativeInfos": [
-        {
-          "name": "",
-          "employeeId": "",
-          "relationship": "",
-          "department": "",
-          "location": "",
-          "remarks": "."
-        },
-        {
-          "name": "",
-          "employeeId": "",
-          "relationship": "",
-          "department": "",
-          "location": "",
-          "remarks": "."
-        }
-      ],
+      "employeeRelatives": {
+        "hasRelative": false,
+        "relativeInfoDTOS": [
+            {
+                "name": "",
+                "employeeId": "",
+                "relationship": "",
+                "department": "",
+                "location": "",
+                "remarks": ""
+            },
+            {
+              "name": "",
+              "employeeId": "",
+              "relationship": "",
+              "department": "",
+              "location": "",
+              "remarks": ""
+          }
+        ]
+    },
       "passportDetails": {
         "passportNumber": "",
         "issueDate": "",
         "placeOfIssue": "",
         "expiryDate": "",
         "countryOfIssue": "",
-        "nationality": "",
-        "citizenship": "",
+        "nationality": ""
+      },
+      "visaStatus": {
+        "citizen": false,
         "expatOnGreenCard": false,
         "expatOnWorkPermit": false,
         "expatOnPermanentResidencyPermit": false,
-        "anyOtherStatus": "",
-        "legalRightToWorkInCountry": false,
-        "workPermitExpiryDate": "",
-        "workPermitDetails": "",
-        "passportCopy": "",
-        "passportUrl": ""
+        "anyOtherStatus": false
       },
-      "visaStatus": {
-        "visaType": "",
+      "workPermit": {
         "legalRightToWork": false,
         "workPermitDetails": "",
         "workPermitValidTill": "",
+        "passportCopy": "",
         "passportCopyPath": ""
       },
       "otherDetails": {
         "illness": "",
-        "selfIntroduction": ""
+        "selfIntroduction": "",
+        "declarationAccepted": false
       }
     }
 
@@ -677,9 +628,9 @@ export default function PersonalDetailsForm() {
       fileForPan: !fileUploaded.fileForPan ? 'Please upload your Pan card' : '',
       fileForPassport: data.passport && !fileUploaded.fileForPassport ? 'Please upload your Passport' : '',
     };
-  
+
     const hasErrors = Object.values(errors).some(val => val);
-  
+
     if (hasErrors) {
       console.error("Document upload validation failed.");
       setCustomErrorForDocUpload(errors);
@@ -765,7 +716,7 @@ export default function PersonalDetailsForm() {
           </div>
           <hr />
         </form>
-       {/* personal detail form */}
+        {/* personal detail form */}
         <div className='personalDetailForm' >
 
           <div className='personalDetailHeading'> <h6 className='personalDetailHeadline'>PERSONAL DETAILS</h6> </div>
@@ -869,7 +820,7 @@ export default function PersonalDetailsForm() {
               </div>
               <div className='fileInputContainer'>
                 <input type='file' className={`uploadFileInput ${errors.fileForAadhar ? 'invalid' : ''}`}
-                  onChange={(e) => handleFileForDocs(e, 'fileForAadhar') }
+                  onChange={(e) => handleFileForDocs(e, 'fileForAadhar')}
                   ref={(el) => {
                     if (el) fileInputRefs.current["fileForAadhar"] = el;
                   }}
