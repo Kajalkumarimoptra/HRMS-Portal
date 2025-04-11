@@ -40,6 +40,12 @@ export default function ProfessionalRefForm() {
   const [successfulProfPassportCopyDocUploadMsg, setSuccessfulProfPassportCopyDocUploadMsg] = useState('');
   const [customErrorForPassportCopyDocUpload, setCustomErrorForPassportCopyDocUpload] = useState('');
 
+  const passportFileInputRef = useRef(null);
+
+  useEffect(() => {
+    register("passportCopyFile");
+  }, [register]);
+
   // for pattern validation of professional references inputs
   const handlePatternChangeForProfRef = (index, pattern, field, e) => {
     const value = e.target.value;
@@ -237,24 +243,24 @@ export default function ProfessionalRefForm() {
 
   // file type for passport copy upload
   const handleFileForPassportCopy = (e) => {
-    const file = e.target.files[0]; 
+    const file = e.target.files[0];
     setCustomErrorForPassportCopyDocUpload('');
     setSuccessfulProfPassportCopyDocUploadMsg('');
     setProfPassportCopyDocUploadStatus(false);
     setErrorForPassportCopyFileSize('');
     if (file) {
       const fileType = file.type;
-      const allowedFileTypes = ["application/pdf"];  
+      const allowedFileTypes = ["application/pdf"];
       if (!allowedFileTypes.includes(fileType)) {
         window.alert("Only PDF files are supported");
-        e.target.value = ''; 
+        e.target.value = '';
         return;
       }
       setPassportCopyDoc(file);
       clearErrors("passportCopyFile");
       const fileSize = file.size;
       if (fileSize / 1024 > 20) {
-        setErrorForPassportCopyFileSize("file should be less than or upto 20kb");  
+        setErrorForPassportCopyFileSize("file should be less than or upto 20kb");
         e.target.value = '';
         return;
       }
@@ -270,10 +276,10 @@ export default function ProfessionalRefForm() {
       console.log(`No file found for passportCopyFile, setting error`);
       setCustomErrorForPassportCopyDocUpload("Please select a file to upload");
       return;
-  }
+    }
 
     const formData = new FormData();
-    formData.append('file',passportCopyDoc);
+    formData.append('file', passportCopyDoc);
     console.log('FormData being sent:', formData);
 
     try {
@@ -292,8 +298,9 @@ export default function ProfessionalRefForm() {
       console.log('file upload response:', response.data); // Check the response
 
       if (response.data.data && response.data.data.url) {
-        const fileUrl = response.data.data.url; // Extract the file URL from the respons
+        const fileUrl = response.data.data.url; // Extract the file URL from the response
         console.log('File uploaded successfully for passport copy:', fileUrl);
+        setPassportCopyDoc(fileUrl);
         clearErrors("passportCopyFile");
         setProfPassportCopyDocUploadStatus(true);
         setSuccessfulProfPassportCopyDocUploadMsg('Uploaded successfully');
@@ -312,24 +319,32 @@ export default function ProfessionalRefForm() {
           console.log('file already exist error:', errorMessage);
           // setCustomErrorForEmpHistoryDocUpload(prev => ({ ...prev, [field]: 'This file is already uploaded' }));
           setCustomErrorForPassportCopyDocUpload("This file is already uploaded");
-          setPassportCopyDoc('');
           setProfPassportCopyDocUploadStatus(false);
           setSuccessfulProfPassportCopyDocUploadMsg('');
           return;
         } else {
           console.log('common error:', errorMessage);
           setCustomErrorForPassportCopyDocUpload("Upload failed, Please try again");
-          setPassportCopyDoc('');
           setProfPassportCopyDocUploadStatus(false);
           setSuccessfulProfPassportCopyDocUploadMsg('');
         }
       }
       else {
         setCustomErrorForPassportCopyDocUpload("Upload failed, Please try again");
-        setPassportCopyDoc('');
         setProfPassportCopyDocUploadStatus(false);
         setSuccessfulProfPassportCopyDocUploadMsg('');
       }
+    }
+  };
+
+  const handleRemoveFile = (e) => {
+    setPassportCopyDoc('');
+    setProfPassportCopyDocUploadStatus(false);
+    setCustomErrorForPassportCopyDocUpload('');
+    setSuccessfulProfPassportCopyDocUploadMsg('');
+
+    if (passportFileInputRef.current) {
+      passportFileInputRef.current.value = '';
     }
   };
 
@@ -459,7 +474,7 @@ export default function ProfessionalRefForm() {
         </div>
         <hr />
         <div>
-          <div className='profDetailHeading'> <h6 className='personalDetailHeadline' style={{textAlign: 'center'}}>PROFESSIONAL REFERENCES</h6></div>
+          <div className='profDetailHeading'> <h6 className='personalDetailHeadline' style={{ textAlign: 'center' }}>PROFESSIONAL REFERENCES</h6></div>
         </div>
 
         {/* table content */}
@@ -572,7 +587,7 @@ export default function ProfessionalRefForm() {
 
           {/* passport details form */}
           <div className='passportContainer'>
-            <div className='profDetailHeading'> <h6 className='personalDetailHeadline' style={{textAlign: 'center'}}>PASSPORT DETAILS</h6></div>
+            <div className='profDetailHeading'> <h6 className='personalDetailHeadline' style={{ textAlign: 'center' }}>PASSPORT DETAILS</h6></div>
           </div>
           <div className='passportDetailsContainer'>
             <div className='passportNoContainer'>
@@ -675,13 +690,15 @@ export default function ProfessionalRefForm() {
               <input type='text' placeholder='Passport Copy' className="passportInput" {...register("passportCopy")} />
             </div>
             <div style={{ marginTop: '-3px', marginLeft: '-572px' }}>
-              <input type='file' className="profUploadFileInput" {...register("passportCopyFile")}
+              <input type='file' className="profUploadFileInput" ref={passportFileInputRef}
+              //  {...register("passportCopyFile")}
                 onChange={handleFileForPassportCopy} />
               <button type="button" className="passportCopyUpload" onClick={handleFileUpload}>upload</button>
             </div>
             {errorForPassportCopyFileSize && <div className='passportCopyErrorMessage'>{errorForPassportCopyFileSize}</div>}
             {customErrorForPassportCopyDocUpload && <div className='passportCopyErrorMessage'>{customErrorForPassportCopyDocUpload}</div>}
-            {successfulProfPassportCopyDocUploadMsg && <div className='passportCopyErrorMessage' style={{color: 'green', fontSize: '14px', fontWeight: 'bold'}}>{successfulProfPassportCopyDocUploadMsg}</div>}
+            {successfulProfPassportCopyDocUploadMsg && <div className='passportCopyErrorMessage' style={{ color: 'green', fontSize: '14px', fontWeight: 'bold' }}>{successfulProfPassportCopyDocUploadMsg}</div>}
+            {passportCopyDoc && (<img src={require("assets/img/file-cut-icon.png")} alt="..." className='cross-icon' onClick={() => handleRemoveFile("passportCopyFile")} />)}
           </div>
           {/* save buttons */}
           <div className='educationSaveButtons'>

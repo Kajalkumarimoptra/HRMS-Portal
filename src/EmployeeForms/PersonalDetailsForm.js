@@ -384,8 +384,8 @@ export default function PersonalDetailsForm() {
 
 
     // Reset the file input field using React ref
-    if (fileInputRefs.current[field]) { // ✅ Corrected
-      fileInputRefs.current[field].value = ""; // ✅ Corrected
+    if (fileInputRefs.current[field]) { 
+      fileInputRefs.current[field].value = ""; 
     }
   };
 

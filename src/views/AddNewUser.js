@@ -161,21 +161,19 @@ export default function AddNewUser() {
     const handleAddingOtherClientName = (e) => {
         e.preventDefault();  // Prevent page reload
         console.log("other client name is added:", newOtherClientName);
-
+    
         if (newOtherClientName.trim() !== "") {
-            // Add the new client name to the list
-            setClientNames([...clientNames, newOtherClientName]);
-
-            // Save client names to localStorage to persist
+            const updatedClientNames = [...clientNames, newOtherClientName]; // ✅ Define it first
+            setClientNames(updatedClientNames);
+    
             localStorage.setItem("clientNames", JSON.stringify(updatedClientNames));
-            // Set the selected client name immediately
             setSelectedClientName(newOtherClientName);
             setValue("newUserProject", newOtherClientName);  // Update form value
         }
-
+    
         setModalForAddingManualClientName(false); // Close modal
         setNewOtherClientName("");                // Clear input field
-    };
+    };    
 
 
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import EmploymentHistoryForm from './EmploymentHistoryForm';
 import Navbar from './Navbar';
 import { useFormContext } from 'components/ContextProvider/Context';
@@ -36,6 +36,8 @@ export default function EducationalDetailsForm() {
     const [educationalFileUploaded, setEducationalFileUploaded] = useState({}); // Tracks if files have been uploaded
     const [customErrorForEducationalDocUpload, setCustomErrorForEducationalDocUpload] = useState({}); // error msg on not uploading the file
     const [successfulEducationalFileUploadMsg, setSuccessfulEducationalFileUploadMsg] = useState({}); // state for displaying successful upload msg
+    const fileInputRefs = useRef({});
+    const [inputKeys, setInputKeys] = useState({});
 
     // to render attachment section
     const educationOptions = {     // options of degree which contains options for certificates
@@ -69,7 +71,6 @@ export default function EducationalDetailsForm() {
             return { ...prev, [selectedDegree]: updatedForDegree };
         });
     };
-
 
     const addTableForNextEducationDetail = () => {
         if (eduRows.length < 5) { // Allow adding only up to 5 rows total (3 default + 2 added)
@@ -142,7 +143,7 @@ export default function EducationalDetailsForm() {
             }
             setEducationalDegreeDoc(prevState => ({
                 ...prevState,
-                [field]: file, // Store file with dynamic field name
+                [field]: { file }, // Store file with dynamic field name
             }));
             const fileSize = file.size;
             if (fileSize / 1024 > 20) {
@@ -156,7 +157,7 @@ export default function EducationalDetailsForm() {
     // handle file upload
     const handleFileUpload = async (field) => {
 
-        const file = educationalDegreeDoc[field];
+        const file = educationalDegreeDoc[field]?.file;
         if (!file) {
             console.log(`No file found for ${field}, setting error`);
             setCustomErrorForEducationalDocUpload(prev => ({ ...prev, [field]: 'Please select a file to upload' }));
@@ -185,7 +186,13 @@ export default function EducationalDetailsForm() {
             if (response.data.data && response.data.data.url) {
                 const fileUrl = response.data.data.url; // Extract the file URL from the respons
                 console.log(`File uploaded successfully for ${field}:`, fileUrl);
-                setEducationalDegreeDoc(prev => ({ ...prev, [field]: fileUrl }));
+                setEducationalDegreeDoc(prev => ({
+                    ...prev,
+                    [field]: {
+                        ...prev[field],
+                        url: fileUrl // attach the uploaded file URL
+                    }
+                }));
                 setEducationalFileUploaded(prev => ({ ...prev, [field]: true }));
                 setSuccessfulEducationalFileUploadMsg(prev => ({ ...prev, [field]: 'Uploaded successfully' }));
 
@@ -223,6 +230,20 @@ export default function EducationalDetailsForm() {
             }
         }
     };
+
+    const handleRemoveFile = (field) => {
+        setEducationalDegreeDoc(prev => ({ ...prev, [field]: null }));
+        setEducationalFileUploaded(prev => ({ ...prev, [field]: false }));
+        setCustomErrorForEducationalDocUpload(prev => ({ ...prev, [field]: '' }));
+        setSuccessfulEducationalFileUploadMsg(prev => ({ ...prev, [field]: '' }));
+    
+    
+        // Reset the input field visually by updating its key
+    setInputKeys(prev => ({
+        ...prev,
+        [field]: (prev[field] || 0) + 1, // increment key to force re-render
+    }));
+      };    
 
     // for pattern validation of educational document inputs
     const handlePatternChangeForEduDoc = (index, pattern, field, e) => {
@@ -739,16 +760,19 @@ export default function EducationalDetailsForm() {
                                                 <div className='fileUploadContainer'>
                                                     <input
                                                         type='file'
+                                                        key={inputKeys[`${selectedDegree}-${certificate}Doc`] || 0}
                                                         className={`eduUploadFileInput ${errors[`${selectedDegree}-${certificate}Doc`] ? 'invalid' : ''}`}
+                                                        ref={(el) => (fileInputRefs.current[`${selectedDegree}-${certificate}Doc`] = el)}
                                                         {...register(`${selectedDegree}-${certificate}Doc`, { required: true })}
                                                         onChange={(e) => handleFileForDegreeDoc(e, `${selectedDegree}-${certificate}Doc`)}
                                                     />
                                                     {/* ✅ Display file name inside the loop */}
                                                     {educationalDegreeDoc[`${selectedDegree}-${certificate}Doc`] && (
                                                         <div className="uploadedFileName">
-                                                             {educationalDegreeDoc[`${selectedDegree}-${certificate}Doc`].name}
+                                                            {educationalDegreeDoc[`${selectedDegree}-${certificate}Doc`].file?.name}
                                                         </div>
                                                     )}
+
                                                     <button
                                                         type="button"
                                                         className="eduUpload"
@@ -766,6 +790,7 @@ export default function EducationalDetailsForm() {
                                                             {successfulEducationalFileUploadMsg[`${selectedDegree}-${certificate}Doc`]}
                                                         </div>
                                                     )}
+                                                    {educationalDegreeDoc[`${selectedDegree}-${certificate}Doc`] && (<img src={require("assets/img/file-cut-icon.png")} alt="..." className='cross-icon' onClick={() => handleRemoveFile(`${selectedDegree}-${certificate}Doc`)} />)}
                                                 </div>
                                             </div>
                                         ))}

@@ -231,7 +231,6 @@
 
         .selectedCertificatesList {
             margin-top: 25px;
-            width: 48%;
             display: flex;
             flex-direction: column;
             gap: 17px;
@@ -245,9 +244,17 @@
                     align-items: center;
                     gap: 15px;
 
+                    .cross-icon {
+                        width: 12px;
+                        height: 12px;
+                        position: absolute;
+                        left: 676px;
+                        cursor: pointer;
+                      }
+
                     .eduUploadFileInput {
                         border: 1px solid black;
-                        width: 192px;
+                        width: 218px;
                     }
                     .eduUpload {
                         width: 93px;
@@ -277,7 +284,7 @@
         height: 42px;
         font-size: 14px;
         margin-right: auto;
-        margin-left: 73px;
+        margin-left: 88px;
     }
 }
 

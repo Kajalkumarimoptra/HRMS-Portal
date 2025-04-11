@@ -229,10 +229,18 @@
                 gap: 5px;
                 top: -1px;
 
+                .cross-icon {
+                    width: 12px;
+                    height: 12px;
+                    position: absolute;
+                    left: 158px;
+                    cursor: pointer;
+                  }
+
                 .uploadFileOfExpCert {
                     position: relative;
                     border: 1px solid black;
-                    width: 205px;
+                    width: 207px;
                     margin-left: -33px;
                 }
 

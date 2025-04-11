@@ -427,8 +427,17 @@
 
         .profUploadFileInput {
             border: 1px solid black;
-            width: 261px;
+            width: 300px;
             margin: 0;
+        }
+
+        .cross-icon {
+            width: 12px;
+            height: 12px;
+            position: absolute;
+            left: 654px;
+            cursor: pointer;
+            top: 7px;
         }
 
         .passportCopyUpload {
@@ -443,7 +452,7 @@
             position: absolute;
             font-size: 13px;
             color: red;
-            left: 750px;
+            left: 788px;
             top: 2px;
         }
     }

@@ -182,7 +182,7 @@ export default function Users() {
                                                                 <p>No record found for admins</p>
                                                             </div>
                                                         )}
-
+                                                       <br/>
                                                         {/* Employee table */}
                                                         {employees.length > 0 ? (
                                                             <div className='user-table'>

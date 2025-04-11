@@ -232,6 +232,18 @@ export default function EmploymentHistoryForm({ index }) {
         }
     };
 
+    const handleRemoveFile = (field) => {
+        setEmpHistoryDoc(prev => ({ ...prev, [field]: null }));
+        setEmpHistoryFileUploaded(prev => ({ ...prev, [field]: false }));
+        setSuccessfulEmpHistoryFileUploadMsg(prev => ({ ...prev, [field]: '' }));
+    
+    
+        // Reset the file input field using React ref
+        if (fileInputRefs.current[field]) { 
+          fileInputRefs.current[field].value = ""; 
+        }
+      };
+
     // to store theese fields in context
     const handleInputChange = (field, index, value) => {
         setEmploymentHistoryDetails((prev) => ({
@@ -414,6 +426,7 @@ export default function EmploymentHistoryForm({ index }) {
                         {/* {customErrorForEmpHistoryDocUpload[`expCertFile[${index}]`] && (<div className="docErrorMessage">{customErrorForEmpHistoryDocUpload[`expCertFile[${index}]`]}</div>)} */}
                         <button type="button" className="uploadEmp" onClick={() => handleFileUpload(`expCertFile.${index}`)}>upload</button>
                         {successfulEmpHistoryFileUploadMsg[`expCertFile.${index}`] ? <div className="docUploadSuccessMessage">{successfulEmpHistoryFileUploadMsg[`expCertFile.${index}`]}</div> : ''}
+                        {empHistoryDoc[`expCertFile.${index}`] && (<img src={require("assets/img/file-cut-icon.png")} alt="..." className='cross-icon' onClick={() => handleRemoveFile(`expCertFile.${index}`)} />)}
                     </div>
                     <div style={{ marginLeft: '-95px' }}>
                         <label className='relievingLabel'>Relieving Letter</label><span className='required'>*</span><span className='separatorForExpCert'>:</span>
@@ -424,6 +437,7 @@ export default function EmploymentHistoryForm({ index }) {
                             {/* {customErrorForEmpHistoryDocUpload[`relievingLetterFile[${index}]`] ? <div className="docErrorMessage">{customErrorForEmpHistoryDocUpload[`relievingLetterFile[${index}]`]}</div> : ''} */}
                             <button type="button" className="uploadEmp" onClick={() => handleFileUpload(`relievingLetterFile.${index}`)}>upload</button>
                             {successfulEmpHistoryFileUploadMsg[`relievingLetterFile.${index}`] ? <div className="docUploadSuccessMessage">{successfulEmpHistoryFileUploadMsg[`relievingLetterFile.${index}`]}</div> : ''}
+                            {empHistoryDoc[`relievingLetterFile.${index}`] && (<img src={require("assets/img/file-cut-icon.png")} alt="..." className='cross-icon' onClick={() => handleRemoveFile(`relievingLetterFile.${index}`)} />)}
                         </div>
                     </div>
                 </div>
@@ -436,6 +450,7 @@ export default function EmploymentHistoryForm({ index }) {
                         {/* {customErrorForEmpHistoryDocUpload[`lastSalarySlip[${index}]`] ? <div className="docErrorMessage">{customErrorForEmpHistoryDocUpload[`lastSalarySlip[${index}]`]}</div> : ''} */}
                         <button type="button" className="uploadEmp" onClick={() => handleFileUpload(`lastSalarySlip.${index}`)}>upload</button>
                         {successfulEmpHistoryFileUploadMsg[`lastSalarySlip.${index}`] ? <div className="docUploadSuccessMessage">{successfulEmpHistoryFileUploadMsg[`lastSalarySlip.${index}`]}</div> : ''}
+                        {empHistoryDoc[`lastSalarySlip.${index}`] && (<img src={require("assets/img/file-cut-icon.png")} alt="..." className='cross-icon' onClick={() => handleRemoveFile(`lastSalarySlip.${index}`)} />)}
                     </div>
                     <div style={{ marginLeft: '-95px' }}>
                         <label className='relievingLabel'>Appointment Letter</label><span className='required'>*</span><span style={{ margin: '21px' }}>:</span>
@@ -446,6 +461,7 @@ export default function EmploymentHistoryForm({ index }) {
                             {/* {customErrorForEmpHistoryDocUpload[`offerLetter[${index}]`] ? <div className="docErrorMessage">{customErrorForEmpHistoryDocUpload[`offerLetter[${index}]`]}</div> : ''} */}
                             <button type="button" className="uploadEmp" onClick={() => handleFileUpload(`offerLetter.${index}`)}>upload</button>
                             {successfulEmpHistoryFileUploadMsg[`offerLetter.${index}`] ? <div className="docUploadSuccessMessage">{successfulEmpHistoryFileUploadMsg[`offerLetter.${index}`]}</div> : ''}
+                            {empHistoryDoc[`offerLetter.${index}`] && (<img src={require("assets/img/file-cut-icon.png")} alt="..." className='cross-icon' onClick={() => handleRemoveFile(`offerLetter.${index}`)} />)}
                         </div>
                     </div>
                 </div>
