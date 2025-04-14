@@ -1,18 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Breadcrumb from './Breadcrumb';
-import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function Policies() {
-    const location = useLocation();
-    const from = location.state?.from;
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        console.log("Navigated from:", from);  // 'PendingRequest'
-    }, [from]);
-
-    const isComingFromPendingRequest = location.pathname === '/admin/Offboarded/Policies';
-    const [agreed, setAgreed] = useState(false);
 
     return (
         <div className='container-fluid'>
@@ -119,26 +108,6 @@ export default function Policies() {
                             </ul>
                         </div>
                     </div>
-                    {isComingFromPendingRequest && (
-                        <div className='agree-terms-container'>
-                            <div>
-                                <label>
-                                    <input type="checkbox" checked={agreed}
-                                        onChange={(e) => setAgreed(e.target.checked)} />
-                                    I have read and agree to the company’s terms and policies regarding employee resignation request.
-                                </label>
-                            </div>
-                            <div>
-                                <button class="primary-btn" onClick={() => {
-                                    if (!agreed) {
-                                        alert("Please checkmark first to agree to the terms before proceeding.");
-                                        return;
-                                    }
-                                    navigate('/admin/Policies/ScheduleMeeting', {state: { from: 'Policies' , fromPath: location.pathname }});
-                                }}>Proceed</button>
-                            </div>
-                        </div>
-                    )}
                 </div>
             </div>
         </div>

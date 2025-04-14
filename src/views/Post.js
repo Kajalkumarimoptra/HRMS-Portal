@@ -40,7 +40,7 @@ export default function Post() {
 
     }, [watchedValues, errors]);
 
-    const handlePostCancel = () => {
+    const  handlePostCancel= () => {
         reset();
         setPostTitleColor("#d3d3d3");
         clearErrors("postDescription");

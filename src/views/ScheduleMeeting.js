@@ -22,10 +22,7 @@ export default function ScheduleMeeting() {
     const [scheduleDateColor, setScheduleDateColor] = useState("#d3d3d3");
     const [scheduleStartTimeColor, setScheduleStartTimeColor] = useState("#d3d3d3");
     const [scheduleEndTimeColor, setScheduleEndTimeColor] = useState("#d3d3d3");
-    const [isMeetingLinkGenerated, setIsMeetingLinkGenerated] = useState(false);
-    const [generatedLink, setGeneratedLink] = useState('');
     const [isProceedScheduleMeetingDisabled, setProceedScheduleMeetingDisabled] = useState(true);
-    const [isCancelScheduleMeetingDisabled, setCancelScheduleMeetingDisabled] = useState(true);
 
     const [customErrorForScheduleMeetingInputs, setCustomErrorForrScheduleMeetingInputs] = useState({
         scheduleTitle: '',
@@ -35,28 +32,23 @@ export default function ScheduleMeeting() {
     // for post btn conditionally disabled
     const watchedValues = useWatch({
         control,
-        name: ["scheduleTitle", "scheduleDate", "scheduleStartTime", "scheduleEndTime", "participantEmail", "scheduleMeetingLink"],
+        name: ["scheduleTitle", "scheduleDate", "scheduleStartTime", "scheduleEndTime", "participantEmail"],
     });
 
     useEffect(() => {
-        const [scheduleTitle, scheduleDate, scheduleStartTime, scheduleEndTime, participantEmail, scheduleMeetingLink] = watchedValues;
+        const [scheduleTitle, scheduleDate, scheduleStartTime, scheduleEndTime, participantEmail] = watchedValues;
 
         console.log("scheduleTitle:", scheduleTitle);
         console.log("scheduleDate:", scheduleDate);
         console.log("scheduleStartTime:", scheduleStartTime);
         console.log("scheduleEndTime:", scheduleEndTime);
         console.log("participantEmail:", participantEmail);
-        console.log("scheduleMeetingLink:", scheduleMeetingLink);
-       
+        
         const hasErrors = Object.keys(errors).length > 0;
         console.log('errors:', hasErrors);
-        const isDisabled = !scheduleTitle || !scheduleDate || !scheduleStartTime ||!scheduleEndTime ||!participantEmail || !scheduleMeetingLink  || hasErrors;
+        const isDisabled = !scheduleTitle || !scheduleDate || !scheduleStartTime ||!scheduleEndTime ||!participantEmail  || hasErrors;
         console.log("Is Apply Button Disabled:", isDisabled);
         setProceedScheduleMeetingDisabled(isDisabled);
-
-        const isCancelDisabled = !scheduleTitle && !scheduleDate && !scheduleStartTime && !scheduleEndTime && !participantEmail && !scheduleMeetingLink ;
-        console.log("Is Cancel Button Disabled:", isCancelDisabled);
-        setCancelScheduleMeetingDisabled(isCancelDisabled);
 
     }, [watchedValues, errors]);
 
@@ -91,13 +83,19 @@ export default function ScheduleMeeting() {
     };
 
     const handleCancelScheduleMeeting = () => {
-        reset();
-        setScheduleDateColor("#d3d3d3");
-        setScheduleStartTimeColor("#d3d3d3");
-        setScheduleEndTimeColor("#d3d3d3");
-        clearErrors();
-        setCustomErrorForrScheduleMeetingInputs('');
-        setIsMeetingLinkGenerated(false);
+        const values = getValues();
+        const isFormEmpty = Object.values(values).every(value => !value); // check if all fields are empty
+    
+        if (isFormEmpty) {
+            navigate('/admin/PendingRequest/Offboarded'); // navigate back if all fields are empty
+        } else {
+            reset(); // otherwise, reset the form
+            setScheduleDateColor("#d3d3d3");
+            setScheduleStartTimeColor("#d3d3d3");
+            setScheduleEndTimeColor("#d3d3d3");
+            clearErrors();
+            setCustomErrorForrScheduleMeetingInputs('');
+        }
     };
 
     // 🔥 Fix: Change color dynamically, but ensure placeholder remains gray
@@ -151,25 +149,6 @@ export default function ScheduleMeeting() {
         }
       }, [errors.scheduleEndTime]); 
       
-      const handleGenerateClick = () => {
-        const values = getValues(); // Get current form values
-    
-        if (
-          values.scheduleTitle &&
-          values.scheduleDate &&
-          values.scheduleStartTime &&
-          values.scheduleEndTime &&
-          values.participantEmail
-        ) {
-          const link = "https://meet.example.com/xyz";
-          setGeneratedLink(link);
-          setIsMeetingLinkGenerated(true);
-          setValue("scheduleMeetingLink", link);
-        } else {
-          alert("Please fill all required fields before generating the link.");
-        }
-      };
-
     const handleFormSubmit = async (data) => {
         if (Object.keys(errors).length > 0) {
             console.log("Form has errors. Submission blocked.");
@@ -177,12 +156,10 @@ export default function ScheduleMeeting() {
         }
         onSubmit(data);
         reset();
-        setGeneratedLink("");
         setTimeout(() => {
-            // navigate('/admin/ScheduleMeeting/Checklist');
             navigate('/admin/ScheduleMeeting/Checklist' , {state: { from: 'ScheduleMeeting', fromPath: location.pathname }});
         }, 2000);
-        toast.success("Meeting has been scheduled successfully!");
+        toast.success("Meeting link has been generated successfully!");
         setScheduleDateColor("#d3d3d3");
         setScheduleStartTimeColor("#d3d3d3");
         setScheduleEndTimeColor("#d3d3d3");
@@ -201,7 +178,7 @@ export default function ScheduleMeeting() {
                             <h4 className='apply-leave-heading'>Schedule Meeting</h4>
                             <div className='apply-leave-section'>
                                 <div className="input-text">
-                                    <p className='applyLeaveLabel'>Meeting Title<span style={{ color: "red" }}>*</span></p>
+                                    <p className='applyLeaveLabel'>Title<span style={{ color: "red" }}>*</span></p>
                                     <div className="user-input-icons">
                                         <input className="input-field" type="text" placeholder="Enter Your Full Name" {...register("scheduleTitle", {
                                             required: true,
@@ -248,7 +225,7 @@ export default function ScheduleMeeting() {
                                     </div>
                                 </div>
                                 <div className="input-text">
-                                    <p className='applyLeaveLabel'>Participant's E-mail Address<span style={{ color: "red" }}>*</span></p>
+                                    <p className='applyLeaveLabel'>Participant<span style={{ color: "red" }}>*</span></p>
                                     <div className="user-input-icons">
                                         <input className="input-field" type="email" placeholder="Enter Participant's E-mail Address" {...register("participantEmail", { required: true })}
                                             onChange={(e) => handlePatternForScheduleMeetingInputs(e, /^[a-zA-Z0-9._+-]+@moptra\.com$/, 'participantEmail')} />
@@ -256,17 +233,9 @@ export default function ScheduleMeeting() {
                                             <div className="userErrorMessage">{customErrorForScheduleMeetingInputs.participantEmail}</div>}
                                     </div>
                                 </div>
-                                <div className="input-text" style={{ marginTop: '5px' }}>
-                                    <p className='applyLeaveLabel'>Meeting Link<span style={{ color: "red" }}>*</span></p>
-                                    <div className="user-input-icons" style={{display: 'flex', gap: '10px'}}>
-                                    <button className="primary-btn" type='button' style={{ background: 'limegreen', width: '100px', padding:'0', height: '28px' }}
-                                    onClick={handleGenerateClick}>Generate</button>
-                                    { isMeetingLinkGenerated && <div><p>{generatedLink}</p></div>}
-                                    </div>
-                                </div>
                                 <div className='edit-delete-btn-container' style={{ marginTop: '20px' }}>
-                                    <button className="primary-btn" style={{ background: 'darkgray', width: '100px' }} disabled={isCancelScheduleMeetingDisabled} onClick={() => handleCancelScheduleMeeting()}>Cancel</button>
-                                    <button className="primary-btn" type="submit" style={{ width: '100px' }} disabled={isProceedScheduleMeetingDisabled} >Proceed</button>
+                                    <button className="primary-btn" style={{ background: 'darkgray', width: '100px' }} onClick={() => handleCancelScheduleMeeting()}>Cancel</button>
+                                    <button className="primary-btn" type="submit" style={{ width: '100px' }} disabled={isProceedScheduleMeetingDisabled} >Schedule</button>
                                 </div>
                             </div>
                         </form>

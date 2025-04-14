@@ -20,6 +20,7 @@ export default function FinalClearance() {
     }, [from]);
     const [agreed, setAgreed] = useState(false);
     const [isProceedFinalChecklistDisabled, setProceedFinalChecklistDisabled] = useState(true);
+    const [formKey, setFormKey] = useState(0);
 
     const finalChecklist = ["Leaves", "Reimbursement", "Claim", " Insurance/benefits canceled or transferred", "Access to internal tools revoked"]
 
@@ -51,14 +52,25 @@ export default function FinalClearance() {
         toast.success("Final Clearance Checklist submitted successfully!");
     };
 
+    const handleCancelFinalChecklist = () => {
+        const { finalCheckboxApprovalForClearance = {} } = getValues();
+        const isFormEmpty = Object.values(finalCheckboxApprovalForClearance).every(val => !val);
+    
+        if (isFormEmpty) {
+            navigate('/admin/ScheduleMeeting/Checklist'); 
+        } else {
+            reset();
+            setFormKey(prev => prev + 1);
+        }
+    };    
 
-    return (
+      return (
         <div className='container-fluid'>
             <div className='row clearfix'>
                 <div className='col-md-12'>
                     <Breadcrumb />
                     <div className='attendance-container' style={{ padding: '0', marginBottom: '45px', marginTop: '34px' }}>
-                        <form onSubmit={handleSubmit(handleFormSubmit)}>
+                        <form key={formKey} onSubmit={handleSubmit(handleFormSubmit)}>
                             <h4 className='apply-leave-heading'>Final Clearance Checklist</h4>
                             <p style={{ marginTop: '-13px' }}>Please review and confirm each item to proceed with your final clearance</p>
                             <div className='apply-leave-section' style={{ marginBottom: '15px' }}>
@@ -74,10 +86,11 @@ export default function FinalClearance() {
                                                 </label>
                                             </div>
                                         ))}
-                                        <div style={{ textAlign: 'center' }}>
+                                         <div style={{ display: 'flex', justifyContent:'center', gap: '15px' }}>
+                                            <button className="primary-btn" type='button' style={{ background: 'darkgray', width: '100px' }} onClick={() => handleCancelFinalChecklist()}>Cancel</button>
                                             <button className="primary-btn" type="submit" style={{ width: '100px' }}
                                                 disabled={isProceedFinalChecklistDisabled}
-                                            >Proceed</button>
+                                            >Next</button>
                                         </div>
                                     </div>
                                 </div>

@@ -185,10 +185,9 @@ function Admin() {
               <Route path="Offboard" element={<Offboard/>} />
               <Route path="Offboarded" element={<OffboardForAdmins/>} />
               <Route path="PendingRequest/Offboarded" element={<OffboardForAdmins/>} />
-              <Route path="Policies/ScheduleMeeting" element={<ScheduleMeeting/>} />
+              <Route path="Offboarded/ScheduleMeeting" element={<ScheduleMeeting/>} />
               <Route path="ScheduleMeeting/Checklist" element={<ChecklistApproval/>} />
               <Route path="Checklist/FinalClearance" element={<FinalClearance/>} />
-
               
               {/* Dynamically generate all the routes from dashboardRoutes */}
               {getRoutes(dashboardRoutes())}

@@ -6,12 +6,33 @@ export default function Report() {
 
   const [selectedFolder, setSelectedFolder] = useState("Onboarding Documents"); // State to track the selected folder
   const [folderProgress, setFolderProgress] = useState({}); // stores upload progress for each folder
+  const [docUploadStatus, setDocUploadStatus] = useState({}); // to track the docs 
+  const [showResignConfirmModal, setShowResignConfirmModal] = useState(false);
 
+  const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from;
   useEffect(() => {
     console.log("Navigated from:", from);
   }, [from]);
+
+  useEffect(() => {
+    console.log("Navigated from:", from);
+
+    // Auto-select "Relieving Letter" folder if navigated from FinalClearance
+    if (from === "FinalClearance") {
+      setSelectedFolder("Relieving Letter");
+
+      // Optional: simulate progress (if you want to show progress bar too)
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += 20;
+        setFolderProgress(prev => ({ ...prev, "Relieving Letter": progress }));
+        if (progress >= 100) clearInterval(interval);
+      }, 300);
+    }
+  }, [from]);
+
 
   // Mapping of folders to their respective documents
   const folderDocs = {
@@ -20,6 +41,7 @@ export default function Report() {
     "Appointment Letter": ["Appointment Letter"],
     "Confirmation Letter": ["Confirmation Letter"],
     "Appraisal Letter": ["Appraisal Letter"],
+    "Relieving Letter": ["Relieving Letter"],
     "Experience Letter": ["Experience Letter"],
     "Termination Letter": ["Termination Letter"]
   };
@@ -33,6 +55,14 @@ export default function Report() {
       setFolderProgress(prev => ({ ...prev, [folder]: progress }));
       if (progress >= 100) clearInterval(interval);
     }, 300);
+  };
+
+  const handleNextClick = () => {
+    if (docUploadStatus["Relieving Letter"] === "uploaded") {
+      setShowResignConfirmModal(true);
+    } else {
+      alert("Please upload the Relieving Letter before proceeding.");
+    }
   };
 
   return (
@@ -81,7 +111,15 @@ export default function Report() {
                           />
                           <h5>{doc}</h5>
                         </div>
-                        <input type="file" />
+                        <input type="file" onChange={(e) => {
+                          if (e.target.files.length > 0) {
+                            setDocUploadStatus(prev => ({ ...prev, [doc]: "uploaded" }));
+                          }
+                        }} />
+                        {docUploadStatus[doc] === "uploaded" && (
+                          <span style={{ color: "green", fontWeight: 'bold' }}>Uploaded successfully</span>
+                        )}
+
                       </div>
                       {/* <button className="verified-btn">verified</button> */}
                     </div>
@@ -92,6 +130,23 @@ export default function Report() {
           </div>
         </div>
       </div>
+      <div style={{ display: 'flex', justifyContent: 'center', gap: '15px', marginBottom: '30px' }}>
+        <button className="primary-btn" type='button' style={{ background: 'darkgray', width: '100px' }}
+          onClick={() => navigate('/admin/Checklist/FinalClearance')}
+        >Cancel</button>
+        <button className="primary-btn" type="submit" style={{ width: '100px' }} onClick={handleNextClick}
+        >Next</button>
+      </div>
+      {showResignConfirmModal && (
+        <div className="accept-pop-add-overlay">
+        <div className="popup">
+              <p> <b>Resignation Process Completed! </b></p>
+              <div>
+                <button className='primary-btn' onClick={() => setShowResignConfirmModal(false)}>OK</button>
+              </div>
+        </div>
+      </div>
+      )}
     </div>
   )
 }

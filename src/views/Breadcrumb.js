@@ -32,10 +32,6 @@ const Breadcrumb = () => {
           routeTo = "/admin/PendingRequest/Offboarded";
           console.log("Overriding breadcrumb path to:", routeTo);
         }
-        if (value.toLowerCase() === "policies" && fromRef.current === "Policies" && fromPath) {
-          routeTo = fromPath; // this will be '/admin/Offboarded/Policies'
-          console.log("Overriding breadcrumb path for Policies to:", routeTo);
-        }
         if (value.toLowerCase() === "schedulemeeting" && fromRef.current === "ScheduleMeeting" && fromPath) {
           routeTo = fromPath; 
           console.log("Overriding breadcrumb path for schedulemeeting to:", routeTo);

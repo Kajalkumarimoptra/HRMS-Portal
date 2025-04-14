@@ -6,6 +6,7 @@ import { Badge, Button, Card, Navbar, Nav, Table, Container, Row, Col, Form, Ove
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer, PieChart, Pie } from 'recharts';
 import { useHolidayListContext } from "components/ContextProvider/HolidayListContext";
 import { useFormContext } from "components/ContextProvider/Context";
+import Banner from "./Banner";
 
 function Dashboard({ role }) {
   const navigate = useNavigate();
@@ -856,10 +857,45 @@ function Dashboard({ role }) {
                     }
                   </div>
                 </div>
+               
+              {/* updated birthday section */}
+              <div className="quick-launch-container">
+                <div className="card-header" style={{ backgroundColor: '#0000ff3d', color: 'white' }}>
+                  <div className="quick-launch-header-container">
+                    <div className="upcoming-holiday-header">
+                      <img src={require("assets/img/birthday-icon.png")} alt="..." className="congrats-icon" />
+                      <p className="upcoming-holiday-heading">Today's Shubham Birthday</p>
+                    </div>
+                  </div>
+                  <hr className="oxd-divider" role="separator" aria-orientation="horizontal" style={{ marginTop: '-8px' }} />
+                  <div className="upcomingHoliday">
+                    <div>
+                      <img src="/static/media/profile-img.322c845998206fafacd2.webp" alt="bday-user" style={{
+                        width: '40px',
+                        height: '40px',
+                        borderRadius: '50%',
+                        objectFit: 'cover',
+                        border: '2px solid #ddd'
+                      }} />
+                    </div>
+                    <div className="birthday-post">
+                      <form>
+                        <div className="textarea-wrapper">
+                          <textarea rows="4" cols="29" value="Wishing a very Happy Birthday to Shubham Singh! 🎉" >
+                          </textarea>
+                        </div>
+                        <div>
+                          <button className="post-btn" type="button" >Post</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
               </Col>
             )}
           </Row>
-          <Row>
+          <Row style={{marginTop: '-50px'}}>
             <Col md="8">
               <Card className="graph-card">
                 <Card.Header>
@@ -906,43 +942,7 @@ function Dashboard({ role }) {
                 </Card.Body>
               </Card>
             </Col>
-            <Col md="4">
-              {/* updated birthday section */}
-              <div className="quick-launch-container">
-                <div className="card-header" style={{ backgroundColor: '#0000ff3d', color: 'white' }}>
-                  <div className="quick-launch-header-container">
-                    <div className="upcoming-holiday-header">
-                      <img src={require("assets/img/birthday-icon.png")} alt="..." className="congrats-icon" />
-                      <p className="upcoming-holiday-heading">Today's Shubham Birthday</p>
-                    </div>
-                  </div>
-                  <hr className="oxd-divider" role="separator" aria-orientation="horizontal" style={{ marginTop: '-8px' }} />
-                  <div className="upcomingHoliday">
-                    <div>
-                      <img src="/static/media/profile-img.322c845998206fafacd2.webp" alt="bday-user" style={{
-                        width: '40px',
-                        height: '40px',
-                        borderRadius: '50%',
-                        objectFit: 'cover',
-                        border: '2px solid #ddd'
-                      }} />
-                    </div>
-                    <div className="birthday-post">
-                      <form>
-                        <div className="textarea-wrapper">
-                          <textarea rows="4" cols="29" value="Wishing a very Happy Birthday to Shubham Singh! 🎉" >
-                          </textarea>
-                        </div>
-                        <div>
-                          <button className="post-btn" type="button" >Post</button>
-                        </div>
-                      </form>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </Col>
-          </Row>
+         </Row>
         </div>
       </Container>
     </>

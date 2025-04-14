@@ -9,6 +9,7 @@ export default function OffboardForAdmins() {
   const from = location.state?.from;
   const [roleBasedOffboardSection, setRoleBasedOffboardSection] = useState(null);
   const { toggleExitPopup } = useOffboardPopupContext();
+  const [isModalForAcceptingTerms, setModalForAcceptingTerms] = useState(false);
 
   useEffect(() => {
     // Directly read the role from localStorage
@@ -39,9 +40,32 @@ export default function OffboardForAdmins() {
                 <p><b>Employee ID :</b><span>523696</span></p>
                 <p><b>Department:</b><span>Web Development</span></p>
                 <p><b>Last Working Day :</b><span>02-feb-2025</span></p>
-                <div className='clearance-btn'>
-                  <button class="primary-btn" onClick={() => navigate('/admin/Offboarded/Policies', { state: { from } })}>Acknowledge</button>
+                <div style={{ display: 'flex', gap: '15px' }}>
+                  <button className="primary-btn" style={{ background: 'darkgray', width: '100px' }} onClick={() => navigate('/admin/dashboard')}>Cancel</button>
+                  <button class="primary-btn" onClick={() => setModalForAcceptingTerms(true)}>Acknowledge</button>
                 </div>
+                {isModalForAcceptingTerms && (
+                  <div className="accept-pop-add-overlay">
+                    <div className="popup">
+                      <form>
+                        <div className='user-input-icons'>
+                          <p> Please accept if employee follow the company policies </p>
+                          <div style={{ display: 'flex', justifyContent: 'center', gap: '15px' }}>
+                            <button className='primary-btn' onClick={() =>
+                              navigate("/admin/Offboarded/ScheduleMeeting", {
+                                state: {
+                                  from: location.state?.from || "Offboarded", 
+                                  fromPath: location.pathname                 
+                                }
+                              })
+                            }>Accept</button>
+                            <button className="primary-btn" type="reset" style={{ background: 'darkgray' }} onClick={() => setModalForAcceptingTerms(false)}>Cancel</button>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                )}
                 <div className='exit-pic'>
                   <img
                     src={require("assets/img/profile-img.webp")}
@@ -64,9 +88,32 @@ export default function OffboardForAdmins() {
                 <p><b>Employee ID :</b><span>523696</span></p>
                 <p><b>Department:</b><span>Web Development</span></p>
                 <p><b>Last Working Day :</b><span>02-feb-2025</span></p>
-                <div className='clearance-btn'>
-                  <button class="primary-btn" onClick={() => navigate('/admin/Offboarded/Policies', { state: { from } })}>Acknowledge</button>
+                <div style={{ display: 'flex', gap: '15px' }}>
+                  <button className="primary-btn" style={{ background: 'darkgray', width: '100px' }} onClick={() => navigate('/admin/dashboard')}>Cancel</button>
+                  <button class="primary-btn" onClick={() => setModalForAcceptingTerms(true)}>Acknowledge</button>
                 </div>
+                {isModalForAcceptingTerms && (
+                  <div className="accept-pop-add-overlay" style={{ top: '0' }}>
+                    <div className="popup">
+                      <form>
+                        <div className='user-input-icons'>
+                          <p> Please accept if employee follow the company policies </p>
+                          <div style={{ display: 'flex', justifyContent: 'center', gap: '15px' }}>
+                            <button className='primary-btn' onClick={() =>
+                              navigate("/admin/Offboarded/ScheduleMeeting", {
+                                state: {
+                                  from: location.state?.from || "Offboarded", 
+                                  fromPath: location.pathname                 
+                                }
+                              })
+                            }>Accept</button>
+                            <button className="primary-btn" type="reset" style={{ background: 'darkgray' }} onClick={() => setModalForAcceptingTerms(false)}>Cancel</button>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -83,9 +130,32 @@ export default function OffboardForAdmins() {
                 <p><b>Employee ID :</b><span>523696</span></p>
                 <p><b>Department:</b><span>QA Testing</span></p>
                 <p><b>Last Working Day :</b><span>02-feb-2025</span></p>
-                <div className='clearance-btn'>
-                  <button class="primary-btn" onClick={() => navigate('/admin/Offboarded/Policies', { state: { from } })}>Acknowledge</button>
+                <div style={{ display: 'flex', gap: '15px' }}>
+                  <button className="primary-btn" style={{ background: 'darkgray', width: '100px' }} onClick={() => navigate('/admin/dashboard')}>Cancel</button>
+                  <button class="primary-btn" onClick={() => setModalForAcceptingTerms(true)}>Acknowledge</button>
                 </div>
+                {isModalForAcceptingTerms && (
+                  <div className="accept-pop-add-overlay" style={{ top: '0' }}>
+                    <div className="popup">
+                      <form>
+                        <div className='user-input-icons'>
+                          <p> Please accept if employee follow the company policies </p>
+                          <div style={{ display: 'flex', justifyContent: 'center', gap: '15px' }}>
+                            <button className='primary-btn' onClick={() =>
+                              navigate("/admin/Offboarded/ScheduleMeeting", {
+                                state: {
+                                  from: location.state?.from || "Offboarded",
+                                  fromPath: location.pathname                 
+                                }
+                              })
+                            }>Accept</button>
+                            <button className="primary-btn" type="reset" style={{ background: 'darkgray' }} onClick={() => setModalForAcceptingTerms(false)}>Cancel</button>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -104,9 +174,32 @@ export default function OffboardForAdmins() {
                 <p><b>Employee ID :</b><span>523696</span></p>
                 <p><b>Department:</b><span>Web Development</span></p>
                 <p><b>Last Working Day :</b><span>02-feb-2025</span></p>
-                <div className='clearance-btn'>
-                  <button class="primary-btn" onClick={() => navigate('/admin/Offboarded/Policies', { state: { from } })}>Acknowledge</button>
+                <div style={{ display: 'flex', gap: '15px' }}>
+                  <button className="primary-btn" style={{ background: 'darkgray', width: '100px' }} onClick={() => navigate('/admin/dashboard')}>Cancel</button>
+                  <button class="primary-btn" onClick={() => setModalForAcceptingTerms(true)} >Acknowledge</button>
                 </div>
+                {isModalForAcceptingTerms && (
+                  <div className="accept-pop-add-overlay" style={{ top: '0' }}>
+                    <div className="popup">
+                      <form>
+                        <div className='user-input-icons'>
+                          <p> Please accept if employee follow the company policies </p>
+                          <div style={{ display: 'flex', justifyContent: 'center', gap: '15px' }}>
+                            <button className='primary-btn' onClick={() =>
+                              navigate("/admin/Offboarded/ScheduleMeeting", {
+                                state: {
+                                  from: location.state?.from || "Offboarded", 
+                                  fromPath: location.pathname                 
+                                }
+                              })
+                            }>Accept</button>
+                            <button className="primary-btn" type="reset" style={{ background: 'darkgray' }} onClick={() => setModalForAcceptingTerms(false)}>Cancel</button>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -123,9 +216,32 @@ export default function OffboardForAdmins() {
                 <p><b>Employee ID :</b><span>523696</span></p>
                 <p><b>Department:</b><span>Web Development</span></p>
                 <p><b>Last Working Day :</b><span>02-feb-2025</span></p>
-                <div className='clearance-btn'>
-                  <button class="primary-btn" onClick={() => navigate('/admin/Offboarded/Policies', { state: { from } })}>Acknowledge</button>
+                <div style={{ display: 'flex', gap: '15px' }}>
+                  <button className="primary-btn" style={{ background: 'darkgray', width: '100px' }} onClick={() => navigate('/admin/dashboard')}>Cancel</button>
+                  <button class="primary-btn" onClick={() => setModalForAcceptingTerms(true)}>Acknowledge</button>
                 </div>
+                {isModalForAcceptingTerms && (
+                  <div className="accept-pop-add-overlay" style={{ top: '0' }}>
+                    <div className="popup">
+                      <form>
+                        <div className='user-input-icons'>
+                          <p> Please accept if employee follow the company policies </p>
+                          <div style={{ display: 'flex', justifyContent: 'center', gap: '15px' }}>
+                            <button className='primary-btn' onClick={() =>
+                              navigate("/admin/Offboarded/ScheduleMeeting", {
+                                state: {
+                                  from: location.state?.from || "Offboarded", 
+                                  fromPath: location.pathname                 
+                                }
+                              })
+                            }>Accept</button>
+                            <button className="primary-btn" type="reset" style={{ background: 'darkgray' }} onClick={() => setModalForAcceptingTerms(false)}>Cancel</button>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -142,9 +258,32 @@ export default function OffboardForAdmins() {
                 <p><b>Employee ID :</b><span>523696</span></p>
                 <p><b>Department:</b><span>WCS Support</span></p>
                 <p><b>Last Working Day :</b><span>02-feb-2025</span></p>
-                <div className='clearance-btn'>
-                  <button class="primary-btn" onClick={() => navigate('/admin/Offboarded/Policies', { state: { from } })}>Acknowledge</button>
+                <div style={{ display: 'flex', gap: '15px' }}>
+                  <button className="primary-btn" style={{ background: 'darkgray', width: '100px' }} onClick={() => navigate('/admin/dashboard')}>Cancel</button>
+                  <button class="primary-btn" onClick={() => setModalForAcceptingTerms(true)}>Acknowledge</button>
                 </div>
+                {isModalForAcceptingTerms && (
+                  <div className="accept-pop-add-overlay" style={{ top: '0' }}>
+                    <div className="popup">
+                      <form>
+                        <div className='user-input-icons'>
+                          <p> Please accept if employee follow the company policies </p>
+                          <div style={{ display: 'flex', justifyContent: 'center', gap: '15px' }}>
+                            <button className='primary-btn' onClick={() =>
+                              navigate("/admin/Offboarded/ScheduleMeeting", {
+                                state: {
+                                  from: location.state?.from || "Offboarded", 
+                                  fromPath: location.pathname                 
+                                }
+                              })
+                            }>Accept</button>
+                            <button className="primary-btn" type="reset" style={{ background: 'darkgray' }} onClick={() => setModalForAcceptingTerms(false)}>Cancel</button>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
