@@ -14,7 +14,7 @@ export default function EducationalDetailsForm() {
 
     const navigate = useNavigate();
     const {
-        register, handleSubmit, errors, onSubmit, watch, setValue, reset, clearErrors, showAddBtn, setShowAddBtn, showMinusBtn, setShowMinusBtn
+        register, handleSubmit, errors, onSubmit, watch, setValue, reset, clearErrors, showAddBtn, setShowAddBtn, showMinusBtn, setShowMinusBtn, getValues
     } = useFormContext();
     const { registrationData } = useRegistrationContext();  // Access registration data from context
     const { addressHistoryDetails, rowsOfAddressHistory } = useAddressHistoryContext();
@@ -156,6 +156,7 @@ export default function EducationalDetailsForm() {
 
     // handle file upload
     const handleFileUpload = async (field) => {
+        console.log("Field passed to handleFileUpload:", field);
 
         const file = educationalDegreeDoc[field]?.file;
         if (!file) {
@@ -195,6 +196,9 @@ export default function EducationalDetailsForm() {
                 }));
                 setEducationalFileUploaded(prev => ({ ...prev, [field]: true }));
                 setSuccessfulEducationalFileUploadMsg(prev => ({ ...prev, [field]: 'Uploaded successfully' }));
+                setValue(field, fileUrl, { shouldValidate: true });
+                console.log(`✅ After setValue -> ${field}:`, getValues(field));
+
 
                 // Clear any previous error for this field
                 setCustomErrorForEducationalDocUpload(prev => ({ ...prev, [field]: '' }));
@@ -236,14 +240,14 @@ export default function EducationalDetailsForm() {
         setEducationalFileUploaded(prev => ({ ...prev, [field]: false }));
         setCustomErrorForEducationalDocUpload(prev => ({ ...prev, [field]: '' }));
         setSuccessfulEducationalFileUploadMsg(prev => ({ ...prev, [field]: '' }));
-    
-    
+
+
         // Reset the input field visually by updating its key
-    setInputKeys(prev => ({
-        ...prev,
-        [field]: (prev[field] || 0) + 1, // increment key to force re-render
-    }));
-      };    
+        setInputKeys(prev => ({
+            ...prev,
+            [field]: (prev[field] || 0) + 1, // increment key to force re-render
+        }));
+    };
 
     // for pattern validation of educational document inputs
     const handlePatternChangeForEduDoc = (index, pattern, field, e) => {
@@ -336,37 +340,11 @@ export default function EducationalDetailsForm() {
 
     // for handle submit
     const handleFormSubmit = async (data) => {
-        alert("Form submitted!");
         console.log("Submitted data:", data);
         console.log("Errors during submission:", errors);
         if (Object.keys(errors).length > 0) {
             console.error("Form has errors:", errors);
             return;
-        }
-        console.log("Form submission triggered");
-        console.log("Form data before submission:", data);
-
-        const addressDetails = [
-            {
-                "stayFrom": addressHistoryDetails.firstAddressFrom,
-                "stayTo": addressHistoryDetails.firstAddressTo,
-                "addressLine": addressHistoryDetails.firstFullAddress,
-                "pincode": addressHistoryDetails.firstAddressZipcode,
-                "country": addressHistoryDetails.firstAddressCountry,
-                "contactNumberWithRelationship": addressHistoryDetails.firstAddressRtnContact
-            }
-        ];
-
-        // Dynamically adding additional address details based on index
-        for (let index = 0; index < rowsOfAddressHistory.length; index++) {
-            addressDetails.push({
-                "stayFrom": addressHistoryDetails[`anotherAddressFrom_${index}`],
-                "stayTo": addressHistoryDetails[`anotherAddressTo_${index}`],
-                "addressLine": addressHistoryDetails[`anotherFullAddress_${index}`],
-                "pincode": addressHistoryDetails[`anotherAddressZipcode_${index}`],
-                "country": addressHistoryDetails[`anotherAddressCountry_${index}`],
-                "contactNumberWithRelationship": addressHistoryDetails[`anotherAddressRtnContact_${index}`]
-            });
         }
 
         // Dynamically extract educational qualifications from the form data
@@ -379,21 +357,21 @@ export default function EducationalDetailsForm() {
         }));
 
         // Dynamically generate the documents array from form data
-        // Dynamically generate the documents array from form data
+        console.log("Raw form data keys (for docs):", Object.keys(data));
+        console.log("Raw form data values:", data);
+
         const documents = Object.keys(data)
             .filter(key => key.endsWith("Doc")) // Filter keys that represent documents
             .reduce((acc, key) => {
                 const documentType = key.split("-")[0].toUpperCase(); // Extract and format the degree name as the document type
 
-                // Determine if it's a degree certificate or passing certificate
-                const isDegreeCertificate = key.includes("DegreeCertificate");
-                const isPassingCertificate = key.includes("PassingCertificate") || key.includes("FinalYearMarksheet");
+                const keyNormalized = key.replace(/\s/g, "").toLowerCase(); // remove spaces and lower case
+                const isDegreeCertificate = keyNormalized.includes("degreecertificate");
+                const isPassingCertificate = keyNormalized.includes("passingcertificate") || keyNormalized.includes("finalyearmarksheet");
 
-                // Check if a document of this type already exists in the array
                 const existingDocument = acc.find(doc => doc.documentType === documentType);
 
                 if (existingDocument) {
-                    // Update the existing document's fields
                     if (isDegreeCertificate) {
                         existingDocument.degreeCertificate = true;
                         existingDocument.degreeCertificateUrl = data[key] || "";
@@ -402,7 +380,6 @@ export default function EducationalDetailsForm() {
                         existingDocument.passingCertificateUrl = data[key] || "";
                     }
                 } else {
-                    // Create a new document object if it doesn't exist
                     const newDocument = {
                         documentType: documentType,
                         degreeCertificate: isDegreeCertificate,
@@ -436,145 +413,14 @@ export default function EducationalDetailsForm() {
             "experienceCertificateUrl": employmentHistoryDetails.expCertFile?.[index] || "",
             "relievingLetterUrl": employmentHistoryDetails.relievingLetterFile?.[index] || "",
             "lastMonthSalarySlipUrl": employmentHistoryDetails.lastSalarySlip?.[index] || "",
-            "offerLetterUrl": employmentHistoryDetails.offerLetter?.[index] || "",
+            "appointmentLetterUrl": employmentHistoryDetails.offerLetter?.[index] || "",
         }));
 
-
-        // Retrieve personal details from sessionStorage
-        const personalFormDetails = sessionStorage.getItem('personalDetails');
-        const contactFormDetails = sessionStorage.getItem('contactDetails');
-        let parsedPersonalDetails = {};
-        let parsedContactDetails = {};
-        if (personalFormDetails) {
-            parsedPersonalDetails = JSON.parse(personalFormDetails);
-            console.log('Parsed personal details:', parsedPersonalDetails);
-        }
-        if (contactFormDetails) {
-            parsedContactDetails = JSON.parse(contactFormDetails);
-            console.log('Parsed contact details:', parsedContactDetails);
-        }
-        const checked = JSON.parse(sessionStorage.getItem('addressCheckbox')) || false;
-
         const newPayload = {
-            "createdDate": registrationData.createdDate || "",
-            "dateOfBirth": registrationData.dateOfBirth || "",
-            "email": registrationData.email || "",
-            "password": registrationData.password || "",
-            "fullName": registrationData.fullName || "",
-            "mobileNumber": registrationData.mobileNumber || "",
-            "roleName": "EMPLOYEE",
-            "personalDetailsDTO": {
-                "aadharNumber": parsedPersonalDetails?.aadharNumber,
-                "aadharUrl": parsedPersonalDetails?.aadharUrl,
-                "dob": parsedPersonalDetails?.dob,
-                "email": parsedPersonalDetails?.email,
-                "fatherName": parsedPersonalDetails?.fatherName,
-                "firstName": parsedPersonalDetails?.firstName,
-                "gender": parsedPersonalDetails?.gender,
-                "imageUrl": parsedPersonalDetails?.imageUrl,
-                "middleName": parsedPersonalDetails?.middleName,
-                "mobile": parsedPersonalDetails?.mobile,
-                "motherName": parsedPersonalDetails?.motherName,
-                "panNumber": parsedPersonalDetails?.panNumber,
-                "panUrl": parsedPersonalDetails?.panUrl,
-                "passportNumber": parsedPersonalDetails?.passportNumber,
-                "passportUrl": parsedPersonalDetails?.passportUrl,
-                "surname": parsedPersonalDetails?.surname
-            },
-            "permanentAddress": {
-                "houseNumber": parsedContactDetails?.flatNo,
-                "streetName": parsedContactDetails?.street,
-                "town": parsedContactDetails?.town,
-                "pincode": parsedContactDetails?.pincode,
-                "state": parsedContactDetails?.state,
-                "city": parsedContactDetails?.city,
-                "stayFrom": parsedContactDetails?.fromStay,
-                "stayTo": parsedContactDetails?.toStay,
-                "emergencyContactNumber": parsedContactDetails?.emergencyContactNo,
-                "emergencyContactNameAndRelationship": parsedContactDetails?.emergencyRtnName
-            },
-            "currentAddresses": {
-                "sameAsPermanentAddress": checked, // Reflects if the checkbox is checked
-                "houseNumber": checked ? parsedContactDetails?.flatNo : parsedContactDetails?.anotherFlatNo,
-                "streetName": checked ? parsedContactDetails?.street : parsedContactDetails?.anotherStreet,
-                "town": checked ? parsedContactDetails?.town : parsedContactDetails?.anotherTown,
-                "pincode": checked ? parsedContactDetails?.pincode : parsedContactDetails?.anotherPincode,
-                "state": checked ? parsedContactDetails?.state : parsedContactDetails?.anotherState,
-                "city": checked ? parsedContactDetails?.city : parsedContactDetails?.anotherCity,
-                "stayFrom": checked ? parsedContactDetails?.fromStay : parsedContactDetails?.anotherFromStay,
-                "stayTo": checked ? parsedContactDetails?.toStay : parsedContactDetails?.anotherToStay,
-                "emergencyContactNumber": checked ? parsedContactDetails?.emergencyContactNo : parsedContactDetails?.anotherEmergencyContactNo,
-                "emergencyContactNameAndRelationship": checked ? parsedContactDetails?.emergencyRtnName : parsedContactDetails?.anotherEmergencyRtnName
-            },
-            "addressDetails": addressDetails, // Using the dynamically populated address details
-
+            "primaryId": registrationData.primaryId || "",
             "educationalQualifications": educationalQualifications,
-
             "documents": documents,
-
-            "employmentHistories": employmentHistories,
-            "professionalReferences": [
-                {
-                    "name": "",
-                    "designation": "",
-                    "email": "",
-                    "contactNumber": ""
-                },
-                {
-                    "name": "",
-                    "designation": "",
-                    "email": "",
-                    "contactNumber": ""
-                }
-            ],
-            "employeeRelatives": {
-                "hasRelative": false,
-                "relativeInfoDTOS": [
-                    {
-                        "name": "",
-                        "employeeId": "",
-                        "relationship": "",
-                        "department": "",
-                        "location": "",
-                        "remarks": ""
-                    },
-                    {
-                        "name": "",
-                        "employeeId": "",
-                        "relationship": "",
-                        "department": "",
-                        "location": "",
-                        "remarks": ""
-                    }
-                ]
-            },
-            "passportDetails": {
-                "passportNumber": "",
-                "issueDate": "",
-                "placeOfIssue": "",
-                "expiryDate": "",
-                "countryOfIssue": "",
-                "nationality": ""
-            },
-            "visaStatus": {
-                "citizen": false,
-                "expatOnGreenCard": false,
-                "expatOnWorkPermit": false,
-                "expatOnPermanentResidencyPermit": false,
-                "anyOtherStatus": false
-            },
-            "workPermit": {
-                "legalRightToWork": false,
-                "workPermitDetails": "",
-                "workPermitValidTill": "",
-                "passportCopy": "",
-                "passportCopyPath": ""
-            },
-            "otherDetails": {
-                "illness": "",
-                "selfIntroduction": "",
-                "declarationAccepted": false
-            }
+            "employmentHistories": employmentHistories
         }
         console.log("Payload of educational page :", newPayload);
 
@@ -587,7 +433,7 @@ export default function EducationalDetailsForm() {
                 return; // Exit if token is not found
             }
 
-            const response = await axios.post('http://localhost:8081/primaryDetails/save', newPayload, {
+            const response = await axios.post('http://localhost:8081/primary/createEducational', newPayload, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -763,8 +609,13 @@ export default function EducationalDetailsForm() {
                                                         key={inputKeys[`${selectedDegree}-${certificate}Doc`] || 0}
                                                         className={`eduUploadFileInput ${errors[`${selectedDegree}-${certificate}Doc`] ? 'invalid' : ''}`}
                                                         ref={(el) => (fileInputRefs.current[`${selectedDegree}-${certificate}Doc`] = el)}
-                                                        {...register(`${selectedDegree}-${certificate}Doc`, { required: true })}
+                                                        // {...register(`${selectedDegree}-${certificate}Doc`, { required: true })}
                                                         onChange={(e) => handleFileForDegreeDoc(e, `${selectedDegree}-${certificate}Doc`)}
+                                                    />
+                                                    {/* Hidden input with register */}
+                                                    <input
+                                                        type="hidden"
+                                                        {...register(`${selectedDegree}-${certificate}Doc`)}
                                                     />
                                                     {/* ✅ Display file name inside the loop */}
                                                     {educationalDegreeDoc[`${selectedDegree}-${certificate}Doc`] && (

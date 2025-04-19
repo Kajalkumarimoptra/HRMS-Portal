@@ -93,14 +93,20 @@ export default function AddressHistory() {
             const newContactHistories = [...contactHistories];
             let newValue = value;
 
-            if (newValue.length > 10) {
-                newValue = newValue.slice(0, 10); // Slice to 10 digits
+            const digitsOnly = newValue.replace(/\D/g, ''); // extract only digits
+
+            // Validate allowed characters
+            if (!pattern.test(newValue)) {
+                alert('Only letters and numbers are allowed');
+                newValue = newValue.slice(0, -1); // remove last invalid character
             }
-            // Validate the input value
-            if (newValue && !pattern.test(newValue)) {
-                alert('Only numbers are allowed');
-                newValue = newValue.slice(0, -1);
+        
+            // Check digit count
+            if (digitsOnly.length > 10) {
+                alert('Only 10 digits are allowed in the contact number');
+                return; // prevent adding more digits
             }
+        
             newContactHistories[index] = newValue;
             setContactHistories(newContactHistories);
             setIsValid(true);
@@ -206,7 +212,7 @@ export default function AddressHistory() {
                                 }
                             })} value={contactHistories[0]}
                                 onChange={(e) => {
-                                    handlePatternForAddressHistoryTableInputs(0, /^[0-9]+$/, 'firstAddressRtnContact', e);
+                                    handlePatternForAddressHistoryTableInputs(0, /^[A-Za-z0-9,()\s]+$/, 'firstAddressRtnContact', e);
                                     handleInputChange("firstAddressRtnContact", e.target.value)
                                 }}
                             />
@@ -271,7 +277,7 @@ export default function AddressHistory() {
                                         }
                                     })} value={contactHistories[index + 1]}
                                         onChange={(e) => {
-                                            handlePatternForAddressHistoryTableInputs(index + 1, /^[0-9]+$/, `anotherAddressRtnContact_${index}`, e);
+                                            handlePatternForAddressHistoryTableInputs(index + 1, /^[A-Za-z0-9,()\s]+$/, `anotherAddressRtnContact_${index}`, e);
                                             handleInputChange(`anotherAddressRtnContact_${index}`, e.target.value)
                                         }}
                                     />

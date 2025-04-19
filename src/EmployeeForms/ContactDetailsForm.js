@@ -430,187 +430,34 @@ export default function ContactDetailsForm() {
       });
     }
 
-    // Retrieve personal details from sessionStorage
-    const personalFormDetails = sessionStorage.getItem('personalDetails');
-    let parsedPersonalDetails = {};
-    if (personalFormDetails) {
-      parsedPersonalDetails = JSON.parse(personalFormDetails);
-      console.log('Parsed personal details:', parsedPersonalDetails);
-    }
-
     const newPayload = {
-      "createdDate": registrationData.createdDate || "",
-      "dateOfBirth": registrationData.dateOfBirth || "",
-      "email": registrationData.email || "",
-      "password": registrationData.password || "",
-      "fullName": registrationData.fullName || "",
-      "mobileNumber": registrationData.mobileNumber || "",
-      "roleName": "EMPLOYEE",
-      "personalDetailsDTO": {
-        "aadharNumber": parsedPersonalDetails?.aadharNumber,
-        "aadharUrl": parsedPersonalDetails?.aadharUrl,
-        "dob": parsedPersonalDetails?.dob,
-        "email": parsedPersonalDetails?.email,
-        "fatherName": parsedPersonalDetails?.fatherName,
-        "firstName": parsedPersonalDetails?.firstName,
-        "gender": parsedPersonalDetails?.gender,
-        "imageUrl": parsedPersonalDetails?.imageUrl,
-        "middleName": parsedPersonalDetails?.middleName,
-        "mobile": parsedPersonalDetails?.mobile,
-        "motherName": parsedPersonalDetails?.motherName,
-        "panNumber": parsedPersonalDetails?.panNumber,
-        "panUrl": parsedPersonalDetails?.panUrl,
-        "passportNumber": parsedPersonalDetails?.passportNumber,
-        "passportUrl": parsedPersonalDetails?.passportUrl,
-        "surname": parsedPersonalDetails?.surname
-      },
-      "permanentAddress": {
-        "houseNumber": data.flatNo,
-        "streetName": data.street,
-        "town": data.town,
-        "pincode": data.pincode,
-        "state": data.state,
-        "city": data.city,
-        "stayFrom": data.fromStay,
-        "stayTo": data.toStay,
-        "emergencyContactNumber": data.emergencyContactNo,
-        "emergencyContactNameAndRelationship": data.emergencyRtnName
-      },
-      "currentAddresses": {
-        "sameAsPermanentAddress": checked, // Reflects if the checkbox is checked
-        "houseNumber": checked ? data.flatNo : data.anotherFlatNo,
-        "streetName": checked ? data.street : data.anotherStreet,
-        "town": checked ? data.town : data.anotherTown,
-        "pincode": checked ? data.pincode : data.anotherPincode,
-        "state": checked ? data.state : data.anotherState,
-        "city": checked ? data.city : data.anotherCity,
-        "stayFrom": checked ? data.fromStay : data.anotherFromStay,
-        "stayTo": checked ? data.toStay : data.anotherToStay,
-        "emergencyContactNumber": checked ? data.emergencyContactNo : data.anotherEmergencyContactNo,
-        "emergencyContactNameAndRelationship": checked ? data.emergencyRtnName : data.anotherEmergencyRtnName
-      },
-      "addressDetails": addressDetails, // Using the dynamically populated address details
-      "educationalQualifications": [
-        {
-          "degreeName": "",
-          "subject": "",
-          "passingYear": "",
-          "rollNumber": "",
-          "gradeOrPercentage": ""
+        "primaryId": registrationData.primaryId || "",
+        "permanentAddressDTO": {
+          "houseNumber":  data.flatNo || "",
+          "streetName":data.street || "",
+          "town":  data.town || "",
+          "pincode": data.pincode || "",
+          "state": data.state || "",
+          "city": data.city || "",
+          "stayFrom": data.fromStay || "",
+          "stayTo": data.toStay || "",
+          "emergencyContactNumber": data.emergencyContactNo || "",
+          "emergencyContactNameAndRelationship":  data.emergencyRtnName || ""
         },
-        {
-          "degreeName": "",
-          "subject": "",
-          "passingYear": "",
-          "rollNumber": "",
-          "gradeOrPercentage": ""
-        }
-      ],
-      "documents": [
-
-      ],
-      "employmentHistories": [
-        {
-          "previousEmployerName": "",
-          "employerAddress": "",
-          "telephoneNumber": "",
-          "employeeCode": "",
-          "designation": "",
-          "department": "",
-          "managerName": "",
-          "managerEmail": "",
-          "managerContactNo": "",
-          "reasonsForLeaving": "",
-          "employmentStartDate": "",
-          "employmentEndDate": "",
-          "employmentType": "",
-          "experienceCertificateUrl": "",
-          "relievingLetterUrl": "",
-          "lastMonthSalarySlipUrl": "",
-          "appointmentLetterUrl": ""
+        "currentAddressDTO": {
+          "sameAsPermanentAddress": checked, // Reflects if the checkbox is checked
+          "houseNumber":checked ? data.flatNo : data.anotherFlatNo,
+          "streetName": checked ? data.street : data.anotherStreet,
+          "town": checked ? data.town : data.anotherTown,
+          "pincode": checked ? data.pincode : data.anotherPincode,
+          "state": checked ? data.state : data.anotherState,
+          "city": checked ? data.city : data.anotherCity,
+          "stayFrom":  checked ? data.fromStay : data.anotherFromStay,
+          "stayTo": checked ? data.toStay : data.anotherToStay,
+          "emergencyContactNumber": checked ? data.emergencyContactNo : data.anotherEmergencyContactNo,
+          "emergencyContactNameAndRelationship": checked ? data.emergencyRtnName : data.anotherEmergencyRtnName
         },
-        {
-          "previousEmployerName": "",
-          "employerAddress": "",
-          "telephoneNumber": "",
-          "employeeCode": "",
-          "designation": "",
-          "department": "",
-          "managerName": "",
-          "managerEmail": "",
-          "managerContactNo": "",
-          "reasonsForLeaving": "",
-          "employmentStartDate": "",
-          "employmentEndDate": "",
-          "employmentType": "",
-          "experienceCertificateUrl": "",
-          "relievingLetterUrl": "",
-          "lastMonthSalarySlipUrl": "",
-          "appointmentLetterUrl": ""
-        }
-      ],
-      "professionalReferences": [
-        {
-          "name": "",
-          "designation": "",
-          "email": "",
-          "contactNumber": ""
-        },
-        {
-          "name": "",
-          "designation": "",
-          "email": "",
-          "contactNumber": ""
-        }
-      ],
-      "employeeRelatives": {
-        "hasRelative": false,
-        "relativeInfoDTOS": [
-            {
-                "name": "",
-                "employeeId": "",
-                "relationship": "",
-                "department": "",
-                "location": "",
-                "remarks": ""
-            },
-            {
-              "name": "",
-              "employeeId": "",
-              "relationship": "",
-              "department": "",
-              "location": "",
-              "remarks": ""
-          }
-        ]
-    },
-      "passportDetails": {
-        "passportNumber": "",
-        "issueDate": "",
-        "placeOfIssue": "",
-        "expiryDate": "",
-        "countryOfIssue": "",
-        "nationality": ""
-      },
-      "visaStatus": {
-        "citizen": false,
-        "expatOnGreenCard": false,
-        "expatOnWorkPermit": false,
-        "expatOnPermanentResidencyPermit": false,
-        "anyOtherStatus": false
-      },
-      "workPermit": {
-        "legalRightToWork": false,
-        "workPermitDetails": "",
-        "workPermitValidTill": "",
-        "passportCopy": "",
-        "passportCopyPath": ""
-      },
-      "otherDetails": {
-        "illness": "",
-        "selfIntroduction": "",
-        "declarationAccepted": false
-      }
+        "addressDetailsDTOList": addressDetails, // Using the dynamically populated address details
     }
     console.log("Payload of contact page :", newPayload);
 
@@ -623,7 +470,7 @@ export default function ContactDetailsForm() {
         return; // Exit if token is not found
       }
 
-      const response = await axios.post('http://localhost:8081/primaryDetails/save', newPayload, {
+      const response = await axios.post('http://localhost:8081/primary/createAddress', newPayload, {
         headers: {
           'Authorization': `Bearer ${token}`
         }

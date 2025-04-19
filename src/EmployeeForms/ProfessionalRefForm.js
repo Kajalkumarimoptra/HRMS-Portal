@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useFormContext } from 'components/ContextProvider/Context';
+import { useRegistrationContext } from 'components/ContextProvider/RegistrationDataContext';
 import Navbar from './Navbar.js';
 import axios from 'axios';
 
@@ -8,8 +9,9 @@ export default function ProfessionalRefForm() {
 
   const navigate = useNavigate();
   const {
-    register, handleSubmit, errors, onSubmit, setValue, watch, clearErrors, showAddBtn, setShowAddBtn, showMinusBtn, setShowMinusBtn
+    register, handleSubmit, errors, onSubmit, setValue, watch, clearErrors, showAddBtn, setShowAddBtn, showMinusBtn, setShowMinusBtn, reset
   } = useFormContext();
+  const { registrationData } = useRegistrationContext();  // Access registration data from context
   const [refNames, setRefNames] = useState([]); // initialize the state to track all the prof ref names invaid input in array
   const [refDesg, setRefDesg] = useState([]);
   const [refNo, setRefNo] = useState([]); // initialize the state to track all the ref no. invaid input in array
@@ -301,6 +303,7 @@ export default function ProfessionalRefForm() {
         const fileUrl = response.data.data.url; // Extract the file URL from the response
         console.log('File uploaded successfully for passport copy:', fileUrl);
         setPassportCopyDoc(fileUrl);
+        setValue("passportCopyFile", fileUrl); // Registering the uploaded file path with the form
         clearErrors("passportCopyFile");
         setProfPassportCopyDocUploadStatus(true);
         setSuccessfulProfPassportCopyDocUploadMsg('Uploaded successfully');
@@ -362,9 +365,18 @@ export default function ProfessionalRefForm() {
     navigate("/educationaldetailsform");
   }
 
+  useEffect(() => {
+    console.log("Validation Errors:", errors);
+  }, [errors]);
+
   // for handle submit
   const handleFormSubmit = async (data) => {
     console.log('Form data:', data);
+    console.log("Errors during submission:", errors);
+    if (Object.keys(errors).length > 0) {
+      console.error("Form has errors:", errors);
+      return;
+    }
 
     const retrievedPayload = JSON.parse(sessionStorage.getItem('newPayload'));
 
@@ -376,46 +388,63 @@ export default function ProfessionalRefForm() {
       contactNumber: data[`ProfRefNo_${index}`] || '',
     }));
 
-    const professionalPayload = {
-      ...retrievedPayload,  // Include the previously stored payload
-      "professionalReferences": professionalReferences,
-      "relativeInfos": [
-        {
-          "name": data.firstMoptraRelativeName,
-          "employeeId": data.firstMoptraRelativeEmpId,
-          "relationship": data.firstMoptraRelativeRelationship,
-          "department": data.firstMoptraRelativeDept,
-          "location": data.firstMoptraRelativeLocation,
-          "remarks": data.firstMoptraRelativeRemarks
-        },
-        {
-          "name": data.secondMoptraRelativeName,
-          "employeeId": data.secondMoptraRelativeEmpId,
-          "relationship": data.secondMoptraRelativeRelationship,
-          "department": data.secondMoptraRelativeDept,
-          "location": data.secondMoptraRelativeLocation,
-          "remarks": data.secondMoptraRelativeRemarks
-        }
-      ],
-      "passportDetails": {
-        "passportNumber": data.passportNo,
-        "issueDate": data.passportDate,
-        "placeOfIssue": data.passportPlace,
-        "expiryDate": data.passportValidUpto,
-        "countryOfIssue": data.passportCountry,
-        "nationality": data.nationality,
-        "citizenship": "",
-        "expatOnGreenCard": false,
-        "expatOnWorkPermit": false,
-        "expatOnPermanentResidencyPermit": false,
-        "anyOtherStatus": "",
-        "legalRightToWorkInCountry": data.legalRight,
-        "workPermitExpiryDate": data.workPermit,
-        "workPermitDetails": data.workPermitDetails,
-        "passportCopy": data.passportCopy,
-        "passportUrl": data.passportCopyFile
+    // Extract whether the user selected 'yes' or 'no'
+    const hasRelative = data.moptraRelative === 'yes';
+    // Prepare relativeInfoDTOS only if hasRelative is true
+    const relativeInfoDTOS = hasRelative ? [
+      {
+        "name": data.firstMoptraRelativeName,
+        "employeeId": data.firstMoptraRelativeEmpId,
+        "relationship": data.firstMoptraRelativeRelationship,
+        "department": data.firstMoptraRelativeDept,
+        "location": data.firstMoptraRelativeLocation,
+        "remarks": data.firstMoptraRelativeRemarks
+      },
+      {
+        "name": data.secondMoptraRelativeName,
+        "employeeId": data.secondMoptraRelativeEmpId,
+        "relationship": data.secondMoptraRelativeRelationship,
+        "department": data.secondMoptraRelativeDept,
+        "location": data.secondMoptraRelativeLocation,
+        "remarks": data.secondMoptraRelativeRemarks
       }
+    ] : [];
+
+    const visaStatusSelected = data.visaStatus;
+
+    const visaStatus = {
+      "citizen": visaStatusSelected === "citizen",
+      "expatOnGreenCard": visaStatusSelected === "expat_green_card",
+      "expatOnWorkPermit": visaStatusSelected === "expat_work_permit",
+      "expatOnPermanentResidencyPermit": visaStatusSelected === "expat_permanent_residency",
+      "anyOtherStatus": visaStatusSelected === "any_other_status"
     };
+
+    const professionalPayload = {
+
+      "primaryId": registrationData.primaryId || "",
+      "professionalReferences": professionalReferences,
+      "passportDetails": {
+        "passportNumber": data.passportNo || "",
+        "issueDate": data.passportDate || "",
+        "placeOfIssue": data.passportPlace || "",
+        "expiryDate": data.passportValidUpto || "",
+        "countryOfIssue": data.passportCountry || "",
+        "nationality": data.nationality || ""
+      },
+      "employeeRelatives": {
+        hasRelative: hasRelative,
+        ...(hasRelative && { relativeInfoDTOS })  // only include if hasRelative is true
+      },
+      "visaStatus": visaStatus,
+      "workPermit": {
+        "legalRightToWork": data.legalRight === "yes",
+        "workPermitDetails": data.workPermitDetails || "",
+        "workPermitValidTill": data.workPermit || "",
+        "passportCopy": data.passportCopy || "",
+        "passportCopyPath": data.passportCopyFile || ""
+      }
+    }
 
     try {
       // Retrieve the token from localStorage
@@ -426,7 +455,7 @@ export default function ProfessionalRefForm() {
         return; // Exit if token is not found
       }
 
-      const response = await axios.post('http://localhost:8081/primaryDetails/save', professionalPayload, {
+      const response = await axios.post('http://localhost:8081/primary/createProfessional', professionalPayload, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -597,12 +626,12 @@ export default function ProfessionalRefForm() {
               {customErrorForPassportNo ? <div className="errorMessage">{customErrorForPassportNo}</div> : ''}
             </div>
             <div className='passportDateContainer'>
-              <label>Date of Issue<span className='separatorForPrevEmpName'>:</span></label>
+              <label>Date Of Issue<span className='separatorForPrevEmpName'>:</span></label>
               <input type='date' placeholder='date' className='passportDateInput'  {...register("passportDate")}
                 onChange={handlePassportIssueDateColorChange} style={{ color: passportIssueDateColor }} />
             </div>
             <div className='passportPlaceContainer'>
-              <label>Place of Issue<span className='separatorForPrevEmpName'>:</span></label>
+              <label>Place Of Issue<span className='separatorForPrevEmpName'>:</span></label>
               <input type='text' placeholder='place' className='passportPlaceInput'  {...register("passportPlace", { pattern: /^[A-Za-z\s]+$/ })}
                 value={patternForPassportPlace} onChange={handlePatternForPassportPlace} />
               {customErrorForPassportPlace ? <div className='errorMessage' style={{ marginLeft: '-40px' }}>{customErrorForPassportPlace}</div> : ''}
@@ -615,7 +644,7 @@ export default function ProfessionalRefForm() {
                 onChange={handlePassportValidDateColorChange} style={{ color: passportValidDateColor }} />
             </div>
             <div className='passportCountryContainer'>
-              <label>Country of Issue<span className='separatorForPassport'>:</span></label>
+              <label>Country Of Issue<span className='separatorForPassport'>:</span></label>
               <input type='text' placeholder='Country Name' className='passportCountryInput'  {...register("passportCountry", { pattern: /^[A-Za-z\s]+$/ })}
                 value={patternForPassportCountry} onChange={handlePatternForPassportCountry} />
               {customErrorForPassportCountry ? <div className='errorMessage'>{customErrorForPassportCountry}</div> : ''}
@@ -659,18 +688,17 @@ export default function ProfessionalRefForm() {
               <label>
                 <input
                   type='radio' className='radioYes' name='legalRight' value='yes'
-                  {...register("legalRight", { required: true })}
+                  {...register("legalRight")}
                 />
                 Yes
               </label>
               <label>
                 <input
                   type='radio' className='radioYes' name='legalRight' value='no'
-                  {...register("legalRight", { required: true })}
+                  {...register("legalRight")}
                 />
                 No
               </label>
-              {errors.legalRight && <div className='moptraRelativeErrorMessage'>Please select atleast any one alternative</div>}
             </div>
             <div className='workPermitContainer'>
               <label>Work permit valid till<span className='separatorForPassport'>:</span></label>
@@ -691,7 +719,7 @@ export default function ProfessionalRefForm() {
             </div>
             <div style={{ marginTop: '-3px', marginLeft: '-572px' }}>
               <input type='file' className="profUploadFileInput" ref={passportFileInputRef}
-              //  {...register("passportCopyFile")}
+                //  {...register("passportCopyFile")}
                 onChange={handleFileForPassportCopy} />
               <button type="button" className="passportCopyUpload" onClick={handleFileUpload}>upload</button>
             </div>
