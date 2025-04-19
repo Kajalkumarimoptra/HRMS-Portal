@@ -142,6 +142,8 @@ export default function EmploymentHistoryForm({ index }) {
     const handleFileUpload = async (field) => {
 
         const file = empHistoryDoc[field];
+        console.log('Uploading file for field:', field);
+        console.log('File:', file);
         if (!file) {
             console.log(`No file found for ${field}, setting error`);
             // setCustomErrorForEmpHistoryDocUpload(prev => ({ ...prev, [field]: 'Please select a file to upload' }));
@@ -186,10 +188,7 @@ export default function EmploymentHistoryForm({ index }) {
                 setValue(field, fileUrl);  // This tells the form that the file exists
                 clearErrors(field);           
                 setEmpHistoryFileUploaded(prev => ({ ...prev, [field]: true }));
-                setSuccessfulEmpHistoryFileUploadMsg(prev => ({ ...prev, [field]: 'Uploaded successfully' }));
-
-                // Clear any previous error for this field
-                // setCustomErrorForEmpHistoryDocUpload(prev => ({ ...prev, [field]: '' }));
+                setSuccessfulEmpHistoryFileUploadMsg(prev => ({ ...prev, [field]: 'Uploaded' }));
                 return fileUrl;
             } else {
                 throw new Error('No file URL returned in the response');

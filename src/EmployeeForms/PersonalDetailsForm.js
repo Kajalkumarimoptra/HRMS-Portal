@@ -384,8 +384,8 @@ export default function PersonalDetailsForm() {
 
 
     // Reset the file input field using React ref
-    if (fileInputRefs.current[field]) { 
-      fileInputRefs.current[field].value = ""; 
+    if (fileInputRefs.current[field]) {
+      fileInputRefs.current[field].value = "";
     }
   };
 
@@ -430,195 +430,23 @@ export default function PersonalDetailsForm() {
     }
 
     const newPayload = {
-      "createdDate": registrationData.createdDate || "",
-      "dateOfBirth": registrationData.dateOfBirth || "",
-      "email": registrationData.email || "",
-      "password": registrationData.password || "",
-      "fullName": registrationData.fullName || "",
-      "mobileNumber": registrationData.mobileNumber || "",
-      "roleName": "EMPLOYEE",
-      "personalDetailsDTO": {
-        "aadharNumber": data.aadharNo || "",
-        "aadharUrl": doc.fileForAadhar || "",
-        "dob": data.dob || "",
-        "email": data.emailid || "",
-        "fatherName": data.fatherName || "",
-        "firstName": data.firstName || "",
-        "gender": data.gender || "",
-        "imageUrl": imageUrl || "",
-        "middleName": data.middleName || "",
-        "mobile": data.mob || "",
-        "motherName": data.motherName || "",
-        "panNumber": data.panNo || "",
-        "panUrl": doc.fileForPan || "",
-        "passportNumber": data.passport || "",
-        "passportUrl": doc.fileForPassport || "",
-        "surname": data.lastName || ""
-      },
-      "permanentAddress": {
-        "houseNumber": "",
-        "streetName": "",
-        "town": "",
-        "pincode": "",
-        "state": "",
-        "city": "",
-        "stayFrom": "",
-        "stayTo": "",
-        "emergencyContactNumber": "",
-        "emergencyContactNameAndRelationship": ""
-      },
-      "currentAddresses": {
-        "sameAsPermanentAddress": false,
-        "houseNumber": "",
-        "streetName": "",
-        "town": "",
-        "pincode": "",
-        "state": "",
-        "city": "",
-        "stayFrom": "",
-        "stayTo": "",
-        "emergencyContactNumber": "",
-        "emergencyContactNameAndRelationship": ""
-      },
-      "addressDetails": [
-        {
-          "stayFrom": "",
-          "stayTo": "",
-          "addressLine": "",
-          "pincode": "",
-          "country": "",
-          "contactNumberWithRelationship": ""
-        },
-        {
-          "stayFrom": "",
-          "stayTo": "",
-          "addressLine": "",
-          "pincode": "",
-          "country": "",
-          "contactNumberWithRelationship": ""
-        }
-      ],
-      "educationalQualifications": [
-        {
-          "degreeName": "",
-          "subject": "",
-          "passingYear": "",
-          "rollNumber": "",
-          "gradeOrPercentage": ""
-        },
-        {
-          "degreeName": "",
-          "subject": "",
-          "passingYear": "",
-          "rollNumber": "",
-          "gradeOrPercentage": ""
-        }
-      ],
-      "documents": [
-
-      ],
-      "employmentHistories": [
-        {
-          "previousEmployerName": "",
-          "employerAddress": "",
-          "telephoneNumber": "",
-          "employeeCode": "",
-          "designation": "",
-          "department": "",
-          "managerName": "",
-          "managerEmail": "",
-          "managerContactNo": "",
-          "reasonsForLeaving": "",
-          "employmentStartDate": "",
-          "employmentEndDate": "",
-          "employmentType": "",
-          "experienceCertificateUrl": "",
-          "relievingLetterUrl": "",
-          "lastMonthSalarySlipUrl": "",
-          "appointmentLetterUrl": ""
-        },
-        {
-          "previousEmployerName": "",
-          "employerAddress": "",
-          "telephoneNumber": "",
-          "employeeCode": "",
-          "designation": "",
-          "department": "",
-          "managerName": "",
-          "managerEmail": "",
-          "managerContactNo": "",
-          "reasonsForLeaving": "",
-          "employmentStartDate": "",
-          "employmentEndDate": "",
-          "employmentType": "",
-          "experienceCertificateUrl": "",
-          "relievingLetterUrl": "",
-          "lastMonthSalarySlipUrl": "",
-          "appointmentLetterUrl": ""
-        }
-      ],
-      "professionalReferences": [
-        {
-          "name": "",
-          "designation": "",
-          "email": "",
-          "contactNumber": ""
-        },
-        {
-          "name": "",
-          "designation": "",
-          "email": "",
-          "contactNumber": ""
-        }
-      ],
-      "employeeRelatives": {
-        "hasRelative": false,
-        "relativeInfoDTOS": [
-            {
-                "name": "",
-                "employeeId": "",
-                "relationship": "",
-                "department": "",
-                "location": "",
-                "remarks": ""
-            },
-            {
-              "name": "",
-              "employeeId": "",
-              "relationship": "",
-              "department": "",
-              "location": "",
-              "remarks": ""
-          }
-        ]
-    },
-      "passportDetails": {
-        "passportNumber": "",
-        "issueDate": "",
-        "placeOfIssue": "",
-        "expiryDate": "",
-        "countryOfIssue": "",
-        "nationality": ""
-      },
-      "visaStatus": {
-        "citizen": false,
-        "expatOnGreenCard": false,
-        "expatOnWorkPermit": false,
-        "expatOnPermanentResidencyPermit": false,
-        "anyOtherStatus": false
-      },
-      "workPermit": {
-        "legalRightToWork": false,
-        "workPermitDetails": "",
-        "workPermitValidTill": "",
-        "passportCopy": "",
-        "passportCopyPath": ""
-      },
-      "otherDetails": {
-        "illness": "",
-        "selfIntroduction": "",
-        "declarationAccepted": false
-      }
+      "primaryId": registrationData.primaryId || "",
+      "firstName": data.firstName || "",
+      "middleName":  data.middleName || "",
+      "surname": data.lastName || "",
+      "imageUrl": imageUrl || "",
+      "dob": data.dob || "",
+      "gender": data.gender || "",
+      "motherName": data.motherName || "",
+      "fatherName": data.fatherName || "",
+      "email": data.emailid || "",
+      "mobile": data.mob || "",
+      "aadharNumber": data.aadharNo || "",
+      "aadharUrl": doc.fileForAadhar || "",
+      "panNumber": data.panNo || "",
+      "panUrl":  doc.fileForPan || "",
+      "passportNumber":data.passport || "",
+      "passportUrl": doc.fileForPassport || ""
     }
 
     console.log("Payload of personal details page :", newPayload);
@@ -654,7 +482,7 @@ export default function PersonalDetailsForm() {
         return; // Exit if token is not found
       }
 
-      const response = await axios.post("http://localhost:8081/primaryDetails/save", newPayload, {
+      const response = await axios.post("http://localhost:8081/primary/createPersonal", newPayload, {
 
         headers: {
           'Authorization': `Bearer ${token}`
@@ -664,7 +492,7 @@ export default function PersonalDetailsForm() {
       console.log("Server response:", response);
       if (response && response.data) {
         console.log("Form submitted successfully:", response.data);
-        sessionStorage.setItem('personalDetails', JSON.stringify(response.data.personalDetails));
+        sessionStorage.setItem('personalDetails', JSON.stringify(response.data));
         navigate("/contactdetailsform");
         reset();
         setPersonalDetailDateColor("#d3d3d3");
@@ -790,7 +618,7 @@ export default function PersonalDetailsForm() {
 
             <div className='smallGrpContainer'>
               <div>
-                <label>Mobile Number <span className='required'>*</span> <span className='separationForMob'> : </span></label>
+                <label>Mobile No. <span className='required'>*</span> <span className='separationForMob'> : </span></label>
                 <input type='telephone' placeholder='Mobile No.' className={`mobInput ${errors.mob ? 'invalid' : ''}`} {...register("mob", {
                   required: true,
                   minLength: {

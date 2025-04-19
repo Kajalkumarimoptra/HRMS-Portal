@@ -148,12 +148,12 @@ function RegisterPage() {
         }
     };
 
-    // Reset to form UI after 1 minute of success
+    // Reset to form UI 
     useEffect(() => {
         if (isSubmitted) {
             const timer = setTimeout(() => {
                 setIsSubmitted(false);
-            }, 60000); 
+            }, 2000); 
 
             return () => clearTimeout(timer); // Cleanup on unmount
         }

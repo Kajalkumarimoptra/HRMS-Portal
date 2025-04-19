@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { TbCameraUp } from 'react-icons/tb';
 import { useFormContext } from 'components/ContextProvider/Context';
+import axios from 'axios';
 
 export default function AttachSign() {
     const {
         register, setValue, errors
-      } = useFormContext();
-      
+    } = useFormContext();
+
     const getSign = useRef(null); // reference sign
     const [sign, setSign] = useState(''); // state for holding sign
     const [loading, setLoading] = useState(false); // state for holding loading gif
@@ -17,54 +18,109 @@ export default function AttachSign() {
         setSignSizeError('');
     }
     const handleSign = (e) => {
-        const signUpload = e.target.files[0]
-        if (signUpload) {
-            const fileType = signUpload.type;
-            const validType = ['image/jpg', 'image/jpeg', 'image/png']; // file type validation
-            if (!validType.includes(fileType)) {
-                window.alert("File does not support. You must use .png or .jpg");
-                setSign('') // to not set the sign image on wrong file type insertion
-                return;
-            }
-            const size = signUpload.size;
-            if (size / 1024 > 20 || size/1024 < 10) {  // file size validation
-                setSignSizeError("image should be between 10kb-20kb");
-                setSign('') // to not set the sign image on exceeding file size insertion
-                return;
-            }
-            setLoading(true)
-            const getSignUrl = URL.createObjectURL(signUpload) // creates new object URL that represents the specified File object
+        const file = e.target.files[0];
+        handleFileUpload('signatureAttach', setSignSizeError, setSign, file);
+    };
 
-            setTimeout(() => {
-                setSign(getSignUrl);
-                setLoading(false);
-                setValue('signatureAttach', signUpload);
-            }, 1000);
+    const handleFileUpload = async (field, setSignSizeError, setSign, file) => {
+        if (!file) {
+            console.log('No file selected.');
+            setSignSizeError('Please select a file to upload');
+            setSign('');
+            return;
         }
-    }
-    useEffect(() => {
-        register('signatureAttach', { required: true });
-    }, [register])
-    console.log("invalid:", errors.signatureAttach);
+        console.log('Selected file details:', file);
+        const fileType = file.type;
+        const validTypes = ['image/jpg', 'image/jpeg', 'image/png'];
+        if (!validTypes.includes(fileType)) {
+            alert('Invalid file type. Only .png or .jpg files are allowed.');
+            console.log('Invalid file type:', fileType);
+            setSign('');
+            return;
+        }
 
-    return (
+        const sizeKB = file.size / 1024;
+        console.log('size:', sizeKB);
+        if (sizeKB > 20 || sizeKB < 10) {
+            console.log('File size out of allowed range.');
+            setSignSizeError('Image should be between 10KB and 20KB');
+            setSign('');
+            return;
+        }
 
-        <div className={`attachPhotoBox ${errors.signatureAttach ? 'invalid' : ''}`}>
-            <div className="photo-container">
-                <div className='container'>
-                    Attach Your Signature
-                    <div>
-                        {loading ? ( <img src={require("assets/img/LoadingGif.gif")} alt="..." />) :
-                            sign ? (<img src={sign} alt="sign attach" onClick={triggerSign} />)
-                                : (<TbCameraUp size={30} className='photoIcon' onClick={triggerSign} />)}
-                         {signSizeError ? <div className='imageSizeErrorMsg'>{signSizeError}</div> : <div className='signSizeMsg'>image size should be between 10kb and 20kb</div>}   
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('Authentication issue. Please log in again.');
+                return;
+            }
+            console.log('Sending file to backend...');
+            setLoading(true);
+
+            const response = await axios.post('http://localhost:8081/api/files/uploadFile', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+            console.log('Server response:', response);
+            if (response.data.data && response.data.data.url) {
+                const fileUrl = response.data.data.url;
+                console.log('File uploaded successfully. URL:', fileUrl);
+                setSign(fileUrl);                // for image preview
+                setValue(field, fileUrl);        // for form submission
+                setLoading(false);  
+            } else {
+                console.log('Upload failed: URL not found in response.');
+                setSignSizeError('Upload failed, please try again.');
+                setSign('');
+            }
+        } catch (error) {
+            console.error('File upload failed with error: ', error); // Log the entire error object
+            console.error('Error response:', error.response); // Log the response object if available
+            console.error('Error message:', error.message); // Log the specific error message
+            setLoading(false);
+            if (error.response && error.response.data) {
+                const errorMessage = error.response.data.message;
+                if (errorMessage && errorMessage.includes('File already exists')) {
+                    console.log('file already exist error:', errorMessage);
+                    setSignSizeError('This file is already uploaded');
+                }
+                else {
+                    setSignSizeError('Upload failed, please try again.');
+                }
+                setSign('');
+                setLoading(false);
+            }
+        }
+        };
+
+        useEffect(() => {
+            register('signatureAttach', { required: "Please upload your signature before final submit." });
+        }, [register]);
+        console.log("invalid:", errors.signatureAttach);
+
+        return (
+
+            <div className={`attachPhotoBox ${errors.signatureAttach ? 'invalid' : ''}`}>
+                <div className="photo-container">
+                    <div className='container'>
+                        Attach Your Signature
+                        <div>
+                            {loading ? (<img src={require("assets/img/LoadingGif.gif")} alt="..." />) :
+                                sign ? (<img src={sign} alt="sign attach" onClick={triggerSign} />)
+                                    : (<TbCameraUp size={30} className='photoIcon' style={{ cursor: 'pointer' }} onClick={triggerSign} />)}
+                            {signSizeError ? <div style={{ color: 'red', fontSize: '13px', marginTop: '12px' }}>{signSizeError}</div> : <div className='signSizeMsg'>image size should be between 10kb and 20kb</div>}
+                        </div>
                     </div>
+                    <input type="file" id="file" style={{ opacity: 0 }}
+                        ref={getSign} onChange={handleSign} />
                 </div>
-                <input type="file" id="file" style={{ opacity: 0 }}
-                    ref={getSign} onChange={handleSign} />
             </div>
-        </div>
 
-    )
-}
+        )
+    }
 
