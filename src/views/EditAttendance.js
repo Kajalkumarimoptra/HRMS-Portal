@@ -77,7 +77,7 @@ export default function EditAttendance() {
                         <div className="Signup-form">
                             <div className="title">
                                 <p className='info-text'>
-                                    Edit Details
+                                    Edit Attendance
                                 </p>
                             </div>
                             <br />

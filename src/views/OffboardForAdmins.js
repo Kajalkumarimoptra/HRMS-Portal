@@ -49,7 +49,7 @@ export default function OffboardForAdmins() {
                     <div className="popup">
                       <form>
                         <div className='user-input-icons'>
-                          <p> Please accept if employee follow the company policies </p>
+                          <p> Please accept if employee follow the {""}<a href="/admin/Policies" target="_blank" rel="noopener noreferrer" style={{textDecoration:'underline'}}>company policies</a> </p>
                           <div style={{ display: 'flex', justifyContent: 'center', gap: '15px' }}>
                             <button className='primary-btn' onClick={() =>
                               navigate("/admin/Offboarded/ScheduleMeeting", {
@@ -97,7 +97,7 @@ export default function OffboardForAdmins() {
                     <div className="popup">
                       <form>
                         <div className='user-input-icons'>
-                          <p> Please accept if employee follow the company policies </p>
+                        <p> Please accept if employee follow the {""}<a href="/admin/Policies" target="_blank" rel="noopener noreferrer" style={{textDecoration:'underline'}}>company policies</a> </p>
                           <div style={{ display: 'flex', justifyContent: 'center', gap: '15px' }}>
                             <button className='primary-btn' onClick={() =>
                               navigate("/admin/Offboarded/ScheduleMeeting", {
@@ -139,7 +139,7 @@ export default function OffboardForAdmins() {
                     <div className="popup">
                       <form>
                         <div className='user-input-icons'>
-                          <p> Please accept if employee follow the company policies </p>
+                        <p> Please accept if employee follow the {""}<a href="/admin/Policies" target="_blank" rel="noopener noreferrer" style={{textDecoration:'underline'}}>company policies</a> </p>
                           <div style={{ display: 'flex', justifyContent: 'center', gap: '15px' }}>
                             <button className='primary-btn' onClick={() =>
                               navigate("/admin/Offboarded/ScheduleMeeting", {
@@ -183,7 +183,7 @@ export default function OffboardForAdmins() {
                     <div className="popup">
                       <form>
                         <div className='user-input-icons'>
-                          <p> Please accept if employee follow the company policies </p>
+                        <p> Please accept if employee follow the {""}<a href="/admin/Policies" target="_blank" rel="noopener noreferrer" style={{textDecoration:'underline'}}>company policies</a> </p>
                           <div style={{ display: 'flex', justifyContent: 'center', gap: '15px' }}>
                             <button className='primary-btn' onClick={() =>
                               navigate("/admin/Offboarded/ScheduleMeeting", {
@@ -225,7 +225,7 @@ export default function OffboardForAdmins() {
                     <div className="popup">
                       <form>
                         <div className='user-input-icons'>
-                          <p> Please accept if employee follow the company policies </p>
+                        <p> Please accept if employee follow the {""}<a href="/admin/Policies" target="_blank" rel="noopener noreferrer" style={{textDecoration:'underline'}}>company policies</a> </p>
                           <div style={{ display: 'flex', justifyContent: 'center', gap: '15px' }}>
                             <button className='primary-btn' onClick={() =>
                               navigate("/admin/Offboarded/ScheduleMeeting", {
@@ -267,7 +267,7 @@ export default function OffboardForAdmins() {
                     <div className="popup">
                       <form>
                         <div className='user-input-icons'>
-                          <p> Please accept if employee follow the company policies </p>
+                           <p> Please accept if employee follow the {""}<a href="/admin/Policies" target="_blank" rel="noopener noreferrer" style={{textDecoration:'underline'}}>company policies</a> </p>
                           <div style={{ display: 'flex', justifyContent: 'center', gap: '15px' }}>
                             <button className='primary-btn' onClick={() =>
                               navigate("/admin/Offboarded/ScheduleMeeting", {

@@ -139,13 +139,18 @@ export default function Report() {
       </div>
       {showResignConfirmModal && (
         <div className="accept-pop-add-overlay">
-        <div className="popup">
-              <p> <b>Resignation Process Completed! </b></p>
-              <div>
-                <button className='primary-btn' onClick={() => setShowResignConfirmModal(false)}>OK</button>
-              </div>
+          <div className="popup">
+            <img
+              src={require("assets/img/success-icon.png")}
+              alt="..."
+              style={{ width: '25px', height: '25px' }}
+            />
+            <p><b>Resignation Process Completed! </b></p>
+            <div>
+              <button className='primary-btn' onClick={() => setShowResignConfirmModal(false)}>OK</button>
+            </div>
+          </div>
         </div>
-      </div>
       )}
     </div>
   )

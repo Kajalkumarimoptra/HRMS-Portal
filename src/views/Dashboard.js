@@ -611,7 +611,7 @@ function Dashboard({ role }) {
             </Col>
 
             {/* quick launch */}
-            {roleBasedSection === "ADMIN" || roleBasedSection === "EMPLOYEE" ? (
+            {roleBasedSection === "ADMIN" ? (
               <Col md="4">
                 <div className="quick-launch-container">
                   <div className="card-header" style={{ backgroundColor: '#fff' }}>
@@ -670,27 +670,27 @@ function Dashboard({ role }) {
                       <div className="secondColumn">
                         <div className="assign-leave-container" style={{ position: 'relative', left: '36px' }}>
                           <a className="sort-cut" href="/admin/Dashboard" style={{ color: "#2c2945" }}>
-                            <button className="assign-leave-btn" type="button" title="Assign Leave">
+                            <button className="assign-leave-btn" type="button" title="Assign Leave" style={{position:'relative', left: '11px'}}>
                               <img src={require("assets/img/training-icon.png")} alt="..." className="quick-links-icon" />
                             </button>
                             <div className="orangehrm-quick-launch-heading" title="Assign Leave">
-                              <p className="tabs-heading">Trainings</p>
+                              <p className="tabs-heading" style={{position: 'relative', left: '-11px'}}>Assign Trainings</p>
                             </div>
                           </a>
                         </div>
                         {roleBasedSection === "SUPER_ADMIN" || roleBasedSection === "ADMIN" ? (
-                           <div className="assign-leave-container" style={{ position: 'relative', left: '41px' }}>
+                           <div className="assign-leave-container" style={{ position: 'relative', left: '17px' }}>
                            <a className="sort-cut" href="/admin/PendingRequest" style={{ color: "#2c2945" }}>
-                             <button className="assign-leave-btn" type="button" title="Assign Leave">
+                             <button className="assign-leave-btn" type="button" title="Assign Leave" style={{ position: 'relative', right: '-10px' }}>
                                <img src={require("assets/img/pendingrequest-icon.png")} alt="..." className="quick-links-icon" />
                              </button>
                              <div className="orangehrm-quick-launch-heading" title="Assign Leave">
-                               <p className="tabs-heading" style={{ marginLeft: '-21px' }}>Pending Request</p>
+                               <p className="tabs-heading" style={{position:'relative', Left: '-11px' }}>Pending Request</p>
                              </div>
                            </a>
                          </div> )
                          : (
-                          <div className="assign-leave-container" style={{ position: 'relative', left: '33px' }}>
+                          <div className="assign-leave-container" style={{ position: 'relative', left: '21px' }}>
                           <a className="sort-cut" href="/admin/AssetRequest" style={{ color: "#2c2945" }}>
                             <button className="assign-leave-btn" type="button" title="Assign Leave">
                               <img src={require("assets/img/pendingrequest-icon.png")} alt="..." className="quick-links-icon" />
@@ -701,7 +701,7 @@ function Dashboard({ role }) {
                           </a>
                         </div>
                          )}  
-                        <div className="assign-leave-container" style={{ position: 'relative' }}>
+                        <div className="assign-leave-container" style={{ position: 'relative', left: '-19px' }}>
                           <a className="sort-cut" href="/admin/Policies" style={{ color: "#2c2945" }}>
                             <button className="assign-leave-btn" type="button" title="Assign Leave">
                               <img src={require("assets/img/policies-icon.png")} alt="..." className="quick-links-icon" />
@@ -745,8 +745,42 @@ function Dashboard({ role }) {
                     }
                   </div>
                 </div>
+                 {/* updated birthday section */}
+              <div className="quick-launch-container">
+                <div className="card-header" style={{ backgroundColor: '#0000ff3d', color: 'white' }}>
+                  <div className="quick-launch-header-container">
+                    <div className="upcoming-holiday-header">
+                      <img src={require("assets/img/birthday-icon.png")} alt="..." className="congrats-icon" />
+                      <p className="upcoming-holiday-heading">Today's Shubham Birthday</p>
+                    </div>
+                  </div>
+                  <hr className="oxd-divider" role="separator" aria-orientation="horizontal" style={{ marginTop: '-8px' }} />
+                  <div className="upcomingHoliday">
+                    <div>
+                      <img src="/static/media/profile-img.322c845998206fafacd2.webp" alt="bday-user" style={{
+                        width: '40px',
+                        height: '40px',
+                        borderRadius: '50%',
+                        objectFit: 'cover',
+                        border: '2px solid #ddd'
+                      }} />
+                    </div>
+                    <div className="birthday-post">
+                      <form>
+                        <div className="textarea-wrapper">
+                          <textarea rows="4" cols="29" value="Wishing a very Happy Birthday to Shubham Singh! 🎉" >
+                          </textarea>
+                        </div>
+                        <div>
+                          <button className="post-btn" type="button" >Post</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
               </Col>
-            ) : (
+            ) : roleBasedSection === "SUPER_ADMIN" ? (
               <Col md="4" style={{ marginTop: '-149px' }}>
                 <div className="quick-launch-container">
                   <div className="card-header" style={{ backgroundColor: '#fff' }}>
@@ -769,14 +803,14 @@ function Dashboard({ role }) {
                             </div>
                           </a>
                         </div>
-                        <div className="assign-leave-container" style={{ marginRight: "-23px" }}>
+                        <div className="assign-leave-container" style={{ position: 'relative', right:'-29px'}}>
                           {roleBasedSection === "SUPER_ADMIN" || roleBasedSection === "ADMIN" ? (
                             <a className="sort-cut" href="/admin/Attendance" style={{ color: "#2c2945" }}>
                               <button className="assign-leave-btn" type="button" title="Timesheets">
                                 <img src={require("assets/img/attendance-icon.png")} alt="..." className="quick-links-timesheet-icon" />
                               </button>
                               <div className="orangehrm-quick-launch-heading" title="Timesheets">
-                                <p className="tabs-heading">Attendance</p>
+                                <p className="tabs-heading" style={{position: 'relative', left: '-6px'}}>Attendance</p>
                               </div>
                             </a>
                           ) : (
@@ -785,25 +819,24 @@ function Dashboard({ role }) {
                                 <img src={require("assets/img/attendance-icon.png")} alt="..." className="quick-links-timesheet-icon" />
                               </button>
                               <div className="orangehrm-quick-launch-heading" title="Timesheets">
-                                <p className="tabs-heading">Attendance</p>
+                                <p className="tabs-heading" style={{position: 'relative', left: '-6px'}}>Attendance</p>
                               </div>
                             </a>
                           )}
                         </div>
-                        <div className="assign-leave-container" style={{ position: 'relative', left: '5px' }}>
+                        <div className="assign-leave-container" style={{ position: 'relative', left: '22px' }}>
                           <a className="sort-cut" href="/admin/Dashboard" style={{ color: "#2c2945" }}>
-                            <button className="assign-leave-btn" type="button" title="Assign Leave">
+                            <button className="assign-leave-btn" type="button" title="Assign Leave" style={{position: 'relative', left: '20px'}}>
                               <img src={require("assets/img/training-icon.png")} alt="..." className="quick-links-icon" />
                             </button>
                             <div className="orangehrm-quick-launch-heading" title="Assign Leave">
-                              <p className="tabs-heading">Trainings</p>
+                              <p className="tabs-heading">Assign Trainings</p>
                             </div>
                           </a>
                         </div>
-
                       </div>
                       <div className="secondColumn">
-                        <div className="assign-leave-container" style={{ position: 'relative', left: '7px' }}>
+                        <div className="assign-leave-container" style={{ position: 'relative', left: '-6px' }}>
                           <a className="sort-cut" href="/admin/PendingRequest" style={{ color: "#2c2945" }}>
                             <button className="assign-leave-btn" type="button" title="Assign Leave">
                               <img src={require("assets/img/pendingrequest-icon.png")} alt="..." className="quick-links-icon" />
@@ -813,7 +846,7 @@ function Dashboard({ role }) {
                             </div>
                           </a>
                         </div>
-                        <div className="assign-leave-container" style={{ position: 'relative', left: '-57px' }}>
+                        <div className="assign-leave-container" style={{ position: 'relative', left: '-67px' }}>
                           <a className="sort-cut" href="/admin/Policies" style={{ color: "#2c2945" }}>
                             <button className="assign-leave-btn" type="button" title="Assign Leave">
                               <img src={require("assets/img/policies-icon.png")} alt="..." className="quick-links-icon" />
@@ -893,9 +926,178 @@ function Dashboard({ role }) {
                 </div>
               </div>
               </Col>
-            )}
+            ) : roleBasedSection === "EMPLOYEE" ? (
+              <Col md="4">
+              <div className="quick-launch-container">
+                <div className="card-header" style={{ backgroundColor: '#fff' }}>
+                  <div className="quick-launch-header-container">
+                    <div className="quick-launch-header">
+                      <img src={require("assets/img/spark-icon.png")} alt="..." className="spark-icon" />
+                      <p className="oxd-text oxd-text--p">Quick Launch</p>
+                    </div>
+                  </div>
+                  <hr className="oxd-divider" role="separator" aria-orientation="horizontal" style={{ marginTop: '-8px' }} />
+                  <div className="diffTabs">
+                    <div className="firstColumn">
+                      <div className="assign-leave-container">
+                        <a className="sort-cut" href="/admin/Applyleave" style={{ color: "#2c2945" }}>
+                          <button className="assign-leave-btn" type="button" title="Assign Leave">
+                            <img src={require("assets/img/applyleave-icon.png")} alt="..." className="quick-links-icon" />
+                          </button>
+                          <div className="orangehrm-quick-launch-heading" title="Assign Leave">
+                            <p className="tabs-heading">Apply Leave</p>
+                          </div>
+                        </a>
+                      </div>
+                      <div className="assign-leave-container">
+                        <a className="sort-cut" href="/admin/Leaves" style={{ color: "#2c2945" }}>
+                          <button className="assign-leave-btn" type="button" title="Leave List">
+                            <img src={require("assets/img/leavelist-icon.png")} alt="..." className="quick-links-leavelist-icon" />
+                          </button>
+                          <div className="orangehrm-quick-launch-heading" title="Leave List">
+                            <p className="tabs-heading" >Leaves</p>
+                          </div>
+                        </a>
+                      </div>
+                      <div className="assign-leave-container">
+                        {roleBasedSection === "SUPER_ADMIN" || roleBasedSection === "ADMIN" ? (
+                          <a className="sort-cut" href="/admin/Attendance" style={{ color: "#2c2945" }}>
+                            <button className="assign-leave-btn" type="button" title="Timesheets">
+                              <img src={require("assets/img/attendance-icon.png")} alt="..." className="quick-links-timesheet-icon" />
+                            </button>
+                            <div className="orangehrm-quick-launch-heading" title="Timesheets">
+                              <p className="tabs-heading">Attendance</p>
+                            </div>
+                          </a>
+                        ) : (
+                          <a className="sort-cut" href="/admin/EmployeeAttendance" style={{ color: "#2c2945" }}>
+                            <button className="assign-leave-btn" type="button" title="Timesheets">
+                              <img src={require("assets/img/attendance-icon.png")} alt="..." className="quick-links-timesheet-icon" />
+                            </button>
+                            <div className="orangehrm-quick-launch-heading" title="Timesheets">
+                              <p className="tabs-heading">Attendance</p>
+                            </div>
+                          </a>
+                        )}
+                      </div>
+
+                    </div>
+                    <div className="secondColumn">
+                      <div className="assign-leave-container" style={{ position: 'relative', left: '36px' }}>
+                        <a className="sort-cut" href="/admin/Dashboard" style={{ color: "#2c2945" }}>
+                          <button className="assign-leave-btn" type="button" title="Assign Leave">
+                            <img src={require("assets/img/training-icon.png")} alt="..." className="quick-links-icon" />
+                          </button>
+                          <div className="orangehrm-quick-launch-heading" title="Assign Leave">
+                            <p className="tabs-heading">Trainings</p>
+                          </div>
+                        </a>
+                      </div>
+                      {roleBasedSection === "SUPER_ADMIN" || roleBasedSection === "ADMIN" ? (
+                         <div className="assign-leave-container" style={{ position: 'relative', left: '41px' }}>
+                         <a className="sort-cut" href="/admin/PendingRequest" style={{ color: "#2c2945" }}>
+                           <button className="assign-leave-btn" type="button" title="Assign Leave">
+                             <img src={require("assets/img/pendingrequest-icon.png")} alt="..." className="quick-links-icon" />
+                           </button>
+                           <div className="orangehrm-quick-launch-heading" title="Assign Leave">
+                             <p className="tabs-heading" style={{ marginLeft: '-21px' }}>Pending Request</p>
+                           </div>
+                         </a>
+                       </div> )
+                       : (
+                        <div className="assign-leave-container" style={{ position: 'relative', left: '33px' }}>
+                        <a className="sort-cut" href="/admin/AssetRequest" style={{ color: "#2c2945" }}>
+                          <button className="assign-leave-btn" type="button" title="Assign Leave">
+                            <img src={require("assets/img/pendingrequest-icon.png")} alt="..." className="quick-links-icon" />
+                          </button>
+                          <div className="orangehrm-quick-launch-heading" title="Assign Leave">
+                            <p className="tabs-heading" style={{ marginLeft: '-12px' }}>Asset Request</p>
+                          </div>
+                        </a>
+                      </div>
+                       )}  
+                      <div className="assign-leave-container" style={{ position: 'relative' }}>
+                        <a className="sort-cut" href="/admin/Policies" style={{ color: "#2c2945" }}>
+                          <button className="assign-leave-btn" type="button" title="Assign Leave">
+                            <img src={require("assets/img/policies-icon.png")} alt="..." className="quick-links-icon" />
+                          </button>
+                          <div className="orangehrm-quick-launch-heading" title="Assign Leave">
+                            <p className="tabs-heading" style={{ marginLeft: '9px' }}>Policies</p>
+                          </div>
+                        </a>
+                      </div>
+                    </div>
+                    <div className="thirdColumn">
+                      {/* <div className="assign-leave-container">
+                      <button className="assign-leave-btn" type="button" title="Assign Leave">
+                      <img src={require("assets/img/pendingrequest-icon.png")} alt="..." className="quick-links-icon" />
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 500 500" role="presentation" className="apply-leave-icon">
+                          <g fill="currentColor">
+                            <path data-v-bddebfba="" class="cls-1" d="M 166.539 200.601 C 199 163.911 244 139.623 293.462 132.107 C 317.616 57.281 248.577 -14.694 169.154 2.596 C 89.731 19.85 59.5 113.41 114.77 170.982 C 128.693 185.496 146.654 195.751 166.539 200.601 Z M 115.385 333.148 C 115.385 300.974 123.308 269.281 138.462 240.588 L 57.693 240.588 C 25.846 240.588 0 265.468 0 296.124 L 0 314.636 C 0 381.279 59.616 449.774 162.308 462.732 C 131.616 426.041 115.039 380.243 115.385 333.148 Z M 500 333.148 C 500 461.4 355.77 541.557 240.385 477.431 C 125 413.305 125 252.991 240.385 188.865 C 266.693 174.24 296.539 166.539 326.923 166.539 C 422.616 166.354 500.231 241.069 500 333.148 Z M 417.308 346.106 C 418.923 344.366 420.231 342.367 421.154 340.182 C 421.731 337.887 421.731 335.48 421.154 333.148 C 421.731 330.852 421.731 328.446 421.154 326.113 C 420.346 323.818 418.885 321.744 416.923 320.189 L 340 246.141 C 329.654 236.182 311.962 240.736 308.154 254.361 C 306.385 260.692 308.27 267.43 313.077 272.058 L 357.308 314.636 L 250 314.636 C 235.193 314.636 225.962 330.075 233.346 342.404 C 236.77 348.143 243.116 351.66 250 351.66 L 357.308 351.66 L 313.462 394.238 C 303.116 404.234 307.846 421.265 322 424.894 C 328.577 426.597 335.577 424.783 340.385 420.155 L 417.308 346.106 Z"></path>
+                          </g>
+                        </svg>
+                      </button>
+                      <div className="orangehrm-quick-launch-heading" title="Assign Leave">
+                        <p className="tabs-heading">Pending Request</p>
+                      </div>
+                    </div> */}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {/* updated holidays section */}
+              <div className="quick-launch-container">
+                <div className="card-header" style={{ backgroundColor: '#0000ff3d', color: 'white' }}>
+                  <div className="quick-launch-header-container">
+                    <div className="upcoming-holiday-header">
+                      <img src={require("assets/img/congratulation-icon.png")} alt="..." className="congrats-icon" />
+                      <p className="upcoming-holiday-heading">Upcoming Holiday</p>
+                    </div>
+                  </div>
+                  <hr className="oxd-divider" role="separator" aria-orientation="horizontal" style={{ marginTop: '-8px' }} />
+                  {nextHoliday ? <div className="upcomingHoliday"><div>{nextHoliday.date}</div>  <div>{nextHoliday.name}</div> <div className="arrow-icon"> <img src={require("assets/img/forward-arrow-icon.png")} alt="..." onClick={() => navigate('/admin/Holidays')} /></div> </div>
+                    : <p className="noUpcomingHoliday">No Upcoming Holiday</p>
+                  }
+                </div>
+              </div>
+               {/* updated birthday section */}
+            <div className="quick-launch-container">
+              <div className="card-header" style={{ backgroundColor: '#0000ff3d', color: 'white' }}>
+                <div className="quick-launch-header-container">
+                  <div className="upcoming-holiday-header">
+                    <img src={require("assets/img/birthday-icon.png")} alt="..." className="congrats-icon" />
+                    <p className="upcoming-holiday-heading">Today's Shubham Birthday</p>
+                  </div>
+                </div>
+                <hr className="oxd-divider" role="separator" aria-orientation="horizontal" style={{ marginTop: '-8px' }} />
+                <div className="upcomingHoliday">
+                  <div>
+                    <img src="/static/media/profile-img.322c845998206fafacd2.webp" alt="bday-user" style={{
+                      width: '40px',
+                      height: '40px',
+                      borderRadius: '50%',
+                      objectFit: 'cover',
+                      border: '2px solid #ddd'
+                    }} />
+                  </div>
+                  <div className="birthday-post">
+                    <form>
+                      <div className="textarea-wrapper">
+                        <textarea rows="4" cols="29" value="Wishing a very Happy Birthday to Shubham Singh! 🎉" >
+                        </textarea>
+                      </div>
+                      <div>
+                        <button className="post-btn" type="button" >Post</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </Col>
+            ) : null}
           </Row>
-          <Row style={{marginTop: '-50px'}}>
+          <Row style={{ marginTop: roleBasedSection === "SUPER_ADMIN" ? '-50px' : '-215px' }}>
             <Col md="8">
               <Card className="graph-card">
                 <Card.Header>
@@ -908,7 +1110,7 @@ function Dashboard({ role }) {
                     {roleBasedSection === "ADMIN" || roleBasedSection === "SUPER_ADMIN" ? (
                       <div>
                       <button type="button" class="post-btn" fdprocessedid="g0g9qd" onClick={() => navigate('/admin/Post')}>
-                        <i class="fe fe-plus"></i>+ Create Post
+                        <i class="fe fe-plus"></i>+ Post
                       </button>
                     </div>
                     ) : null } 

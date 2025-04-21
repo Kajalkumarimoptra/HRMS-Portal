@@ -372,7 +372,7 @@ export default function AddNewUser() {
                             <div className="title">
                                 {/* <p className='name'>Welcome !</p> */}
                                 <p className='info-text'>
-                                    Edit Details
+                                    Edit User
                                 </p>
                             </div>
                             <br />

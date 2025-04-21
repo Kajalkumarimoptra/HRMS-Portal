@@ -340,7 +340,7 @@ export default function ApplyLeave() {
                                     {/* <p>Notify Your Manager</p> */}
                                     <div className="user-input-checkbox-icons">
                                         <label>
-                                            <input className="input-field" type="checkbox" {...register("applyLeaveNotifyManager")} />
+                                            <input className="input-field" type="checkbox" style={{width: '15px', marginRight: '0'}}{...register("applyLeaveNotifyManager")} />
                                             <span>Notify Your Manager</span>
                                         </label>
                                         {errors.applyLeaveNotifyManager && (<div className="userErrorMessage">{errors.applyLeaveNotifyManager.message}</div>)}
