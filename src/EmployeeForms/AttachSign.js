@@ -72,7 +72,8 @@ export default function AttachSign() {
                 console.log('File uploaded successfully. URL:', fileUrl);
                 setSign(fileUrl);                // for image preview
                 setValue(field, fileUrl);        // for form submission
-                setLoading(false);  
+                setLoading(false); 
+                setSignSizeError(''); 
             } else {
                 console.log('Upload failed: URL not found in response.');
                 setSignSizeError('Upload failed, please try again.');

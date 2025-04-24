@@ -17,6 +17,7 @@ export default function ApplyLeave() {
     const [selectApplyLeaveToDateColor, setApplyLeaveToDateColor] = useState("#d3d3d3");
     const [selectApplyLeaveDateColor, setApplyLeaveDateColor] = useState("#d3d3d3");
     const [selectLeaveTypeColor, setLeaveTypeColor] = useState("#d3d3d3");
+    const [selectLeaveDurationColor, setLeaveDurationColor] = useState("#d3d3d3");
     const [selectApplyLeaveReportingManagerColor, setApplyLeaveReportingManagerColor] = useState("#d3d3d3");
     const [leaveDuration, setLeaveDuration] = useState("full"); // to track leave duration mode
     const [applyLeaveFromDate, setApplyLeaveFromDate] = useState(""); // to store from date values
@@ -33,33 +34,36 @@ export default function ApplyLeave() {
 
     const watchedValues = useWatch({
         control,
-        name: ["applyLeaveFromDate", "applyLeaveToDate", "applyLeaveType", "applyLeaveReason", "applyLeaveReportingManager", "applyLeaveDate"],
+        name: ["applyLeaveFromDate", "applyLeaveToDate", "applyLeaveType", "applyLeaveReason", "applyLeaveReportingManager", "applyLeaveDate", "applyHalfDayLeaveDuration"],
     });
 
     useEffect(() => {
-        const [fromDate, toDate, leaveType, reason, reportingManager, applyLeaveDate] = watchedValues;
+        const [fromDate, toDate, leaveType, reason, reportingManager, applyLeaveDate, applyHalfDayLeaveDuration] = watchedValues;
 
         console.log("From Date:", fromDate);
         console.log("To Date:", toDate);
         console.log("Leave Type:", leaveType);
         console.log("Reason:", reason);
         console.log("Reporting Manager:", reportingManager);
-        console.log("Apply Leave Date:", applyLeaveDate); // Now it should log correctly
+        console.log("Apply Leave Date:", applyLeaveDate); 
+        console.log("Apply Leave Duration:", applyHalfDayLeaveDuration); 
 
         const isHalfDay = leaveDuration === "half";
         const halfDayDate = getValues("applyLeaveDate");
         console.log("half day leave date:", halfDayDate);
+        const halfDayDuration = getValues("applyHalfDayLeaveDuration");
+        console.log("half day leave duration:", applyHalfDayLeaveDuration);
 
         // Check if all required fields are filled
         const isDisabled = isHalfDay
-            ? !leaveType || !reason?.trim() || !reportingManager || !halfDayDate
+            ? !leaveType || !reason?.trim() || !reportingManager || !halfDayDate || !applyHalfDayLeaveDuration
             : !leaveType || !reason?.trim() || !reportingManager || !fromDate || !toDate;
         console.log("Is Apply Button Disabled:", isDisabled);
         setIsApplyLeaveDisabled(isDisabled);
 
         // Check if any field is filled for Cancel button, considering the mode
         const isCancelDisabled = isHalfDay
-            ? !(leaveType || reason?.trim() || reportingManager || halfDayDate)
+            ? !(leaveType || reason?.trim() || reportingManager || halfDayDate || applyHalfDayLeaveDuration)
             : !(leaveType || reason?.trim() || reportingManager || fromDate || toDate);
         console.log("Is Cancel Button Disabled:", isCancelDisabled);
         setIsCancelLeaveDisabled(isCancelDisabled);
@@ -134,6 +138,12 @@ export default function ApplyLeave() {
         setLeaveTypeColor(selectedLeaveTypeValue ? "black" : "#d3d3d3");
         clearErrors('applyLeaveType');
     };
+    const handleLeaveDurationColorChange = (e) => {
+        const selectedLeaveDurationValue = e.target.value;
+        setValue("applyHalfDayLeaveDuration", selectedLeaveDurationValue); // Set the value using setValue
+        setLeaveDurationColor(selectedLeaveDurationValue ? "black" : "#d3d3d3");
+        clearErrors("applyHalfDayLeaveDuration");
+    };
 
     const handleApplyLeaveReportingManagerColorChange = (e) => {
         const selectedApplyLeaveReportingManagerValue = e.target.value;
@@ -156,16 +166,19 @@ export default function ApplyLeave() {
 
             // Restore previously saved half day data
             setValue("applyLeaveDate", halfDayLeaveData.applyLeaveDate || "");
+            setValue("halfDayLeaveDuration", halfDayLeaveData.applyHalfDayLeaveDuration || "");
             setValue("applyLeaveType", halfDayLeaveData.applyLeaveType || "");
             setValue("applyLeaveReason", halfDayLeaveData.applyLeaveReason || "");
             setValue("applyLeaveReportingManager", halfDayLeaveData.applyLeaveReportingManager || "");
             setValue("applyLeaveNotifyManager", halfDayLeaveData.applyLeaveNotifyManager || "");
             setLeaveTypeColor(halfDayLeaveData.applyLeaveType ? "black" : "#d3d3d3");
             setApplyLeaveReportingManagerColor(halfDayLeaveData.applyLeaveReportingManager ? "black" : "#d3d3d3");
+            setLeaveDurationColor(halfDayLeaveData.applyHalfDayLeaveDuration ? "black" : "#d3d3d3");
         } else if (type === "full") {
             // Preserve current half day data before switching
             const currentHalfDayData = {
                 applyLeaveDate: getValues("applyLeaveDate"),
+                leaveDuration: getValues("applyHalfDayLeaveDuration"),
                 applyLeaveType: getValues("applyLeaveType"),
                 applyLeaveReason: getValues("applyLeaveReason"),
                 applyLeaveReportingManager: getValues("applyLeaveReportingManager"),
@@ -194,6 +207,7 @@ export default function ApplyLeave() {
         setLeaveTypeColor("#d3d3d3");
         setApplyLeaveToDateColor("#d3d3d3");
         setApplyLeaveFromDateColor("#d3d3d3");
+        setLeaveDurationColor("#d3d3d3");
         clearErrors(); // Clear any validation errors
     };
 
@@ -201,6 +215,8 @@ export default function ApplyLeave() {
     const leaveTypeOptions =
         leaveDuration === 'full' ? ["Earn Leave (5)", "Sick Leave (2)", "Loss Of Pay Leave (0)", "Maternity Leave (2)", "Marriage Leave (2)"] :
             ["Earn Leave (5)", "Sick Leave (2)", "Loss Of Pay Leave (0)"];
+    const leaveDurationOptions =
+        ["First Half Day", "Second Half Day"] ;
 
     const handleFormSubmit = (data) => {
         // Force state update before form submission
@@ -221,7 +237,11 @@ export default function ApplyLeave() {
                 applyLeaveType: '',
                 applyLeaveReason: '',
                 applyLeaveReportingManager: '',
-                applyLeaveNotifyManager: ''
+                applyLeaveNotifyManager: '',
+                applyHalfDayLeaveDuration: '',
+                applyLeaveDate:'',
+                applyLeaveFromDate: '',
+                applyLeaveToDate: ''
             });
             setTimeout(() => {
                 navigate('/admin/Dashboard');
@@ -244,18 +264,17 @@ export default function ApplyLeave() {
             setApplyLeaveToDateColor("#d3d3d3");
             setApplyLeaveFromDateColor("#d3d3d3");
             setApplyLeaveDateColor("#d3d3d3");
-
+            setLeaveDurationColor("#d3d3d3");
             return prevDuration;
         });
     };
-
 
     return (
         <div className='container-fluid'>
             <div className='row clearfix'>
                 <div className='col-md-12'>
                     <Breadcrumb />
-                    <div className='attendance-container' style={{ padding: '0', marginBottom: '45px' , marginTop:'35px' }}>
+                    <div className='attendance-container' style={{ padding: '0', marginBottom: '45px', marginTop: '35px' }}>
                         <form onSubmit={handleSubmit(handleFormSubmit)}>
                             <h4 className='apply-leave-heading'>Apply Leave</h4>
                             <div className='leave-type'>
@@ -291,16 +310,31 @@ export default function ApplyLeave() {
                                         </div>
                                     </>
                                 ) : (
-                                    <div className="input-text">
-                                        <p className='applyLeaveLabel'>Date<span style={{ color: "red" }}>*</span></p>
-                                        <div className="user-input-icons">
-                                            <input className="input-field" type="date" min={today}
-                                                {...register("applyLeaveDate", {
-                                                    required: true,
-                                                })} onChange={(e) => handleApplyLeaveDateColorChange(e)} style={{ color: selectApplyLeaveDateColor, padding: '5px' }} />
-                                            {errors.applyLeaveDate && (<div className="userErrorMessage">{errors.applyLeaveDate.message}</div>)}
+                                    <>
+                                        <div className="input-text">
+                                            <p className='applyLeaveLabel'>Date<span style={{ color: "red" }}>*</span></p>
+                                            <div className="user-input-icons">
+                                                <input className="input-field" type="date" min={today}
+                                                    {...register("applyLeaveDate", {
+                                                        required: true,
+                                                    })} onChange={(e) => handleApplyLeaveDateColorChange(e)} style={{ color: selectApplyLeaveDateColor, padding: '5px' }} />
+                                                {errors.applyLeaveDate && (<div className="userErrorMessage">{errors.applyLeaveDate.message}</div>)}
+                                            </div>
                                         </div>
-                                    </div>
+                                        <div className="input-text">
+                                            <p className='applyLeaveLabel'>Leave Duration <span style={{ color: "red" }}>*</span></p>
+                                            <div className="user-input-icons">
+                                                <select className="input-field" {...register("applyHalfDayLeaveDuration", { required: true })}
+                                                    onChange={(e) => handleLeaveDurationColorChange(e)} style={{ color: selectLeaveDurationColor }}>
+                                                    <option value="" hidden style={{ color: "#d3d3d3" }}>Choose Your Leave Duration</option>
+                                                    {leaveDurationOptions.map((option, index) => (
+                                                        <option key={index} style={{ color: 'black' }}>{option}</option>
+                                                    ))}
+                                                </select>
+                                                {errors.applyHalfDayLeaveDuration && (<div className="userErrorMessage">{errors.applyHalfDayLeaveDuration.message}</div>)}
+                                            </div>
+                                        </div>
+                                    </>
                                 )}
 
                                 <div className="input-text">
@@ -340,7 +374,7 @@ export default function ApplyLeave() {
                                     {/* <p>Notify Your Manager</p> */}
                                     <div className="user-input-checkbox-icons">
                                         <label>
-                                            <input className="input-field" type="checkbox" style={{width: '15px', marginRight: '0'}}{...register("applyLeaveNotifyManager")} />
+                                            <input className="input-field" type="checkbox" style={{ width: '15px', marginRight: '0' }}{...register("applyLeaveNotifyManager")} />
                                             <span>Notify Your Manager</span>
                                         </label>
                                         {errors.applyLeaveNotifyManager && (<div className="userErrorMessage">{errors.applyLeaveNotifyManager.message}</div>)}

@@ -360,6 +360,15 @@ body {
       border: 1px solid black;
       width: 352px;
       position: relative;
+      word-wrap: break-word !important;
+      overflow-wrap: break-word !important;
+      white-space: normal !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important; 
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      vertical-align: middle Im !important;
     }
 
     .upload {

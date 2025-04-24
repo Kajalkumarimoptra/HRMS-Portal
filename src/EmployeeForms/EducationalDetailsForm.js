@@ -475,7 +475,7 @@ export default function EducationalDetailsForm() {
 
             <div className='personaldetail-form'>
                 <div className='UniversalHeadline'>
-                    <h6 className='mainHeading'>ASSOCIATE INFORMATION AND ONBOARDING FORM</h6>
+                    <h6 className='mainHeading'>ASSOCIATE INFORMATION AND PRE-ONBOARDING FORM</h6>
                 </div>
                 <div className='noteHeading'>
                     <h5 className='noteContent'>Note:<span className='noteDescription'>Please update all cells with correct and relevant data. The information provided in this document
@@ -669,7 +669,7 @@ export default function EducationalDetailsForm() {
                         {/* save buttons */}
                         <div className='educationSaveButtons'>
                             <button type="button" className="contactBackBtn" onClick={backToContactPage}>Back</button>
-                            <button type="button" className="saveBtn" onClick={saveInLocalStorage}>Save Draft</button>
+                            {/* <button type="button" className="saveBtn" onClick={saveInLocalStorage}>Save Draft</button> */}
                             <button type="submit" className="saveNextBtn" onClick={() => console.log("buttonclicked")}>Save And Next </button>
                         </div>
                     </div>

@@ -532,7 +532,7 @@ export default function ContactDetailsForm() {
       <div className='personaldetail-form'>
 
         <div className='UniversalHeadline'>
-          <h6 className='mainHeading'>ASSOCIATE INFORMATION AND ONBOARDING FORM</h6>
+          <h6 className='mainHeading'>ASSOCIATE INFORMATION AND PRE-ONBOARDING FORM</h6>
         </div>
         <div className='noteHeading'>
           <h5 className='noteContent'>Note:<span className='noteDescription'>Please update all cells with correct and relevant data. The information provided in this document
@@ -779,7 +779,7 @@ export default function ContactDetailsForm() {
             {/* save buttons */}
             <div className='contactSaveButtons'>
               <button type="button" className="backBtn" onClick={backToPersonalPage}>Back</button>
-              <button type="button" className="saveBtn" onClick={saveInLocalStorage}>Save Draft</button>
+              {/* <button type="button" className="saveBtn" onClick={saveInLocalStorage}>Save Draft</button> */}
               <button type="submit" className="saveNextBtn">Save And Next </button>
             </div>
           </form>

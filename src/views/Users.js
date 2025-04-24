@@ -235,6 +235,63 @@ export default function Users() {
                                         {/* EMPLOYEE Role Only */}
                                         {getRoleForShowAddAdminBtn === "EMPLOYEE" && (
                                             <>
+                                            {/* Combined message when both are empty */}
+                                            {superAdminsAndAdmins.length === 0 && employees.length === 0 ? (
+                                                <div className="no-records-found text-center">
+                                                    <p>No record found for admins and employees</p>
+                                                </div>
+                                            ) : (
+                                            <>
+                                            {superAdminsAndAdmins.length > 0 ? (
+                                                            <div className='user-table' style={{marginBottom: '15px'}}>
+                                                                <table className='table table-hover table-vcenter text-nowrap mb-0'>
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th className="name-column">Name</th>
+                                                                            <th>Role</th>
+                                                                            <th>Joining Date</th>
+                                                                            <th>Designation</th>
+                                                                            <th>Client</th>
+                                                                            <th style={{ width: "16%" }}>Reporting Manager</th>
+                                                                            <th>Edit</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        {superAdminsAndAdmins.map((list, index) => (
+                                                                            <tr key={index}>
+                                                                                <td>{list.name}</td>
+                                                                                <td>
+                                                                                    <span className={
+                                                                                        list.roleName === 'SUPER_ADMIN' ? 'superadmin-role' :
+                                                                                            list.roleName === 'ADMIN' ? 'admin-role' : ''
+                                                                                    }>
+                                                                                        {capitalize(list.roleName.toLowerCase().replace('_', ' '))}
+                                                                                    </span>
+                                                                                </td>
+                                                                                <td>{new Date(list.joiningDate).toLocaleDateString("en-GB").split("/").join("-")}</td>
+                                                                                <td>{list.designation}</td>
+                                                                                <td>{list.projects}</td>
+                                                                                <td>{list.projectManager}</td>
+                                                                                <td>
+                                                                                    {(getRoleForShowAddAdminBtn !== "ADMIN" || list.roleName !== 'SUPER_ADMIN') && getRoleForShowAddAdminBtn !== 'EMPLOYEE' && (
+                                                                                        <button type="button" className="btn btn-icon btn-sm icons" title="Edit">
+                                                                                            <GrEdit className='delete-icon' onClick={() => handleEditClick(list)} />
+                                                                                        </button>
+                                                                                    )}
+                                                                                    <button type="button" className="btn btn-icon btn-sm icons" title="View">
+                                                                                        <img src={require("assets/img/view-icon.png")} alt="view" className='delete-icon' onClick={() => handleViewDetailsClick()} />
+                                                                                    </button>
+                                                                                </td>
+                                                                            </tr>
+                                                                        ))}
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        ) : (
+                                                            <div className="no-records-found text-center">
+                                                                <p>No record found for admins</p>
+                                                            </div>
+                                                        )}
                                                 {employees.length > 0 ? (
                                                     <div className='user-table'>
                                                         <table className='table table-hover table-vcenter text-nowrap mb-0'>
@@ -275,7 +332,8 @@ export default function Users() {
                                                 )}
                                             </>
                                         )}
-
+                                        </>
+                                        )}
                                     </div>
                                 </div>
                             </div>

@@ -100,53 +100,59 @@ export default function PreviewForm() {
       console.error("Form has errors:", errors);
       return;
     }
-    toast.success("Your form has been successfully submitted to the HR and you will be updated soon!");
-    // Push a new state, so the previous form page is replaced
-    window.history.pushState(null, null, window.location.href);
+    const previewFormPayload = {
+      "primaryId": registrationData.primaryId || "",
+      "employeeSignatureUrl": data.signatureAttach || "",
+      "signatureDate": data.dateAttach || "",
+      "place": data.placeAttach || ""
+    }
+    console.log('payload given:', previewFormPayload);
+     try {
+      // Retrieve the token from localStorage
+      const token = localStorage.getItem('token');
+      console.log('token needed:', token);
+      if (!token) {
+        setServerError('Authentication issue');
+        return; // Exit if token is not found
+      }
 
-    // Block going back
-    window.addEventListener('popstate', function () {
-      window.history.pushState(null, null, window.location.href);
-    });
-    setTimeout(() => {
-      window.location.replace("https://www.google.com");  // Use replace to prevent going back
-    }, 1000);
-
-    // try {
-    //   // Retrieve the token from localStorage
-    //   const token = localStorage.getItem('token');
-    //   console.log('token needed:', token);
-    //   if (!token) {
-    //     setServerError('Authentication issue');
-    //     return; // Exit if token is not found
-    //   }
-
-    //   const response = await axios.post('http://localhost:8081/primary/createOthers', declarationFormPayload, {
-    //     headers: {
-    //       'Authorization': `Bearer ${token}`
-    //     }
-    //   });
-    //   if (response && response.data) {
-    //     console.log("Form submitted successfully:", response.data);
-    //     sessionStorage.setItem('previewFormDetails', JSON.stringify(response.data))
-    //     reset();
-    //   } else {
-    //     console.error("Error submitting form:", response);
-    //     console.error("Error submitting form. Status:", response.status);
-    //     console.error("Error details:", response.data);
-    //   }
-    //  }
-    //  catch (error) {
-    //   if (error.response) {
-    //     console.error("Error response:", error.response);
-    //     console.error("Response status:", error.response.status);
-    //     console.error("Response data:", error.response.data);
-    //   } else if (error.request) {
-    //     console.error("Error request:", error.request);
-    //   } else {
-    //     console.error("General error:", error.message);
-    //   }
-    // }
+      const response = await axios.post('http://localhost:8081/primary/sendPreviewDetailsToHR', previewFormPayload, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response && response.data) {
+        console.log("Form submitted successfully:", response.data);
+        sessionStorage.setItem('previewFormDetails', JSON.stringify(response.data))
+        reset();
+        toast.success("Your form has been successfully submitted to the HR and you will be updated soon!");
+        // Push a new state, so the previous form page is replaced
+        window.history.pushState(null, null, window.location.href);
+    
+        // Block going back
+        window.addEventListener('popstate', function () {
+          window.history.pushState(null, null, window.location.href);
+        });
+        setTimeout(() => {
+          window.location.replace("https://www.google.com");  // Use replace to prevent going back
+        }, 1000);
+      } else {
+        console.error("Error submitting form:", response);
+        console.error("Error submitting form. Status:", response.status);
+        console.error("Error details:", response.data);
+      }
+     }
+     catch (error) {
+      if (error.response) {
+        console.error("Error response:", error.response);
+        console.error("Response status:", error.response.status);
+        console.error("Response data:", error.response.data);
+      } else if (error.request) {
+        console.error("Error request:", error.request);
+      } else {
+        console.error("General error:", error.message);
+      }
+    }
   };
 
   return (
@@ -154,7 +160,7 @@ export default function PreviewForm() {
       <Navbar />
       <div className='declaration-form'>
         <div className='UniversalHeadlines'>
-          <h6 className='previewHeading'>ASSOCIATE INFORMATION AND ONBOARDING FORM - PREVIEW</h6>
+          <h6 className='previewHeading'>ASSOCIATE INFORMATION AND PRE-ONBOARDING FORM - PREVIEW</h6>
         </div>
         <div className='noteHeading'>
           <h5 className='noteContent' style={{ textAlign: 'center', marginLeft: '-250px' }}><b>Note:</b><span className='noteDescription'>Please review the information below carefully before final submission. Use the "Back" button to edit any section.</span></h5>
@@ -183,7 +189,13 @@ export default function PreviewForm() {
                 </tr>
                 <tr>
                   <td><strong>Pan No :</strong><span>{previewData.personalDetails?.panNumber || 'loading...'}</span></td>
-                  <td><strong>Passport No :</strong><span>{previewData.personalDetails?.passportNumber || ''}</span></td>
+                  <td><strong>Pan Document :</strong><span>{previewData.personalDetails?.panUrl ? (
+                    <a href={previewData.personalDetails.panUrl} target="_blank" rel="noopener noreferrer">
+                      View
+                    </a>
+                  ) : (
+                    'loading...'
+                  )}</span></td>
                   <td><strong>Aadhar Document :</strong><span>{previewData.personalDetails?.aadharUrl ? (
                     <a href={previewData.personalDetails.aadharUrl} target="_blank" rel="noopener noreferrer">
                       View
@@ -193,13 +205,7 @@ export default function PreviewForm() {
                   )}</span></td>
                 </tr>
                 <tr>
-                  <td><strong>Pan Document :</strong><span>{previewData.personalDetails?.panUrl ? (
-                    <a href={previewData.personalDetails.panUrl} target="_blank" rel="noopener noreferrer">
-                      View
-                    </a>
-                  ) : (
-                    'loading...'
-                  )}</span></td>
+                <td><strong>Passport No :</strong><span>{previewData.personalDetails?.passportNumber || ''}</span></td>
                   <td><strong>Passport Document :</strong><span>{previewData.personalDetails?.passportUrl ? (
                     <a href={previewData.personalDetails.passportUrl} target="_blank" rel="noopener noreferrer">
                       View
@@ -453,7 +459,7 @@ export default function PreviewForm() {
               })}
             </>
           ) : (
-            <h6 style={{ marginTop: '10px', margin: '10px 10px -7px 10px' }}>Employment History :<span style={{ fontWeight: 'normal' }}>No Employment History Details</span></h6>
+            <h6 style={{ marginTop: '10px', margin: '10px 10px 3px 10px' }}>Employment History :<span style={{ fontWeight: 'normal' }}>No Employment History Details</span></h6>
           )}
         </div>
         <div className='personalDetailForm' style={{ marginBottom: '25px' }}>

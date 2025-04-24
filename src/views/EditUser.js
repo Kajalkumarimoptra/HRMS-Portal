@@ -162,8 +162,14 @@ export default function AddNewUser() {
                 value = value.slice(0, 10); // Slice to 10 digits
             }
             // Perform validation
-            if (value && !pattern.test(value)) {
-                patternErrorMessage = 'Only numbers are allowed';
+            const partialPattern = /^[6-9][0-9]{0,9}$/; // Valid while typing
+            const fullPattern = pattern; // This is /^[6-9][0-9]{9}$/ passed from input
+        
+            if (
+                (value && !partialPattern.test(value)) || // If invalid while typing
+                (value.length === 10 && !fullPattern.test(value)) // Or invalid full 10-digit number
+            ) {
+                patternErrorMessage = 'Please enter a valid 10-digit mobile number';
             }
             setEditUserMobNo(value);
         }
@@ -434,7 +440,7 @@ export default function AddNewUser() {
                                                         message: 'Mobile no. must be of ten digits'
                                                     }
                                                 })}
-                                                    value={pattern.editUserMobNo} onChange={(e) => handlePatternForEditUserInputs(e, /^[0-9]+$/, 'editUserMobNo')} />
+                                                    value={pattern.editUserMobNo} onChange={(e) => handlePatternForEditUserInputs(e, /^[6-9][0-9]{9}$/, 'editUserMobNo')} />
                                                 {errors.editUserMobNo && (<div className="userErrorMessage">{errors.editUserMobNo.message}</div>)}
                                                 {customErrorForEditUserInputs.editUserMobNo && (<div className='userErrorMessage'>{customErrorForEditUserInputs.editUserMobNo}</div>)}
                                             </div>

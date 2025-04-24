@@ -6,7 +6,8 @@ import { GrEdit } from "react-icons/gr";
 import axios from 'axios';
 
 export default function EmpAttendance() {
-    const { allAttendance, setAllAttendance, serverError, setServerError } = useFormContext();
+    const {serverError, setServerError } = useFormContext();
+    const [allEmployeesAttendance, setAllEmployeesAttendance] = useState([]);
     const [userIdForAttendance, setUserIdForAttendance] = useState(null); // for storing the user id
     const [userNameForAttendance, setUserNameForAttendance] = useState(null); // for storing the user name
     const [avgWorkingHrs, setAvgWorkingHrs] = useState(0); // to store the calculated avg working hrs
@@ -19,26 +20,20 @@ export default function EmpAttendance() {
     useEffect(() => {
         const getUserIdForShowAttendance = localStorage.getItem('userid');
         console.log('User ID from localStorage:', getUserIdForShowAttendance);
-        // const getUserNameForShowAttendance = localStorage.getItem('name');
-        // if (getUserNameForShowAttendance) {
-        //     const capitalizedUserName = getUserNameForShowAttendance.charAt(0).toUpperCase() + getUserNameForShowAttendance.slice(1);
-        //     setUserNameForAttendance(capitalizedUserName);
-        // }
-        setUserIdForAttendance(getUserIdForShowAttendance);
-        console.log('userid', userIdForAttendance);
-        // console.log('user name:', userNameForAttendance);
-    }, [])
+        if (getUserIdForShowAttendance) {
+            setUserIdForAttendance(getUserIdForShowAttendance);
+        }
+    }, []);
 
     // fetch all users attendance data
     useEffect(() => {
         console.log('user id for attendance:', userIdForAttendance);
+        if (!userIdForAttendance)  {
+            console.error("User ID is not available, skipping API call.");
+            return; // Exit if userIdForAttendance is null
+        }
+        console.log('user id for attendance:', userIdForAttendance);
         const fetchSingleAttendance = async () => {
-
-            if (!userIdForAttendance) {
-                console.error("User ID is not available, skipping API call.");
-                return; // Exit if userIdForAttendance is null
-            }
-
             try {
                 // Retrieve the token from sessionStorage
                 const token = localStorage.getItem('token');
@@ -54,7 +49,7 @@ export default function EmpAttendance() {
                 });
                 if (response && response.data) {
                     console.log('single attendance data:', response.data);
-                    setAllAttendance(response.data.data);
+                    setAllEmployeesAttendance(response.data.data);
 
                     // Set the user name from the response
                     const userName = response.data?.data[0]?.userName || 'Unknown user';
@@ -211,7 +206,7 @@ export default function EmpAttendance() {
                                 <div className='avg-brk-time-icon-container'>
                                     <img src={require("assets/img/break-time-icon.png")} alt="..." className='avg-working-hr-icon' />
                                 </div>
-                                {allAttendance.length > 0 && allAttendance.some(record => Object.keys(record).length > 0) ? (
+                                {allEmployeesAttendance.length > 0 && allEmployeesAttendance.some(record => Object.keys(record).length > 0) ? (
                                     <h4 className='avg-working-hr-time'>01:00</h4>
                                 ) : (<h4 className='avg-working-hr-time'>00:00</h4>)}
                                 <h5 className='avg-working-hr-heading'>Average Break Time</h5>
@@ -219,7 +214,7 @@ export default function EmpAttendance() {
                         </div>
 
                         {/* table part */}
-                        {allAttendance.length > 0 ? (
+                        {allEmployeesAttendance.length > 0 ? (
                             <div className='attendance-table-container'>
                                 <table className='emp-attendance-table'>
                                     <thead>
@@ -231,7 +226,7 @@ export default function EmpAttendance() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {allAttendance.map((attendanceList, index) => (
+                                        {allEmployeesAttendance.map((attendanceList, index) => (
                                             <tr key={index}>
                                                 <td>{new Date(attendanceList.punchInTime)
                                                     .toLocaleDateString("en-GB", {

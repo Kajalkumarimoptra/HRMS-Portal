@@ -47,8 +47,14 @@ function RegisterPage() {
                 value = value.slice(0, 10); // Slice to 10 digits
             }
             // Perform validation
-            if (value && !pattern.test(value)) {
-                patternErrorMessage = 'Only numbers are allowed';
+            const partialPattern = /^[6-9][0-9]{0,9}$/; // Valid while typing
+            const fullPattern = pattern; // This is /^[6-9][0-9]{9}$/ passed from input
+        
+            if (
+                (value && !partialPattern.test(value)) || // If invalid while typing
+                (value.length === 10 && !fullPattern.test(value)) // Or invalid full 10-digit number
+            ) {
+                patternErrorMessage = 'Please enter a valid 10-digit mobile number';
             }
             setRegMobNo(value);
         }
@@ -221,7 +227,7 @@ function RegisterPage() {
                                                         message: 'Mobile no. must be of ten digits'
                                                     }
                                                 })}
-                                                    value={pattern.userMobNo} onChange={(e) => handlePatternForRegInputs(e, /^[0-9]+$/, 'userMobNo')} />
+                                                    value={pattern.userMobNo} onChange={(e) => handlePatternForRegInputs(e, /^[6-9][0-9]{9}$/, 'userMobNo')} />
                                                 {errors.userMobNo && (<div className="userErrorMessage">{errors.userMobNo.message}</div>)}
                                                 {customErrorForRegInputs.userMobNo && (<div className='userErrorMessage'>{customErrorForRegInputs.userMobNo}</div>)}
                                             </div>

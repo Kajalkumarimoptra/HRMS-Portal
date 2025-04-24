@@ -685,7 +685,7 @@ function Dashboard({ role }) {
                                <img src={require("assets/img/pendingrequest-icon.png")} alt="..." className="quick-links-icon" />
                              </button>
                              <div className="orangehrm-quick-launch-heading" title="Assign Leave">
-                               <p className="tabs-heading" style={{position:'relative', Left: '-11px' }}>Pending Request</p>
+                               <p className="tabs-heading" style={{position:'relative', Left: '-9px' }}>Pending Request</p>
                              </div>
                            </a>
                          </div> )

@@ -495,7 +495,7 @@ export default function ProfessionalRefForm() {
       <Navbar />
       <div className='prof-form'>
         <div className='UniversalHeadline'>
-          <h6 className='mainHeading'>ASSOCIATE INFORMATION AND ONBOARDING FORM</h6>
+          <h6 className='mainHeading'>ASSOCIATE INFORMATION AND PRE-ONBOARDING FORM</h6>
         </div>
         <div className='noteHeading'>
           <h5 className='noteContent'>Note:<span className='noteDescription'>Please update all cells with correct and relevant data. The information provided in this document
@@ -731,7 +731,7 @@ export default function ProfessionalRefForm() {
           {/* save buttons */}
           <div className='educationSaveButtons'>
             <button type="button" className="profBackBtn" onClick={backToEducationalPage}>Back</button>
-            <button type="button" className="saveBtn" onClick={saveInLocalStorage}>Save Draft</button>
+            {/* <button type="button" className="saveBtn" onClick={saveInLocalStorage}>Save Draft</button> */}
             <button type="submit" className="saveNextBtn">Save And Next </button>
           </div>
         </form>

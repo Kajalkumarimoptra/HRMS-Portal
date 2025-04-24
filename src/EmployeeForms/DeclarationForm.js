@@ -86,7 +86,7 @@ export default function DeclarationForm() {
             <Navbar />
             <div className='declaration-form'>
                 <div className='UniversalHeadlines'>
-                    <h6 className='mainHeading'>ASSOCIATE INFORMATION AND ONBOARDING FORM</h6>
+                    <h6 className='mainHeading'>ASSOCIATE INFORMATION AND PRE-ONBOARDING FORM</h6>
                 </div>
                 <div className='noteHeading'>
                     <p className='noteContent'><b>Note: </b>Please update all cells with correct and relevant data. The information provided in this document
@@ -129,7 +129,7 @@ export default function DeclarationForm() {
                         {/* save buttons */}
                         <div className='declareSaveButtons'>
                             <button type="button" className="backBtn" onClick={backToProfPage}>Back</button>
-                            <button type="button" className="saveBtn" onClick={saveInLocalStorage}>Save Draft</button>
+                            {/* <button type="button" className="saveBtn" onClick={saveInLocalStorage}>Save Draft</button> */}
                             <button type="submit" className="saveNextBtn">Preview</button>
                         </div>
                     </form>
