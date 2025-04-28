@@ -253,7 +253,7 @@ export default function Users() {
                                                                             <th>Designation</th>
                                                                             <th>Client</th>
                                                                             <th style={{ width: "16%" }}>Reporting Manager</th>
-                                                                            <th>Edit</th>
+                                                                            <th>View</th>
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody>
@@ -303,7 +303,7 @@ export default function Users() {
                                                                     <th>Designation</th>
                                                                     <th>Client</th>
                                                                     <th style={{ width: "16%" }}>Reporting Manager</th>
-                                                                    <th>Edit</th>
+                                                                    <th>View</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
