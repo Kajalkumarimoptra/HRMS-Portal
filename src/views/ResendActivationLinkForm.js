@@ -25,7 +25,7 @@ export default function ResendActivationLinkForm() {
         const { emailForResendActivationLink } = data;
 
         try{
-            const response = await axios.post(`http://localhost:8081/primaryDetails/resend-activation-link?email=${emailForResendActivationLink}`);
+            const response = await axios.post('http://localhost:8081/primaryDetails/resend-activation-link', {email: emailForResendActivationLink});
             console.log('response:', response.data);
 
             if(response.data){

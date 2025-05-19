@@ -17,8 +17,10 @@ body {
 
     .UniversalHeadline {
       display: flex;
+      flex-direction: column;
       justify-content: center;
       padding: 25px 10px 10px 10px;
+      gap: 5px;
     }
 
     .mainHeading {
@@ -108,8 +110,7 @@ body {
 
     /* personal detail form */
     .personalDetailForm {
-      text-align: left;
-      margin-left: 73px;
+      text-align: center;
       overflow-x: hidden;
       overflow-y: hidden;
 
@@ -142,7 +143,6 @@ body {
 
     .personalDetailHeading {
       background-color: #e0e0e082;
-      width: 94.5%;
       text-align: center;
     }
 
@@ -157,17 +157,14 @@ body {
     }
 
     .personalDetailContainer {
-      width: 100%;
-      padding: 0px 8px 0px 0px;
+      padding: 20px 8px 20px 0px;
       box-sizing: border-box;
-    }
-
-    /* name input */
-    .inputContainer {
+      text-align: center;
       display: flex;
       flex-direction: column;
-      gap: 20px;
-      margin-top: 20px;
+      align-content: center;
+      justify-content: space-around;
+      align-items: center;
     }
 
     .nameLabel {
@@ -201,17 +198,6 @@ body {
       margin-left: -21px;
     }
 
-    /* dob & gender input */
-    .dobGenderContainer {
-      display: flex;
-      gap: 45px;
-      margin-top: 20px;
-
-      >div {
-        flex: 1;
-      }
-    }
-
     .separationForDOB {
       margin: 31px;
     }
@@ -221,49 +207,103 @@ body {
       width: 63% !important;
     }
 
+    .name-gender-container {
+      margin-left: -70px;
+    }
+
+    .input-grp-Container {
+      width: 50%;
+      margin-bottom: 15px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+
     .selectGenderInput {
-      width: 70% !important;
-      margin-left: -8px;
+      width: 50% !important;
+      margin-left: 67px;
 
       &>option:hover {
         background-color: #7b1fa24f;
       }
     }
 
-    .gender-container {
-      margin-right: -42px;
+    .inputContainer {
+      width: 50%;
+      margin-bottom: 15px;
     }
 
-    .separationForGender {
-      margin: 30px;
-    }
+    .inputWrapper {
+      position: relative;
+      width: 100%;
+      display: flex;
+      margin-left: 107px;
 
-    /* mother name input */
-    .separationForMotherName {
-      margin: 23px;
+      .inputWithFileName {
+        display: flex;
+        flex-direction: column;
+        align-items: baseline;
+        gap: 5px;
+
+        .inputWithIcon {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          position: relative;
+
+          .upload-icon {
+            position: absolute;
+            right: 1%;
+            top: 48%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 18px;
+          }
+
+          .aadharInput,
+          .panInput,
+          .passportInput {
+            width: 352px;
+            margin-left: 40px;
+          }
+
+          .panInput {
+            margin-left: 73px;
+          }
+
+          .passportInput {
+            margin-left: 48px;
+          }
+
+        }
+        .selectedFileName{
+          margin-bottom: -25px;
+          p{
+            margin-left: 44px;
+          }
+        }
+      }
+
     }
 
     .motherNameInput {
-      width: 80.8%;
-      margin-left: 11px;
+      width: 50%;
+      margin-left: 23px;
     }
 
     /* father name input */
     .fatherNameContainer {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
       margin-top: 20px;
       width: 1100px;
     }
 
     .separationForFatherName {
-      margin: 29px;
+      margin: 58px;
     }
 
     .fatherNameInput {
-      width: 75.5%;
-      margin-left: 5px;
+      width: 50%;
+      margin-left: 30px;
     }
 
     .photo-container {
@@ -295,32 +335,22 @@ body {
     }
 
     .separationForMob {
-      margin: 50px;
+      margin: 10px;
     }
 
     .mobInput {
-      width: 33%;
-      margin-left: -17px;
+      width: 50%;
+      margin-left: 25px;
     }
 
     /* aadhar input */
     .separationForAadhar {
-      margin: 40px;
-    }
-
-    .aadharInput {
-      width: 66%;
-      margin-left: -8px;
+      margin: 65px;
     }
 
     /* pan no. input */
     .separationForPan {
-      margin: 73px;
-    }
-
-    .panInput {
-      width: 66%;
-      margin-left: -41px;
+      margin: 97px;
     }
 
     /* passport input */
@@ -330,12 +360,7 @@ body {
     }
 
     .separationForPassport {
-      margin: 49px;
-    }
-
-    .passportInput {
-      width: 66%;
-      margin-left: -17px;
+      margin: 73px;
     }
 
     /* file chosen */
@@ -343,7 +368,7 @@ body {
       position: relative;
       display: flex;
       align-items: center;
-      right: 8px;
+      right: -37px;
       gap: 10px;
       top: -3px;
 
@@ -364,7 +389,7 @@ body {
       overflow-wrap: break-word !important;
       white-space: normal !important;
       overflow: hidden !important;
-      text-overflow: ellipsis !important; 
+      text-overflow: ellipsis !important;
       white-space: nowrap !important;
       overflow: hidden !important;
       text-overflow: ellipsis !important;
@@ -402,7 +427,7 @@ body {
       display: flex;
       gap: 10px;
       float: right;
-      margin: 48px 65px 0 0;
+      margin: 24px 65px 0 976px;
     }
 
     .saveBtn,
@@ -449,14 +474,14 @@ body {
     }
 
     /* input field scss */
-    input:focus,
-    select:focus {
-      outline-color: #bc47b1 !important;
-    }
+    // input:focus,
+    // select:focus {
+    //   outline-color: #bc47b1 !important;
+    // }
 
-    input[type="file"]:focus {
-      border: 2px solid #bc47b1;
-      outline-color: #bc47b1;
-    }
+    // input[type="file"]:focus {
+    //   border: 2px solid #bc47b1;
+    //   outline-color: #bc47b1;
+    // }
   }
 }

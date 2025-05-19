@@ -8,153 +8,145 @@
 }
 
 .empHistoryContainer {
-    margin-top: -24px; // Consider removing negative margin
-    padding: 10px;
+    width: 100%;
+    margin: 0 auto;
+    margin-top: 20px;
 
     .empHistoryDetailHeading {
-        margin: 46px -13px 0;
-        background-color: var(--main-background);
-        width: 96.2%;
-    }
-
-    .empHeadline {
-        background-color: var(--main-background);
-        margin-left: 16px !important;
+        text-align: left;
     }
 
     .empHistoryForm {
-        text-align: left;
-        margin: 15px 0 0 4px;
+
+
+        input {
+            width: 40%;
+        }
 
         .PrevEmpNameContainer {
             margin-top: 10px;
-
-            .separatorForPrevEmpName {
-                margin: 15px;
-            }
-
-            .separatorForPrevEmpAdd {
-                margin: 137px;
-            }
-
-            .separatorForManagerEmail {
-                margin: 59px;
-            }
-
-            .separatorForLeaveReason {
-                margin: 56px;
-            }
-
-            .separatorForPosition {
-                margin: 69px;
-                margin-right: 55px;
-            }
-
-            div {
-                flex: 1;
-            }
-        }
-
-        .PrevEmpNameInput,
-        .PrevEmpAddressInput,
-        .managerEmailInput,
-        .leaveReasonInput {
-            width: var(--primary-width);
-        }
-
-        .PrevEmpAddressInput {
-            margin-left: -122.5px;
-        }
-
-        .managerEmailInput {
-            margin-left: -42px;
-        }
-
-        .leaveReasonInput {
-            margin-left: -39px;
-        }
-
-        .PrevEmpFromToContainer,
-        .noCodeContainer {
             display: flex;
-            margin-top: 10px;
+            align-items: center;
 
             div {
                 flex: 1;
+                display: flex;
+                align-items: center;
             }
-
-            .separationForTelephone {
-                margin: 93px;
+            .emp-name-container{
+                gap: 10px;
             }
-
-            .separationForEmpCode {
-                margin: 103px;
+            .emp-code-container{
+                gap: 59px;
             }
-
-            .separationForDesg {
-                margin: 112px;
+            .emp-mob-container{
+                gap: 114px;
             }
-
-            .separationForDept {
-                margin: 126px;
+            .emp-desg-container{
+                gap: 85px;
             }
-
-            .separationForManagerName {
-                margin: 75px;
+            .emp-dep-container{
+                gap: 100px;
             }
-
-            .separationForManagerNo {
-                margin: 57px;
+            .emp-manager-name-container{
+                gap: 51px;
             }
-
-            .separatorForStayEmpFrom {
-                margin: 55px;
+            .emp-manager-contact-container{
+                gap: 66px;
             }
-        }
-
-        .PrevEmpFromToContainer {
-
-            .empFromInput,
-            .empToInput {
-                margin-left: 14px;
+            .emp-leavereason-container{
+                gap: 51px;
             }
-
-            .empToContainer {
-                margin-left: -336px;
+            .emp-email-container{
+                gap: 45px;
+            }
+            .emp-address-container{
+                gap: 115px
             }
         }
 
-        .teleInput,
-        .empCodeInput,
-        .desgInput,
-        .deptInput,
-        .managerNameInput,
-        .managerContactInput {
-            width: var(--secondary-width);
+        .datepicker-container {
+            margin-top: 10px;
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            text-align: left;
+
+            .datepicker-wrapper {
+                position: relative;
+                width: 100%;
+              }
+
+            .empFromInput {
+                width: 273px;
+                padding-right: 36px;
+                box-sizing: border-box;
+                margin-left: 51px;
+            }
+
+            .calendar-icon {
+                position: absolute;
+                top: 44%;
+                right: 66%;
+                transform: translateY(-50%);
+                width: 15px;
+                height: 15px;
+                cursor: pointer;
+            }
         }
 
-        .teleInput {
-            margin-left: -78px;
-        }
+        .exp-file-Container,.last-first-month-salary-slip-file-Container,.last-second-month-salary-slip-file-Container,.last-third-month-salary-slip-file-Container,.app-file-Container{
+            margin-top: 12px;
+            display: flex;
+            gap: 44px;
 
-        .empCodeInput {
-            margin-left: -63px;
-        }
+            .exp-file-box{
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+                right: 8px;
+                gap: 5px;
+                top: -1px;
 
-        .desgInput {
-            margin-left: -96px;
-        }
+                div{
+                    display: flex;
+                    gap: 5px;
+                    align-items: center;
+                }
 
-        .deptInput {
-            margin-left: -85px;
-        }
+                .cross-icon {
+                    width: 12px;
+                    height: 12px;
+                    position: absolute;
+                    left: 204px;
+                    cursor: pointer;
+                }
 
-        .managerNameInput {
-            margin-left: -59px;
-        }
+                .uploadFileOfExpCert {
+                    position: relative;
+                    border: 1px solid black;
+                    width: 220px;
+                }
 
-        .managerContactInput {
-            margin-left: -16px;
+                .uploadEmp {
+                    width: 93px;
+                    background-color: rgba(253, 216, 53, 0.568627451);
+                    border: none;
+                }
+            }
+        }
+        .last-first-month-salary-slip-file-Container{
+            gap: 193px;
+        }
+        .last-second-month-salary-slip-file-Container{
+            gap: 172px;
+        }
+        .last-third-month-salary-slip-file-Container{
+            gap: 221px;
+        }
+        .app-file-Container{
+            gap: 243px;
         }
 
         .eduAddRowButton {
@@ -177,10 +169,10 @@
             height: 20px;
             cursor: pointer;
             position: relative;
-            margin: -2px 89px 0 26px;
+            margin: -2px -46px 0 26px;
             vertical-align: middle;
 
-            &:checked{
+            &:checked {
                 background-color: white;
                 border: 2px solid #333;
             }
@@ -199,68 +191,8 @@
         }
 
         .prevDoc {
-            margin-top: 21px;
             font-weight: 700;
         }
-
-        .docGrpContainer,
-        .lastDocGrpContainer {
-            display: flex;
-            flex-direction: row;
-            gap: 3px;
-            margin-top: -21px;
-            justify-content: space-between;
-            align-items: baseline;
-
-            >div {
-                flex: 1;
-            }
-
-            .separatorForExpCert {
-                margin: 52px;
-            }
-
-            .emp-file-container,
-            .emp-relieving-file-container {
-                position: relative;
-                display: flex;
-                align-items: center;
-                right: 8px;
-                gap: 5px;
-                top: -1px;
-
-                .cross-icon {
-                    width: 12px;
-                    height: 12px;
-                    position: absolute;
-                    left: 158px;
-                    cursor: pointer;
-                  }
-
-                .uploadFileOfExpCert {
-                    position: relative;
-                    border: 1px solid black;
-                    width: 207px;
-                    margin-left: -33px;
-                }
-
-                .uploadEmp {
-                    width: 93px;
-                    background-color: rgba(253, 216, 53, 0.568627451);
-                    border: none;
-                }
-            }
-
-            .emp-relieving-file-container {
-                top: -32px;
-                right: -221px;
-            }
-        }
-
-        .lastDocGrpContainer {
-            margin-top: -79px;
-        }
-
         .empErrorMessage,
         .empHistoryErrorMessage,
         .expCertErrorMessage,

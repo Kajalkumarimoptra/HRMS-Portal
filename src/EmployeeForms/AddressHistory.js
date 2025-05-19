@@ -135,8 +135,8 @@ export default function AddressHistory() {
         <form onSubmit={handleSubmit(onSubmit)}>
             <div className='addressForm'>
                 <div>
-                    <div className='addressHeading'> <h6 className='educationalHeadline'>ADDRESS HISTORY <span className='required'>*</span> - </h6>
-                        <span><p className='educationalNote'> &nbsp;&nbsp;Please provide address for the last 3 years</p></span>
+                    <div className='addressHeading'> <h6 className='educationalHeadline'>ADDRESS HISTORY (Legacy Address) <span className='required'>*</span> -</h6>
+                        <span><p className='educationalNote'>Last 3 years</p></span>
                     </div>
                 </div>
                 {/* table content */}

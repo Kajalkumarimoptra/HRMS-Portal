@@ -19,7 +19,7 @@ import PersonalDetailsForm from "EmployeeForms/PersonalDetailsForm";
 import ContactDetailsForm from "EmployeeForms/ContactDetailsForm";
 import EducationalDetailsForm from "EmployeeForms/EducationalDetailsForm";
 import ProfessionalRefForm from "EmployeeForms/ProfessionalRefForm";
-import DeclarationForm from "EmployeeForms/DeclarationForm";
+import AdditionalDetailsForm from "EmployeeForms/AdditionalDetailsForm";
 import PreviewForm from "EmployeeForms/PreviewForm";
 import Resetpassword from "layouts/Resetpassword";
 import ForgotPassword from "layouts/ForgotPassword";
@@ -30,7 +30,8 @@ import { RegistrationProvider } from "components/ContextProvider/RegistrationDat
 import { AddressHistoryContextProvider } from "components/ContextProvider/AddressHistoryContext";
 import { HolidayListContextProvider } from "components/ContextProvider/HolidayListContext";
 import { EmploymentHistoryContextProvider } from "components/ContextProvider/EmploymentHistoryContext";
-import { OffboardPopupContextProvider } from "components/ContextProvider/OffboardPopupContext";
+import { OffboardPopupContextProvider } from "components/ContextProvider/OffboardPopupContext"
+import { EmailProvider } from "components/ContextProvider/EmailContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -43,6 +44,7 @@ root.render(
     <BrowserRouter>
       <AuthProvider>
         <RegistrationProvider>
+          <EmailProvider>
           <AddressHistoryContextProvider>
             <HolidayListContextProvider>
               <EmploymentHistoryContextProvider>
@@ -54,7 +56,7 @@ root.render(
                 <Route path="/forgotpassword" element={<ForgotPassword />} />
                 <Route path="/enterotp" element={<EnterOtp />} />
                 <Route path="/banner" element={<Banner />} />
-              
+                
                 {/* Protected Routes */}
                 <Route path="/admin/*" element={
                   <ProtectedRoutes>
@@ -90,9 +92,9 @@ root.render(
                     <ProfessionalRefForm />
                   </ProtectedRoutes>
                 } />
-                <Route path="/declarationform" element={
+                <Route path="/additionaldetailsform" element={
                   <ProtectedRoutes>
-                    <DeclarationForm />
+                    <AdditionalDetailsForm/>
                   </ProtectedRoutes>
                 } />
                 <Route path="/previewform" element={
@@ -109,6 +111,7 @@ root.render(
               </EmploymentHistoryContextProvider>
             </HolidayListContextProvider>
           </AddressHistoryContextProvider>
+          </EmailProvider>
         </RegistrationProvider>
       </AuthProvider>
     </BrowserRouter>
