@@ -12,7 +12,7 @@ export default function Users() {
     const { users, setUsers, setServerError } = useFormContext();
     const [getRoleForShowAddAdminBtn, setGetRoleForShowAddAdminBtn] = useState(localStorage.getItem('role'));  // Get role from local storage
     const [showCreateCredential, setShowCreateCredential] = useState(false); //state for visibility of create credential btn
-    const showAddRoleBtn = getRoleForShowAddAdminBtn === 'SUPER_ADMIN' && location.pathname === '/admin/Users';
+    // const showAddRoleBtn = getRoleForShowAddAdminBtn === 'SUPER_ADMIN' && location.pathname === '/admin/Users';
 
     //  navigating to the form page (for Add and Edit)
     const handleAddNewClick = () => {
@@ -90,11 +90,11 @@ export default function Users() {
             <div className=" d-flex justify-content-between align-items-center" style={{ flexDirection: "row-reverse", marginBottom: '18px' }}>
                 <div className="icons-list">
                     <Breadcrumb />
-                    {showAddRoleBtn && (
+                    {/* {showAddRoleBtn && (
                         <div>
                             <button type="button" className="primary-btn" onClick={handleCreateCredential}>Add Admin</button>
                         </div>
-                    )}
+                    )} */}
                 </div>
             </div>
             {/* user list table */}

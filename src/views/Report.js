@@ -74,7 +74,7 @@ export default function Report() {
             <div className='col-md-4 docs-name'>
               <h5>Employee Document Folders</h5>
               <div class="list-group list-group-flush">
-                <div className="progress-container">
+                <div className="report-progress-container">
                   {Object.keys(folderDocs).map((folder, index, arr) => (
                     <div key={folder} className="folder-container">
                       <div className="progress-step">

@@ -49,7 +49,7 @@ function RegisterPage() {
             // Perform validation
             const partialPattern = /^[6-9][0-9]{0,9}$/; // Valid while typing
             const fullPattern = pattern; // This is /^[6-9][0-9]{9}$/ passed from input
-        
+
             if (
                 (value && !partialPattern.test(value)) || // If invalid while typing
                 (value.length === 10 && !fullPattern.test(value)) // Or invalid full 10-digit number
@@ -79,14 +79,14 @@ function RegisterPage() {
         console.log("Form submission initiated");
         console.log("Submitting data:", data);
         console.log(data.userEmail);
+        const originalDate = data.userDob; // e.g. "2025-05-10"
+        const formattedDate = originalDate.replace(/-/g, '/'); // "2025/05/10"
 
         const newPayload = {
             "fullName": regFullName,
             "mobileNumber": regMobNo,
-            "dateOfBirth": data.userDob,
-            "email": data.userEmail,
-            "roleName": "EMPLOYEE",
-            "password": ""
+            "dateOfBirth": formattedDate,
+            "email": data.userEmail
         };
         console.log("New Payload:", newPayload);
 
@@ -107,18 +107,13 @@ function RegisterPage() {
             if (result && result.data) {
                 // Save backend-generated data to localStorage
                 const registrationData = {
-                    ...result.data,
-                    password: result.data.password, // Assuming the backend returns password
-                    createdDate: result.data.createdDate, // Assuming the backend returns createdDate
+                    ...result.data
                 };
                 // Save data to localStorage
                 localStorage.setItem('registrationData', JSON.stringify(registrationData));
                 console.log("Data saved to localStorage:", registrationData);
                 setRegistrationData(registrationData); // Set registration data in context
-                console.log('saved in registrationcontext:', registrationData);
-                console.log("Registration data set:", result.data);
                 toast.success("Please wait for the registration");
-                console.log("Registration successful:", result.data);
                 reset(); // Clear the form
                 setPattern({ userFullName: '', userMobNo: '' }); // Clear patterns
                 setCustomErrorForRegInputs({ userFullName: '', userMobNo: '' }); // Clear errors
@@ -136,7 +131,7 @@ function RegisterPage() {
             if (err.response) {
                 console.log("Error Response Data:", err.response.data);
                 console.log("Error Status:", err.response.status);
-                if (err.response.data === 'Email already exists, kindly use a different one.') {
+                if (err.response.data.message.includes('Email already exists')) {
                     setServerError('Email already exists. Please use a different email')
                 }
                 else {
@@ -159,7 +154,7 @@ function RegisterPage() {
         if (isSubmitted) {
             const timer = setTimeout(() => {
                 setIsSubmitted(false);
-            }, 2000); 
+            }, 2000);
 
             return () => clearTimeout(timer); // Cleanup on unmount
         }
@@ -169,93 +164,93 @@ function RegisterPage() {
         <div className="container-fluid">
             <Breadcrumb />
             {isSubmitted ? (
-            <div className="expiredLink">
-                <h2 className='expiredLinkHeading'>Registration Successful</h2>
-                <p className='expiredLinkPara'>Account activation url has been sent to the registered email id.</p>
-            </div>
-        ) : (
-            <div className='register-container'>
-                <div className="row Signup-row">
-                    <div className="col-6 left">
-                        <div className="Signup-form">
-                            {/* <div className="top-logo">
+                <div className="expiredLink">
+                    <h2 className='expiredLinkHeading'>Registration Successful</h2>
+                    <p className='expiredLinkPara'>Account activation url has been sent to the registered email id.</p>
+                </div>
+            ) : (
+                <div className='register-container'>
+                    <div className="row Signup-row">
+                        <div className="col-6 left">
+                            <div className="Signup-form">
+                                {/* <div className="top-logo">
                                 <img src={require("assets/img/company_logo.png")} alt="..." />
                             </div> */}
-                            <div className="title">
-                                <p className='name'>Welcome !</p>
-                                <p className='signup-info-text'>
-                                    Please fill the following details of the candidate
-                                </p>
-                            </div>
-                            <br />
-                            <div className="form">
-                                <form onSubmit={handleSubmit(handleFormSubmit)}>
-                                    <div>
-                                        <div className="input-text">
-                                            <p>Employee Full Name <span style={{ color: "red" }}>*</span></p>
-                                            <div className="user-input-icons">
-                                                <input className="input-field" type="text" placeholder="Enter Your Full Name" {...register("userFullName", {
-                                                    required: 'Please enter your name',
-                                                    maxLength: {
-                                                        value: 50,
-                                                        message: 'Name cannot exceed 50 characters'
-                                                    },
-                                                    minLength: {
-                                                        value: 3,
-                                                        message: 'Name must be at least 3 characters'
-                                                    }
-                                                })}
-                                                    value={pattern.userFullName} onChange={(e) => handlePatternForRegInputs(e, /^[A-Za-z\s]+$/, 'userFullName')} />
-                                                {errors.userFullName && (<div className="userErrorMessage">{errors.userFullName.message}</div>)}
-                                                {customErrorForRegInputs.userFullName && (<div className='userErrorMessage'>{customErrorForRegInputs.userFullName}</div>)}
+                                <div className="title">
+                                    <p className='name'>Welcome !</p>
+                                    <p className='signup-info-text'>
+                                        Please fill the following details of the candidate
+                                    </p>
+                                </div>
+                                <br />
+                                <div className="form">
+                                    <form onSubmit={handleSubmit(handleFormSubmit)}>
+                                        <div>
+                                            <div className="input-text">
+                                                <p>Employee Full Name <span style={{ color: "red" }}>*</span></p>
+                                                <div className="user-input-icons">
+                                                    <input className="input-field" type="text" placeholder="Enter Your Full Name" {...register("userFullName", {
+                                                        required: 'Please enter your name',
+                                                        maxLength: {
+                                                            value: 50,
+                                                            message: 'Name cannot exceed 50 characters'
+                                                        },
+                                                        minLength: {
+                                                            value: 3,
+                                                            message: 'Name must be at least 3 characters'
+                                                        }
+                                                    })}
+                                                        value={pattern.userFullName} onChange={(e) => handlePatternForRegInputs(e, /^[A-Za-z\s]+$/, 'userFullName')} />
+                                                    {errors.userFullName && (<div className="userErrorMessage">{errors.userFullName.message}</div>)}
+                                                    {customErrorForRegInputs.userFullName && (<div className='userErrorMessage'>{customErrorForRegInputs.userFullName}</div>)}
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div className="input-text">
-                                            <p>E-mail Address <span style={{ color: "red" }}>*</span></p>
-                                            <div className="user-input-icons">
-                                                <input className="input-field" type="email" placeholder="Enter Your E-mail Address" name='userEmail' {...register("userEmail", { required: 'Please enter your email id' })} />
-                                                {errors.userEmail && (<div className="userErrorMessage">{errors.userEmail.message}</div>)}
+                                            <div className="input-text">
+                                                <p>E-mail Address <span style={{ color: "red" }}>*</span></p>
+                                                <div className="user-input-icons">
+                                                    <input className="input-field" type="email" placeholder="Enter Your E-mail Address" name='userEmail' {...register("userEmail", { required: 'Please enter your email id' })} />
+                                                    {errors.userEmail && (<div className="userErrorMessage">{errors.userEmail.message}</div>)}
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div className="input-text">
-                                            <p>Mobile Number <span style={{ color: "red" }}>*</span></p>
-                                            <div className="user-input-icons">
-                                                <input className="input-field" type="tel" placeholder="Enter Your Mobile No." {...register("userMobNo", {
-                                                    required: 'Please enter your mobile no.',
-                                                    minLength: {
-                                                        value: 10,
-                                                        message: 'Mobile no. must be of ten digits'
-                                                    }
-                                                })}
-                                                    value={pattern.userMobNo} onChange={(e) => handlePatternForRegInputs(e, /^[6-9][0-9]{9}$/, 'userMobNo')} />
-                                                {errors.userMobNo && (<div className="userErrorMessage">{errors.userMobNo.message}</div>)}
-                                                {customErrorForRegInputs.userMobNo && (<div className='userErrorMessage'>{customErrorForRegInputs.userMobNo}</div>)}
+                                            <div className="input-text">
+                                                <p>Mobile Number <span style={{ color: "red" }}>*</span></p>
+                                                <div className="user-input-icons">
+                                                    <input className="input-field" type="tel" placeholder="Enter Your Mobile No." {...register("userMobNo", {
+                                                        required: 'Please enter your mobile no.',
+                                                        minLength: {
+                                                            value: 10,
+                                                            message: 'Mobile no. must be of ten digits'
+                                                        }
+                                                    })}
+                                                        value={pattern.userMobNo} onChange={(e) => handlePatternForRegInputs(e, /^[6-9][0-9]{9}$/, 'userMobNo')} />
+                                                    {errors.userMobNo && (<div className="userErrorMessage">{errors.userMobNo.message}</div>)}
+                                                    {customErrorForRegInputs.userMobNo && (<div className='userErrorMessage'>{customErrorForRegInputs.userMobNo}</div>)}
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div className="input-text">
-                                            <p>Date Of Birth <span style={{ color: "red" }}>*</span></p>
-                                            <div className="user-input-icons">
-                                                <input className="input-field" type="date" placeholder="Enter Your DOB in DD/MM/YYYY" {...register("userDob", { required: 'Please enter your date of birth' })}
-                                                    onChange={handleDobColorChange} style={{ color: selectDobColor }} />
-                                                {errors.userDob && (<div className="userErrorMessage">{errors.userDob.message}</div>)}
+                                            <div className="input-text">
+                                                <p>Date Of Birth <span style={{ color: "red" }}>*</span></p>
+                                                <div className="user-input-icons">
+                                                    <input className="input-field" type="date" placeholder="Enter Your DOB in DD/MM/YYYY" {...register("userDob", { required: 'Please enter your date of birth' })}
+                                                        onChange={handleDobColorChange} style={{ color: selectDobColor }} />
+                                                    {errors.userDob && (<div className="userErrorMessage">{errors.userDob.message}</div>)}
+                                                </div>
                                             </div>
+                                            <br />
+                                            <div style={{ textAlign: 'center' }}>
+                                                <button className="primary-btn" type="submit" style={{ width: '90px', fontSize: '17px' }}>
+                                                    Submit
+                                                </button>
+                                            </div>
+                                            {serverError && (<div className="serverErrorMessage">{serverError}</div>)}
+                                            <br />
                                         </div>
-                                        <br />
-                                        <div style={{ textAlign: 'center' }}>
-                                            <button className="primary-btn" type="submit" style={{ width: '90px', fontSize: '17px' }}>
-                                                Submit
-                                            </button>
-                                        </div>
-                                        {serverError && (<div className="serverErrorMessage">{serverError}</div>)}
-                                        <br />
-                                    </div>
-                                </form>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <ToastContainer />
-            </div> )}
+                    <ToastContainer />
+                </div>)}
         </div>
     );
 }

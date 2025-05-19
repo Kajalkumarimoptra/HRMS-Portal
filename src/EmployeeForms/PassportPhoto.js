@@ -144,9 +144,9 @@ const PassportPhoto = ({ handleFileForDocs }) => {
         <div className="photo-container" id='imgPreview'>
           <div className='container'>
             {imgDirection && !photo && (
-              <div> Upload Your Recent Passport Photo</div>
+              <div><p style={{fontSize:'13px', marginLeft: '-9px'}}>Upload</p></div>
             )}
-            <div>
+            <div style={{marginTop: '-13px'}}>
               {loading ? (
                 <img src={require("assets/img/LoadingGif.gif")} alt="..." />
               )
@@ -176,12 +176,13 @@ const PassportPhoto = ({ handleFileForDocs }) => {
                       <TbCameraUp size={30} className='photoIcon' onClick={triggerImage} />
                     )
                   )}
-              {imageSizeError ? <div className='imageSizeErrorMsg'>{imageSizeError}</div> : (
+                  {imageSizeError && <div className='imageSizeErrorMsg'>{imageSizeError}</div>}
+              {/* {imageSizeError ? <div className='imageSizeErrorMsg'>{imageSizeError}</div> : (
                 !isCropping && (
                   <div className="imageSizeMsg">
                     image size should be between 10kb and 20kb
                   </div>)
-              )}
+              )} */}
             </div>
           </div>
           <input

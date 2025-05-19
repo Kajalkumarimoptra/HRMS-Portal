@@ -21,14 +21,8 @@ export default function EmployeePage() {
         setServerError,
         clearErrors, role, setRole, users, setUsers
     } = useFormContext();
-
-
-    useEffect(() => {
-        const storedRole = sessionStorage.getItem('role');
-        if (storedRole) {
-            setRole(storedRole);
-        }
-    }, []);
+    const [getRoleForShowResendActivationLinkBtn, setGetRoleForShowResendActivationLinkBtn] = useState(localStorage.getItem('role'));  // Get role from local storage
+    const showResendActivationLinkBtn = getRoleForShowResendActivationLinkBtn === 'ADMIN' && location.pathname === '/admin/Employeepage';
 
     useEffect(() => {
         reset();
@@ -112,7 +106,7 @@ export default function EmployeePage() {
                     </li>
                 </ul> */}
                 <div class="header-action">
-                    {role === 'ADMIN' && (
+                    {showResendActivationLinkBtn && (
                         <button type="button" class="add-btn" data-toggle="resendActivationLink" data-target="#resendActivationLink" fdprocessedid="av3mdeg" onClick={handleResendActivationLink}>
                             Resend Activation Link
                         </button>)}

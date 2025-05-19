@@ -1,27 +1,48 @@
-.attachPhotoBox {
-    width: 222px;
-    height: 120px;
-    border: 1px solid #000;
-    border-radius: 4px;
-    overflow: hidden;
-    position: relative;
-    float: right;
-    margin-top: -128px;
-    margin-right: 35px;
-    text-align: center;
+.signAttach {
+    display: flex;
+    flex-direction: column;
+    align-items: baseline;
+    gap: 15px;
 
-    img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        position: absolute;
-        top: 0;
-        left: 0;
-        background-size: cover;
+    .attachPhotoBox {
+        width: 222px;
+        height: 120px;
+        border: 1px solid #000;
+        border-radius: 4px;
+        overflow: hidden;
+        position: relative;
+        float: left;
+
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-size: cover;
+        }
     }
-}
 
-.signSizeMsg {
-    font-size: 14px;
-    margin-top: 12px;
+    .lastDate,.place{
+        display: flex;
+        gap: 8px;
+    }
+    .lastDate{
+        input[type='date']{
+            width: 177px;
+        }
+    }
+    .place{
+        input{
+            width: 173px;
+        }
+    }
+
+    .signSizeMsg {
+        font-size: 14px;
+        margin-top: 12px;
+    }
+
 }

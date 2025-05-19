@@ -22,7 +22,8 @@ form {
                     color: #ca10cb;
                 }
             }
-            .userErrorMessage{
+
+            .userErrorMessage {
                 font-size: 13px;
                 color: red;
                 margin-left: 7px;
@@ -49,8 +50,8 @@ form {
             .password-criteria {
                 color: #5A5A5A;
                 font-size: 13px;
-                margin-top: 5px; 
-                top: 100%; 
+                margin-top: 5px;
+                top: 100%;
                 left: 0;
                 visibility: hidden;
                 margin-left: 5px;
@@ -72,8 +73,7 @@ form {
         color: red;
         font-size: 13px;
         position: absolute;
-        top: 95%;
-        left: 141px;
-        bottom: -20px;
+        top: 96%;
+        right: 22%;
     }
 }

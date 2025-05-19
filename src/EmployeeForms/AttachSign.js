@@ -107,7 +107,7 @@ export default function AttachSign() {
         return (
 
             <div className={`attachPhotoBox ${errors.signatureAttach ? 'invalid' : ''}`}>
-                <div className="photo-container">
+                <div style={{padding:'5px'}}>
                     <div className='container'>
                         Attach Your Signature
                         <div>

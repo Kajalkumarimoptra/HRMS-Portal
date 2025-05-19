@@ -1,122 +1,161 @@
-.declaration-form {
-    width: 100%;
-    text-align: center !important;
-    padding: 24px 60px;
-    box-sizing: border-box;
-    overflow-x: hidden;
+.personalDetailForm {
+    .passportDetailsContainer {
+        gap: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: 15px;
+        margin-right: -66px;
+        align-items: baseline;
 
-    .UniversalHeadlines {
+        & div {
+            flex: 1;
+            display: flex;
+            gap: 28px;
+            align-items: baseline;
+        }
+
+        .datepicker-container {
+            margin-top: 10px;
+            position: relative;
+            display: flex;
+            width: 100%;
+            align-items: baseline;
+
+            .datepicker-label-input {
+                display: flex;
+                align-items: initial;
+                gap: 10px;
+                width: 100%;
+
+                .datepicker-wrapper {
+                    position: relative;
+                    width: 100%;
+                }
+
+                .fromInput {
+                    // width: 100%;
+                    width: 200px;
+                    padding-right: 36px;
+                    margin-left: 10px;
+                    box-sizing: border-box;
+                }
+
+                .calendar-icon {
+                    position: absolute;
+                    top: 25%;
+                    transform: translateY(-50%);
+                    width: 15px;
+                    height: 15px;
+                    right: 1%;
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+
+    .visa-status-container{
+        display: flex;
+        justify-content: space-between;
+        margin-top: 15px;
+
+        div{
+            display: flex;
+            gap: 10px;
+            align-items: center;
+
+            .visa-radio{
+                vertical-align: middle;
+                margin-top: -5px;
+            }
+        }
+    }
+
+    .illnessDetailContainer {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 15px;
+        margin-top: 15px;
+        align-items: flex-start;
+
+        .illness-checkmark{
+            display: flex;
+            gap: 15px;
+
+            
+        label{
+            text-align: left;
+        }
+
+         .relativeButtons {
+            gap: 14px;
+            display: flex;
+
+            .radioYes {
+                margin-left: 0;
+                margin-right: 10px;
+                cursor: pointer;
+                vertical-align: middle;
+                box-sizing: border-box;
+                appearance: none;
+                -webkit-appearance: none;
+                background-color: white;
+                box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3);
+                border: 1px solid black;
+                width: 18px;
+                height: 18px;
+                position: relative;
+                margin-top: -7px;
+
+                &:checked::after {
+                    content: '';
+                    position: absolute;
+                    top: 0px;
+                    left: 5px;
+                    width: 6px;
+                    height: 12px;
+                    border: 1px solid blue;
+                    border-width: 0 2px 2px 0;
+                    transform: rotate(45deg);
+                    z-index: 1;
+                }
+
+                &:checked {
+                    background-color: white;
+                    border: 1px solid black;
+                    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3);
+                }
+            }
+
+            .moptraRelativeErrorMessage {
+                color: red;
+                font-size: 13px;
+            }
+        }
+        }
+         textarea {
+            width: 57%;
+        }
+    }
+
+    .selfIntrolHeading {
+        background-color: rgba(224, 224, 224, 0.5098039216);
+        height: 20px;
+        padding-top: 3px;
+        text-align: center;
+    }
+
+    .declaration-container {
         display: flex;
         justify-content: center;
 
-        .mainHeading {
-            border: 1px solid #512f9f;
-            background-color: #6A1B9A;
-            color: white;
-            width: 80%;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-    }
-
-    .noteHeading {
-        padding: 5px 5px 5px 253px;
-    }
-
-    .noteContent {
-        font-size: 13px;
-        font-weight: bold;
-        text-align: justify;
-        margin-left: 15px;
-    }
-
-    .noteDescription {
-        font-weight: 500;
-        margin-left: 6px;
-    }
-
-    .personalDetailForm {
-        text-align: left;
-        margin-left: 73px;
-        overflow-x: hidden;
-        overflow-y: hidden;
-
-
-        .personalDetailHeading {
-            background-color: rgba(224, 224, 224, 0.5098039216);
-            width: 94.2%;
-            margin-left: 10px;
-            height: 20px;
-            padding-top: 3px;
-            text-align: center;
-        }
-
-        .personalDetailHeadline {
-            margin-left: 14px;
-            font-weight: bold;
-
-        }
-
-        .personalDetailContainer {
-            width: 100%;
-            padding: 0px 16px;
-            box-sizing: border-box;
-        }
-
-
-        .illnessDetailContainer {
-            margin-top: 15px;
-            display: flex;
-            flex-direction: column;
-            margin-left: 3px;
-        }
-
-        .otherDetailHeadline {
-            margin-left: 14px;
-        }
-
-        .illnessLabel {
-            margin-bottom: 7px;
-            margin-left: 6px;
-        }
-
-        textarea {
-            margin-bottom: 30px;
-            margin-left: 8px;
-            width: 95.4%;
-        }
-
-        .selfIntrolHeading {
-            background-color: rgba(224, 224, 224, 0.5098039216);
-            width: 95.6%;
-            margin-left: 8px;
-            height: 20px;
-            padding-top: 3px;
-            text-align: center;
-        }
-
-        .hobbiesLabel {
-            margin-bottom: 7px;
-            margin-left: 5px;
-        }
-
         p {
             margin-top: 17px;
-            margin-left: 12px;
             text-align: justify;
 
             .textShift {
                 margin-top: 0;
-                margin-left: 34px;
+                margin-left: 21px;
                 margin-bottom: -26px;
-            }
-
-            .anotherTextShift {
-                margin-bottom: -26px;
-                margin-left: 34px;
-                margin-top: 0;
             }
         }
 
@@ -128,7 +167,7 @@
         .declarationCheck {
             margin-top: 20px;
             font-weight: 600;
-            margin-left: 6px;
+            margin-left: -3px;
 
             .required {
                 color: red;
@@ -176,64 +215,64 @@
                 }
             }
         }
+    }
 
-        .declareSaveButtons {
-            display: flex;
-            gap: 10px;
-            float: right;
-            margin-top: 52px;
-            width: 100%;
-            margin: 48px 50px 0px 0px;
 
-            .backBtn {
-                background-color: #616161c4;
-                color: white;
-                border: none;
-                width: 121px;
-                height: 42px;
-                font-size: 14px;
-                margin-right: auto;
-                margin-left: 63px;
+    .declareSaveButtons {
+        display: flex;
+        gap: 10px;
+        float: right;
+        width: 100%;
+        margin-top: 30px;
 
-                &:active {
-                    box-shadow: 2px 5px 10px 2px #263238;
-                }
+        .backBtn {
+            background-color: #616161c4;
+            color: white;
+            border: none;
+            width: 121px;
+            height: 42px;
+            font-size: 14px;
+            margin-right: auto;
+
+            &:active {
+                box-shadow: 2px 5px 10px 2px #263238;
             }
-
-            .saveBtn,
-            .saveNextBtn {
-                background-color: #bc47b1;
-                color: white;
-                border: none;
-                width: 121px;
-                height: 42px;
-                font-size: 14px;
-
-                &:active {
-                    box-shadow: 2px 5px 10px 2px #80007c;
-                }
-            }
-
-            .saveNextBtn {
-                background-color: #6A1B9A;
-
-                &:active {
-                    box-shadow: 2px 5px 10px 2px #550080;
-                }
-            }
-
-            .textShift {
-                margin-top: 0px;
-                margin-left: 38px;
-                margin-bottom: -26px;
-            }
-
         }
 
-        .declarationErrorMessage {
-            color: red;
-            font-size: 13px;
-            margin-top: 27px;
+        .saveBtn,
+        .saveNextBtn {
+            background-color: #bc47b1;
+            color: white;
+            border: none;
+            width: 121px;
+            height: 42px;
+            font-size: 14px;
+
+            &:active {
+                box-shadow: 2px 5px 10px 2px #80007c;
+            }
         }
+
+        .saveNextBtn {
+            background-color: #6A1B9A;
+
+            &:active {
+                box-shadow: 2px 5px 10px 2px #550080;
+            }
+        }
+
+        .textShift {
+            margin-top: 0px;
+            margin-left: 38px;
+            margin-bottom: -26px;
+        }
+
+    }
+
+    .declarationErrorMessage {
+        margin-left: 31px;
+        color: red;
+        font-size: 13px;
+        margin-top: 32px;
     }
 }
