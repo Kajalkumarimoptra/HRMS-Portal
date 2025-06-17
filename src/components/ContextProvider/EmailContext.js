@@ -1,4 +1,5 @@
 // EmailContext.js
+
 import { createContext, useContext, useState } from 'react';
 
 const EmailContext = createContext();
@@ -13,3 +14,5 @@ export const EmailProvider = ({ children }) => {
 };
 
 export const useEmail = () => useContext(EmailContext);
+
+
