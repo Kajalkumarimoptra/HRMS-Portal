@@ -96,6 +96,7 @@ export default function LoginForm() {
 
         const newPayload = {
             "email": data.loginEmail,
+            "mobileNumber": "",
             "password": data.loginPassword
         }
         console.log("New Payload:", newPayload);

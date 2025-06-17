@@ -242,13 +242,14 @@ export default function AddNewUser() {
             "Employee": "EMPLOYEE"
         };
         const payload = {
-            "employeeId": data.newUserEmpId,
-            "name": data.newUserName,
+            "employeeCode": data.newUserEmpId,
+            "firstName": data.newUserName,
+            "lastName": data.newUserLastName,
             "roleName": roleMapping[data.newUserRole] || data.newUserRole,
             "joiningDate": new Date(data.newUserJoiningDate).toISOString(),
             "designation": data.newUserDesg,
             "projects": data.newUserProject,
-            "projectManager": data.newUserProjectManager,
+            "reportingManager": data.newUserProjectManager,
             "email": data.newUserEmailId,
             "mobileNumber": data.newUserMobNo,
             "password": data.newUserPassword
