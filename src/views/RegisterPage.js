@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useFormContext } from "../components/ContextProvider/Context";
 import Breadcrumb from './Breadcrumb';
 import { useRegistrationContext } from 'components/ContextProvider/RegistrationDataContext';
+import DateFormatter from 'components/Utillity_Fn/DateFormatter';
 
 function RegisterPage() {
     const {
@@ -79,13 +80,11 @@ function RegisterPage() {
         console.log("Form submission initiated");
         console.log("Submitting data:", data);
         console.log(data.userEmail);
-        const originalDate = data.userDob; // e.g. "2025-05-10"
-        const formattedDate = originalDate.replace(/-/g, '/'); // "2025/05/10"
 
         const newPayload = {
             "fullName": regFullName,
             "mobileNumber": regMobNo,
-            "dateOfBirth": formattedDate,
+            "dateOfBirth": DateFormatter(data.userDob),
             "email": data.userEmail
         };
         console.log("New Payload:", newPayload);
