@@ -7,6 +7,10 @@ import { BiSolidHide } from "react-icons/bi";
 import { BiSolidShow } from "react-icons/bi";
 import axios from 'axios';
 import { useHolidayListContext } from 'components/ContextProvider/HolidayListContext';
+import DateFormatter from 'components/Utillity_Fn/DateFormatter';
+import { setUserId } from 'components/redux/Slice/getUserIdSlice';
+import RoleMapping from 'components/Utillity_Fn/RoleMapping';
+import { useDispatch } from 'react-redux';
 
 export default function AddNewUser() {
     const {
@@ -72,6 +76,7 @@ export default function AddNewUser() {
     }); // error msg for its pattern failure
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     // pattern failure validation 
     const handlePatternForAddNewUserInputs = (e, pattern, field) => {
@@ -235,18 +240,13 @@ export default function AddNewUser() {
     }
 
     const handleFormSubmit = async (data) => {
-        // Map role names to the required format
-        const roleMapping = {
-            "Super Admin": "SUPER_ADMIN",
-            "HR Admin": "ADMIN",
-            "Employee": "EMPLOYEE"
-        };
+        
         const payload = {
             "employeeCode": data.newUserEmpId,
             "firstName": data.newUserName,
             "lastName": data.newUserLastName,
-            "roleName": roleMapping[data.newUserRole] || data.newUserRole,
-            "joiningDate": new Date(data.newUserJoiningDate).toISOString(),
+            "roleName": RoleMapping(data.newUserRole),
+            "joiningDate": DateFormatter(data.newUserJoiningDate),
             "designation": data.newUserDesg,
             "projects": data.newUserProject,
             "reportingManager": data.newUserProjectManager,
@@ -275,6 +275,8 @@ export default function AddNewUser() {
                 console.log("new user form:", response.data);
                 // Add new user to the users array state
                 setUsers((prevUsers) => [...prevUsers, response.data]);
+                dispatch(setUserId(response.data.employeeId));
+                console.log("Dispatched userId:", response.data.employeeId);
                 toast.success("A new user has been added successfully, and their credentials have been sent to the respective email ID!");
                 reset({
                     newUserPassword: '',
@@ -301,7 +303,7 @@ export default function AddNewUser() {
             if (error.response && error.response.data) {
                 const errorMessage = error.response.data.message;
 
-                if (error.response && error.response.status === 400 && errorMessage.includes('user already register')) {
+                if (error.response && error.response.status === 400 && errorMessage.includes("User with this email is already registered.")) {
                     console.error("Error response:", error.response.data);
                     setServerError('This email ID is already registered, please use a different one.');
                 }

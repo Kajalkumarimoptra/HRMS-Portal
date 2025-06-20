@@ -5,10 +5,13 @@ import { ImSearch } from "react-icons/im";
 import { GrEdit } from "react-icons/gr";
 import Breadcrumb from './Breadcrumb';
 import axios from 'axios';
+import { setUserId } from 'components/redux/Slice/getUserIdSlice';
+import { useDispatch } from 'react-redux';
 
 export default function Users() {
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const { users, setUsers, setServerError } = useFormContext();
     const [getRoleForShowAddAdminBtn, setGetRoleForShowAddAdminBtn] = useState(localStorage.getItem('role'));  // Get role from local storage
     const [showCreateCredential, setShowCreateCredential] = useState(false); //state for visibility of create credential btn
@@ -21,7 +24,8 @@ export default function Users() {
 
     // For the edit button
     const handleEditClick = (list) => {
-        navigate(`/admin/Users/${list.name}`, { state: { users: list } });
+        dispatch(setUserId(list.employeeId));
+        navigate(`/admin/Users/${list.firstName}`, { state: { users: list } });
     };
 
     // For the view details button
@@ -149,7 +153,7 @@ export default function Users() {
                                                                     <tbody>
                                                                         {superAdminsAndAdmins.map((list, index) => (
                                                                             <tr key={index}>
-                                                                                <td>{list.name}</td>
+                                                                                <td>{list.firstName}</td>
                                                                                 <td>
                                                                                     <span className={
                                                                                         list.roleName === 'SUPER_ADMIN' ? 'superadmin-role' :
@@ -161,7 +165,7 @@ export default function Users() {
                                                                                 <td>{new Date(list.joiningDate).toLocaleDateString("en-GB").split("/").join("-")}</td>
                                                                                 <td>{list.designation}</td>
                                                                                 <td>{list.projects}</td>
-                                                                                <td>{list.projectManager}</td>
+                                                                                <td>{list.reportingManager}</td>
                                                                                 <td>
                                                                                     {(getRoleForShowAddAdminBtn !== "ADMIN" || list.roleName !== 'SUPER_ADMIN') && getRoleForShowAddAdminBtn !== 'EMPLOYEE' && (
                                                                                         <button type="button" className="btn btn-icon btn-sm icons" title="Edit">
@@ -201,12 +205,12 @@ export default function Users() {
                                                                     <tbody>
                                                                         {employees.map((list, index) => (
                                                                             <tr key={index}>
-                                                                                <td>{list.name}</td>
+                                                                                <td>{list.firstName}</td>
                                                                                 <td><span className='user-role'>{capitalize(list.roleName.toLowerCase())}</span></td>
                                                                                 <td>{new Date(list.joiningDate).toLocaleDateString("en-GB").split("/").join("-")}</td>
                                                                                 <td>{list.designation}</td>
                                                                                 <td>{list.projects}</td>
-                                                                                <td>{list.projectManager}</td>
+                                                                                <td>{list.reportingManager}</td>
                                                                                 <td>
                                                                                     {getRoleForShowAddAdminBtn !== 'EMPLOYEE' && (
                                                                                         <button type="button" className="btn btn-icon btn-sm icons" title="Edit">
@@ -259,7 +263,7 @@ export default function Users() {
                                                                     <tbody>
                                                                         {superAdminsAndAdmins.map((list, index) => (
                                                                             <tr key={index}>
-                                                                                <td>{list.name}</td>
+                                                                                <td>{list.firstName}</td>
                                                                                 <td>
                                                                                     <span className={
                                                                                         list.roleName === 'SUPER_ADMIN' ? 'superadmin-role' :
@@ -271,7 +275,7 @@ export default function Users() {
                                                                                 <td>{new Date(list.joiningDate).toLocaleDateString("en-GB").split("/").join("-")}</td>
                                                                                 <td>{list.designation}</td>
                                                                                 <td>{list.projects}</td>
-                                                                                <td>{list.projectManager}</td>
+                                                                                <td>{list.reportingManager}</td>
                                                                                 <td>
                                                                                     {(getRoleForShowAddAdminBtn !== "ADMIN" || list.roleName !== 'SUPER_ADMIN') && getRoleForShowAddAdminBtn !== 'EMPLOYEE' && (
                                                                                         <button type="button" className="btn btn-icon btn-sm icons" title="Edit">
@@ -309,12 +313,12 @@ export default function Users() {
                                                             <tbody>
                                                                 {employees.map((list, index) => (
                                                                     <tr key={index}>
-                                                                        <td>{list.name}</td>
+                                                                        <td>{list.firstName}</td>
                                                                         <td><span className='user-role'>{capitalize(list.roleName.toLowerCase())}</span></td>
                                                                         <td>{new Date(list.joiningDate).toLocaleDateString("en-GB").split("/").join("-")}</td>
                                                                         <td>{list.designation}</td>
                                                                         <td>{list.projects}</td>
-                                                                        <td>{list.projectManager}</td>
+                                                                        <td>{list.reportingManager}</td>
                                                                         <td>
                                                                             <button type="button" className="btn btn-icon btn-sm icons" title="View">
                                                                                 <img src={require("assets/img/view-icon.png")} alt="view" className='delete-icon' onClick={() => handleViewDetailsClick()} />

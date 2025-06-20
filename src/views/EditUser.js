@@ -7,13 +7,18 @@ import { BiSolidShow } from "react-icons/bi";
 import axios from 'axios';
 import Breadcrumb from './Breadcrumb';
 import { useHolidayListContext } from 'components/ContextProvider/HolidayListContext';
+import { useSelector } from 'react-redux';
+import DateFormatter from 'components/Utillity_Fn/DateFormatter';
+import RoleMapping from 'components/Utillity_Fn/RoleMapping';
+import ReverseRoleMapping from 'components/Utillity_Fn/ReverseRoleMapping';
 
 export default function AddNewUser() {
     const {
         register, handleSubmit, onSubmit, reset, errors, serverError, setServerError, clearErrors, role, setRole, watch, setValue
     } = useFormContext();
     const holidays = useHolidayListContext();
-    const [editUserFullName, setEditUserFullName] = useState(''); // state for holding fullname
+    const [editUserFirstName, setEditUserFirstName] = useState(''); // state for holding first name
+    const [editUserLastName, setEditUserLastName] = useState(''); 
     const [editUserEmpId, setEditUserEmpId] = useState(''); // state for holding emp id
     const [editUserDesg, setEditUserDesg] = useState(''); // state for holding desg
     const [editUserEmail, setEditUserEmail] = useState(''); // state for holding email
@@ -32,9 +37,14 @@ export default function AddNewUser() {
     const [editOtherClientName, setEditOtherClientName] = useState(""); // For storing new other client name
     const [selectedEditClientName, setSelectedEditClientName] = useState('');
     const [editClientList, setEditClientList] = useState(['Petco', 'React Project']);
+    
+    // Ensure ID is retrieved correctly
+    const userIdToUpdate = useSelector(state => state.getUserId.userId);
+    console.log("User ID from Redux (userIdToUpdate):", userIdToUpdate);
 
     const [pattern, setPattern] = useState({
-        editUserName: '',
+        editUserFirstName: '',
+        editUserLastName: '',
         editUserEmpId: '',
         editUserDesg: '',
         editUserEmailId: '',
@@ -42,7 +52,8 @@ export default function AddNewUser() {
     }); // state for overall handling of pattern
 
     const [customErrorForEditUserInputs, setCustomErrorForEditUserInputs] = useState({
-        editUserName: '',
+        editUserFirstName: '',
+        editUserLastName: '',
         editUserEmpId: '',
         editUserDesg: '',
         editUserEmailId: '',
@@ -50,8 +61,6 @@ export default function AddNewUser() {
     }); // error msg for its pattern failure
 
     const navigate = useNavigate();
-    const { id } = useParams(); // Get userId from URL params
-    console.log("User ID from URL:", id);
     const location = useLocation();
     const { users } = location.state || {}; // Retrieve user data from navigation state
     const utcDate = new Date(users.joiningDate);
@@ -60,8 +69,6 @@ export default function AddNewUser() {
     const day = String(utcDate.getDate()).padStart(2, "0"); // Ensure 2-digit day
 
     const formattedDate = `${year}-${month}-${day}`;
-    console.log("Formatted Date:", formattedDate); // Debugging log
-
 
     // Convert holiday dates to YYYY-MM-DD format
     const formattedHolidays = holidays.map((holiday) => {
@@ -85,8 +92,9 @@ export default function AddNewUser() {
     useEffect(() => {
         if (users) {
             setPattern({
-                editUserName: users.name || "",
-                editUserEmpId: users.employeeId || "",
+                editUserFirstName: users.firstName || "",
+                editUserLastName: users.lastName || "",
+                editUserEmpId: users.employeeCode || "",
                 editUserEmailId: users.email || "",
                 editUserMobNo: users.mobileNumber || "",
                 editUserDesg: users.designation || "",
@@ -101,22 +109,16 @@ export default function AddNewUser() {
                 setValue("editUserClientName", users.projects);  // Update the form field
             }
 
-            // Map role names to the required format
-            const roleMapping = {
-                "SUPER_ADMIN": "Super Admin",
-                "ADMIN": "HR Admin",
-                "EMPLOYEE": "Employee"
-            };
-
             // Also update react-hook-form fields
-            setValue("editUserName", users.name || "");
-            setValue("editUserEmpId", users.employeeId || "");
+            setValue("editUserFirstName", users.firstName || "");
+            setValue("editUserLastName", users.lastName || "");
+            setValue("editUserEmpId", users.employeeCode || "");
             setValue("editUserEmailId", users.email || "");
             setValue("editUserMobNo", users.mobileNumber || "");
-            setValue("editUserRole", roleMapping[users.roleName] || users.roleName);
+            setValue("editUserRole", ReverseRoleMapping(users.roleName) || "");
             setValue("editUserJoiningDate", formattedDate || "");
             setValue("editUserDesg", users.designation || "");
-            setValue("editUserProjectManagerName", users.projectManager || "");
+            setValue("editUserProjectManagerName", users.reportingManager || "");
             setValue("editUserPassword", "");
             setValue("editUserConfirmPassword", "");
 
@@ -134,14 +136,15 @@ export default function AddNewUser() {
         setServerError('');
         clearErrors(field);
         setPattern(prev => ({ ...prev, [field]: value }))
-        if (field === 'editUserName') setEditUserFullName(value);
+        if (field === 'editUserFirstName') setEditUserFirstName(value);
+        if (field === 'editUserLastName') setEditUserLastName(value);
         if (field === 'editUserEmpId') setEditUserEmpId(value);
         if (field === 'editUserDesg') setEditUserDesg(value);
         if (field === 'editUserEmailId') setEditUserEmail(value);
         if (field === 'editUserMobNo') setEditUserMobNo(value);
 
         let patternErrorMessage = '';
-        if (field === 'editUserName' && value && !pattern.test(value)) {
+        if ((field === 'editUserFirstName' || field === 'editUserLastName') && value && !pattern.test(value)) {
             patternErrorMessage = 'No numbers or special characters are allowed';
         } else if (field === 'editUserEmpId') {
             // If emp id exceeds 6 digits, slice it to 6 digits
@@ -284,25 +287,15 @@ export default function AddNewUser() {
 
     const handleFormSubmit = async (data) => {
 
-        // Ensure ID is retrieved correctly
-        const userIdToUpdate = id || users?.usersId;  // Use ID from URL or state
-
-        // Map role names to the required format
-        const roleMapping = {
-            "Super Admin": "SUPER_ADMIN",
-            "HR Admin": "ADMIN",
-            "Employee": "EMPLOYEE"
-        };
-
         const payload = {
-            "usersId": userIdToUpdate,
-            "employeeId": data.editUserEmpId,
-            "name": data.editUserName,
-            "roleName": roleMapping[data.editUserRole] || data.editUserRole,
-            "joiningDate": new Date(data.editUserJoiningDate).toISOString(),
+            "employeeCode": data.editUserEmpId,
+            "firstName": data.editUserFirstName,
+            "lastName": data.editUserLastName,
+            "roleName": RoleMapping(data.editUserRole),
+            "joiningDate": DateFormatter(data.editUserJoiningDate),
             "designation": data.editUserDesg,
             "projects": data.editUserClientName,
-            "projectManager": data.editUserProjectManagerName,
+            "reportingManager": data.editUserProjectManagerName,
             "email": data.editUserEmailId,
             "mobileNumber": data.editUserMobNo,
             "password": data.editUserPassword
@@ -333,10 +326,11 @@ export default function AddNewUser() {
                     editUserPassword: '',
                     editUserConfirmPassword: ''
                 });
-                setEditUserFullName('');
+                setEditUserFirstName('');
+                setEditUserLastName('');
                 setEditUserDesg('');
-                setPattern({ editUserName: '', editUserEmpId: '', editUserDesg: '', editUserEmailId: '', editUserMobNo: '' }); // Reset pattern state
-                setCustomErrorForEditUserInputs({ editUserName: '', editUserEmpId: '', editUserDesg: '', editUserEmailId: '', editUserMobNo: '' }); // Clear custom errors
+                setPattern({ editUserFirstName: '', editUserLastName: '', editUserEmpId: '', editUserDesg: '', editUserEmailId: '', editUserMobNo: '' }); // Reset pattern state
+                setCustomErrorForEditUserInputs({ editUserFirstName: '', editUserLastName: '', editUserEmpId: '', editUserDesg: '', editUserEmailId: '', editUserMobNo: '' }); // Clear custom errors
                 setServerError('');
                 setSelectEditColor("#d3d3d3");
                 setSelectDateEditColor("#d3d3d3");
@@ -386,10 +380,10 @@ export default function AddNewUser() {
                                 <form onSubmit={handleSubmit(handleFormSubmit)}>
                                     <div className="form-detail">
                                         <div className="input-text">
-                                            <p>Employee Name <span style={{ color: "red" }}>*</span></p>
+                                            <p>First Name <span style={{ color: "red" }}>*</span></p>
                                             <div className="user-input-icons">
-                                                <input className="input-field" type="text" placeholder="Enter the name" {...register("editUserName", {
-                                                    required: 'Please enter the name',
+                                                <input className="input-field" type="text" placeholder='Enter the first name' {...register("editUserFirstName", {
+                                                    required: 'Please enter the first name',
                                                     maxLength: {
                                                         value: 50,
                                                         message: 'Name cannot exceed 50 characters'
@@ -399,9 +393,27 @@ export default function AddNewUser() {
                                                         message: 'Name must be at least 3 characters'
                                                     }
                                                 })}
-                                                    value={pattern.editUserName} onChange={(e) => handlePatternForEditUserInputs(e, /^[A-Za-z\s]+$/, 'editUserName')} />
-                                                {errors.editUserName && (<div className="userErrorMessage">{errors.editUserName.message}</div>)}
-                                                {customErrorForEditUserInputs.editUserName && (<div className='userErrorMessage'>{customErrorForEditUserInputs.editUserName}</div>)}
+                                                    value={pattern.editUserFirstName} onChange={(e) => handlePatternForEditUserInputs(e, /^[A-Za-z\s]+$/, 'editUserFirstName')} />
+                                                {errors.editUserFirstName && (<div className="userErrorMessage">{errors.editUserFirstName.message}</div>)}
+                                                {customErrorForEditUserInputs.editUserFirstName && (<div className='userErrorMessage'>{customErrorForEditUserInputs.editUserFirstName}</div>)}
+                                            </div>
+                                        </div>
+                                        <div className="input-text">
+                                             <p>Last Name (optional)</p>
+                                            <div className="user-input-icons">
+                                                <input className="input-field" type="text" placeholder='Enter the last name' {...register("editUserLastName", {
+                                                    maxLength: {
+                                                        value: 50,
+                                                        message: 'Name cannot exceed 50 characters'
+                                                    },
+                                                    minLength: {
+                                                        value: 3,
+                                                        message: 'Name must be at least 3 characters'
+                                                    }
+                                                })}
+                                                    value={pattern.editUserLastName} onChange={(e) => handlePatternForEditUserInputs(e, /^[A-Za-z\s]+$/, 'editUserLastName')} />
+                                                {errors.editUserLastName && (<div className="userErrorMessage">{errors.editUserLastName.message}</div>)}
+                                                {customErrorForEditUserInputs.editUserLastName && (<div className='userErrorMessage'>{customErrorForEditUserInputs.editUserLastName}</div>)}
                                             </div>
                                         </div>
                                         <div className="input-text">
