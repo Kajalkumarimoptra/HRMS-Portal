@@ -41,6 +41,7 @@ export default function EnterOtp() {
 
     // extract token from the url
     const tokenFromUrl = searchParams.get('token');
+    const encodedToken = encodeURIComponent(tokenFromUrl.trim());
 
     // Focus the first OTP input on component load
     useEffect(() => {
@@ -83,7 +84,7 @@ export default function EnterOtp() {
     const validateToken = async () => {
         setLoading(true);
         try {
-            const response = await axios.post(`http://localhost:8081/primaryDetails/validateToken?token=${tokenFromUrl}`);
+            const response = await axios.post(`http://localhost:8081/primaryDetails/validateToken?token=${encodedToken}`);
             const { tokenValid, message, email } = response.data;
             console.log('response of validate token api:', response.data);
 
@@ -162,7 +163,7 @@ export default function EnterOtp() {
 
         if (combinedOtp.length === 6) {
             try {
-                const otpResult = await axios.post(`http://localhost:8081/primaryDetails/validate?token=${tokenFromUrl}&otp=${combinedOtp}`)
+                const otpResult = await axios.post(`http://localhost:8081/primaryDetails/validate?token=${encodedToken}&otp=${combinedOtp}`)
                 console.log("OTP validated response:", otpResult.data);
                 const tokenForFormsValidation = otpResult.data.data.token;
 
